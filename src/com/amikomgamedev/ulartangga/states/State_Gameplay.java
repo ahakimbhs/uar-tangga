@@ -11,6 +11,7 @@ import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.entity.text.ChangeableText;
+import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.input.touch.detector.ScrollDetector;
 import org.anddev.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
@@ -64,7 +65,7 @@ public class State_Gameplay extends BaseGameActivity
 	private static int Map = 1;
 	public static float Second;
 	private static float CurrentSecond = 0;
-	private static boolean moveEnable = true;
+	private static boolean playerNotMoving = true;
 	private static boolean singlePlayer = false;
 	
 	public Engine onLoadEngine()
@@ -85,6 +86,8 @@ public class State_Gameplay extends BaseGameActivity
 	
 	public Scene onLoadScene()
 	{
+		mEngine.registerUpdateHandler(new FPSLogger());
+		
 		mEngine.registerUpdateHandler(this);
 		mScene = new Scene();
 		mScene.setOnSceneTouchListener(this);
@@ -137,12 +140,12 @@ public class State_Gameplay extends BaseGameActivity
 					{
 						mc[Player_Cur].updateMove();
 						Entity_Camera.autoMoveCamera(Player_Cur);
-						moveEnable = false;
+						playerNotMoving = false;
 					}
 					else
 					{
 						mc[Player_Cur].stop();
-						moveEnable = true;
+						playerNotMoving = true;
 						
 						if(mc[Player_Cur].Posisi_Mc_Current != mc[Player_Cur].POSISI_MC_START)
 						{
@@ -150,7 +153,7 @@ public class State_Gameplay extends BaseGameActivity
 							{
 								if(Player_Cur != PLAYER_1)
 								{
-									mc[PLAYER_1].throwToStart();
+									mc[PLAYER_1].throwToStart(mc[Player_Cur].getDistance());
 									Entity_Camera.autoMoveCamera(PLAYER_1);
 								}
 							}
@@ -159,7 +162,7 @@ public class State_Gameplay extends BaseGameActivity
 							{
 								if(Player_Cur != PLAYER_2)
 								{
-									mc[PLAYER_2].throwToStart();
+									mc[PLAYER_2].throwToStart(mc[Player_Cur].getDistance());
 									Entity_Camera.autoMoveCamera(PLAYER_2);
 								}
 							}
@@ -168,7 +171,7 @@ public class State_Gameplay extends BaseGameActivity
 							{
 								if(Player_Cur != PLAYER_3)
 								{
-									mc[PLAYER_3].throwToStart();
+									mc[PLAYER_3].throwToStart(mc[Player_Cur].getDistance());
 									Entity_Camera.autoMoveCamera(PLAYER_3);
 								}
 							}
@@ -177,7 +180,7 @@ public class State_Gameplay extends BaseGameActivity
 							{
 								if(Player_Cur != PLAYER_4)
 								{
-									mc[PLAYER_4].throwToStart();
+									mc[PLAYER_4].throwToStart(mc[Player_Cur].getDistance());
 									Entity_Camera.autoMoveCamera(PLAYER_4);
 								}
 							}
@@ -213,7 +216,7 @@ public class State_Gameplay extends BaseGameActivity
 	public void onScroll(ScrollDetector pScollDetector, TouchEvent pTouchEvent,
 			float pDistanceX, float pDistanceY)
 	{
-		if(moveEnable)
+		if(playerNotMoving)
 		{
 			Entity_Camera.moveCamera(pDistanceX, pDistanceY);
 		}
@@ -250,10 +253,13 @@ public class State_Gameplay extends BaseGameActivity
 							float pTouchAreaLocalX, float pTouchAreaLocalY) {
 						if(pSceneTouchEvent.isActionDown())
 						{
-							State_Gameplay.switchPlayer();
-							Utils.setRandomValue();
-							State_Gameplay.mc[State_Gameplay.Player_Cur].setMove(Utils.getRandomValuie());
-							Log.d("Value", "Random = " +Utils.getRandomValuie());
+							if(playerNotMoving)
+							{
+								State_Gameplay.switchPlayer();
+								Utils.setRandomValue();
+								State_Gameplay.mc[State_Gameplay.Player_Cur].setMove(Utils.getRandomValuie());
+								Log.d("Value", "Random = " +Utils.getRandomValuie());
+							}
 						}
 						return true;
 					}

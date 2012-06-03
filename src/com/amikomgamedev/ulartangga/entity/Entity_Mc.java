@@ -9,6 +9,7 @@ import com.amikomgamedev.ulartangga.Config;
 import com.amikomgamedev.ulartangga.Define;
 import com.amikomgamedev.ulartangga.Game;
 import com.amikomgamedev.ulartangga.Utils;
+import com.amikomgamedev.ulartangga.states.State_Gameplay;
 
 public class Entity_Mc implements Define
 {
@@ -19,6 +20,7 @@ public class Entity_Mc implements Define
 	public int Posisi_Mc_Current;
 	private int Posisi_Mc_Current_Row;
 	private int Posisi_Mc_Max;
+	private float second = 0;
 	
 	public Entity_Mc(Sprite spr)
 	{
@@ -85,24 +87,33 @@ public class Entity_Mc implements Define
 		handler.setVelocity(0, 0);
 	}
 	
-	public void throwToStart()
+	public float getDistance()
 	{
-		final float distance	= spr_Mc.getX();
-		float time			= 3;
+		return spr_Mc.getX();
+	}
+	
+	public void throwToStart(float distance)
+	{
+//		rumus parabola (fisika) dengan sedikit modifikasi pada gravitasi
+//		masih belum fix pada gravitasi
+		second = second+State_Gameplay.Second;;
+		float time			= 2;
 		float velocityX	= distance / time;
+		float gravitasi	= velocityX;
 		float velocity		= (float) (velocityX / Math.cos(Math.toRadians(45)));
-		float velocityY	= (float) (velocity * Math.sin(Math.toRadians(45)));// - (980 * State_Gameplay.Second);
+		float velocityY	= (float) (velocity * Math.sin(Math.toRadians(45))) - (gravitasi * second);
 		handler.setVelocity(-velocityX, -velocityY);
-		Log.d("posisi", ""+spr_Mc.getX());
-		if(spr_Mc.getX() <=CAMERA_CENTER_X);
+
+		if(second >= time)
 		{
-			float mcPosX	= 0;//(-GAME_MAP_CELL_WIDTH);
+			float mcPosX	= 0;
 			float mcPosY	= Config.GAME_SCREEN_HEIGHT - GAME_MAP_CELL_HEIGHT + 
 					((GAME_MAP_CELL_HEIGHT - spr_Mc.getHeight()) / 2) - Game.reg_Img_Informasi_Footer.getHeight();
 			spr_Mc.setPosition(mcPosX, mcPosY);
-			handler.setVelocity(0);
+			stop();
 			Posisi_Mc_Current			= POSISI_MC_START;
 			Posisi_Mc_Current_Row	= 0;
+			second									= 0;
 		}
 	}
 }
