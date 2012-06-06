@@ -120,8 +120,10 @@ public class Loading {
 			case LOADING_SUB_TYPE_WALPAPER:
 				break;
 			case LOADING_SUB_TYPE_MAIN_MENU_INTERFACE:
+				Game.loadBackgroundMenu();
 				break;
 			case LOADING_SUB_TYPE_MAIN_MENU_BUTTON:
+				Game.loadButtonMenu();
 				break;
 			case LOADING_SUB_TYPE_FONT:
 				Game.loadFont();

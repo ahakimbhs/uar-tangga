@@ -41,14 +41,14 @@ public class State_Gameplay extends BaseGameActivity
 	private static Entity_Mc[] mc;
 	private static ChangeableText curPosition;
 	
-	private static final int STATE_GAME_START				= 0;
+	private static final int STATE_GAME_START		= 0;
 	private static final int STATE_GAME_LOADING		= 1;
-	private static final int STATE_GAME_INGAME			= 2;
-	private static final int STATE_GAME_MENU				= 3;
-	private static final int STATE_GAME_OVER				= 4;
+	private static final int STATE_GAME_INGAME		= 2;
+	private static final int STATE_GAME_MENU		= 3;
+	private static final int STATE_GAME_OVER		= 4;
 	private static final int STATE_GAME_SUMMARY		= 5;
 	private static final int STATE_GAME_UNLOADING	= 6;
-	private static int State_Game_Current							= 0;
+	private static int State_Game_Current			= 0;
 
 	private static final int CARACTER_1	= 0;
 	private static final int CARACTER_2	= 1;

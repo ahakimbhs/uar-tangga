@@ -56,6 +56,21 @@ public class Game implements Data,
 	public static Sprite spr_Img_Informasi_Footer,
 						 spr_Img_Informasi_Header;
 	
+//	arief
+	private static BitmapTextureAtlas tex_Img_Back_Menu;
+	public static TextureRegion reg_Img_Back_Menu;
+	public static Sprite spr_Img_Back_Menu;
+	
+	private static BitmapTextureAtlas tex_Img_Title;
+	public static TextureRegion reg_Img_Title_Menu;
+	public static Sprite spr_Img_Title_Menu;
+	
+	private static BitmapTextureAtlas tex_Img_Hud_Menu;
+	public static TextureRegion reg_Img_Btn_Credit,
+								reg_Img_Btn_Option;
+	public static Sprite spr_Img_Btn_Credit,
+						spr_Img_Btn_Option;
+//	
 	public static HUD hud;
 
 	public static int dicePosX;
@@ -224,4 +239,39 @@ public class Game implements Data,
 		posY = 0;
 		spr_Img_Informasi_Header = new Sprite(posX, posY, reg_Img_Informasi_Header);
 	}
+	//arief
+	public static void loadBackgroundMenu ()
+	{
+		tex_Img_Back_Menu = new BitmapTextureAtlas(512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		reg_Img_Back_Menu = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tex_Img_Back_Menu, activity, IMG_MENU_BACK, 0, 0);
+	
+	spr_Img_Back_Menu = new Sprite(0, 0, reg_Img_Back_Menu);
+	}
+	
+	public static void loadTitle()
+	{
+		tex_Img_Title = new BitmapTextureAtlas(256, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		reg_Img_Title_Menu = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tex_Img_Title, activity, IMG_MNU_TITLE, 0, 0);
+		float y = 50;
+		float x = (Config.GAME_SCREEN_WIDTH - reg_Img_Title_Menu.getWidth()) / 2;
+		spr_Img_Title_Menu = new Sprite( x, y , reg_Img_Title_Menu);
+		
+	}
+	
+	public static void loadButtonMenu()
+	{
+		tex_Img_Hud_Menu = new BitmapTextureAtlas(128, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		reg_Img_Btn_Credit = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tex_Img_Hud_Menu, activity, IMG_MENU_BTN_CREDIT, 0, 0);
+		reg_Img_Btn_Option = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tex_Img_Hud_Menu, activity, IMG_MENU_BTN_OPTION, 0 , 20);
+	
+		spr_Img_Btn_Credit = new Sprite(30, 360, 80,64, reg_Img_Btn_Credit);
+		spr_Img_Btn_Option = new Sprite(210, 360, 80, 64, reg_Img_Btn_Option);
+	}	
+	
+	//
+	
 }

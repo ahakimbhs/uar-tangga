@@ -15,7 +15,18 @@ public interface Data {
 	public static final String IMG_LOGO_LOCATION = "gfx/appopen/";
 	public static final String IMG_INGAME_FOLDER_LOCATION = "gfx/ingame/img/";
 	public static final String SPR_INGAME_FOLDER_LOCATION = "gfx/ingame/spr/";
-
+	//arief
+	public static final String MNU_FOLDER_LOCATION = "gfx/mnu/";
+	
+	public static final String IMG_MENU_BACK = 
+			MNU_FOLDER_LOCATION + "background.png";
+	public static final String IMG_MENU_BTN_CREDIT =
+			MNU_FOLDER_LOCATION + "btn_credit.png";
+	public static final String IMG_MENU_BTN_OPTION = 
+			MNU_FOLDER_LOCATION + "btn_option.png";
+	public static final String IMG_MNU_TITLE =
+			MNU_FOLDER_LOCATION + "title.png";
+	//
 	public static final String IMG_LOGO =
 			IMG_LOGO_LOCATION + "agd_logo.png";
 	
