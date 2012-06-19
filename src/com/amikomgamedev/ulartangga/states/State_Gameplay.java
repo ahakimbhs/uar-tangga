@@ -17,6 +17,7 @@ import org.anddev.andengine.input.touch.detector.ScrollDetector;
 import org.anddev.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.anddev.andengine.input.touch.detector.SurfaceScrollDetector;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
+import org.anddev.andengine.util.Debug;
 
 import android.util.Log;
 
@@ -27,6 +28,7 @@ import com.amikomgamedev.ulartangga.Loading;
 import com.amikomgamedev.ulartangga.Utils;
 import com.amikomgamedev.ulartangga.entity.Entity_Camera;
 import com.amikomgamedev.ulartangga.entity.Entity_Mc;
+import com.amikomgamedev.ulartangga.gamelevel.Game_Level_Handler;
 
 public class State_Gameplay extends BaseGameActivity
 												implements IUpdateHandler,
@@ -41,14 +43,14 @@ public class State_Gameplay extends BaseGameActivity
 	private static Entity_Mc[] mc;
 	private static ChangeableText curPosition;
 	
-	private static final int STATE_GAME_START		= 0;
+	private static final int STATE_GAME_START				= 0;
 	private static final int STATE_GAME_LOADING		= 1;
-	private static final int STATE_GAME_INGAME		= 2;
-	private static final int STATE_GAME_MENU		= 3;
-	private static final int STATE_GAME_OVER		= 4;
+	private static final int STATE_GAME_INGAME			= 2;
+	private static final int STATE_GAME_MENU				= 3;
+	private static final int STATE_GAME_OVER				= 4;
 	private static final int STATE_GAME_SUMMARY		= 5;
 	private static final int STATE_GAME_UNLOADING	= 6;
-	private static int State_Game_Current			= 0;
+	private static int State_Game_Current							= 0;
 
 	private static final int CARACTER_1	= 0;
 	private static final int CARACTER_2	= 1;
@@ -147,56 +149,52 @@ public class State_Gameplay extends BaseGameActivity
 						mc[Player_Cur].stop();
 						playerNotMoving = true;
 						
+						// cek 2 pemain 1 cell
 						if(mc[Player_Cur].Posisi_Mc_Current != mc[Player_Cur].POSISI_MC_START)
 						{
-							if(mc[Player_Cur].Posisi_Mc_Current == mc[PLAYER_1].Posisi_Mc_Current)
+							if(mc[Player_Cur].Posisi_Mc_Current == mc[PLAYER_1].Posisi_Mc_Current && Player_Cur != PLAYER_1)
 							{
-								if(Player_Cur != PLAYER_1)
-								{
-									mc[PLAYER_1].throwToStart(mc[Player_Cur].getDistance());
-									Entity_Camera.autoMoveCamera(PLAYER_1);
-								}
+								mc[PLAYER_1].throwToStart(mc[Player_Cur].getDistance());
+								Entity_Camera.autoMoveCamera(PLAYER_1);
 							}
 							
-							if(mc[Player_Cur].Posisi_Mc_Current == mc[PLAYER_2].Posisi_Mc_Current)
-							{
-								if(Player_Cur != PLAYER_2)
+							if(mc[Player_Cur].Posisi_Mc_Current == mc[PLAYER_2].Posisi_Mc_Current && Player_Cur != PLAYER_2)
 								{
 									mc[PLAYER_2].throwToStart(mc[Player_Cur].getDistance());
 									Entity_Camera.autoMoveCamera(PLAYER_2);
 								}
+							
+							if(mc[Player_Cur].Posisi_Mc_Current == mc[PLAYER_3].Posisi_Mc_Current && Player_Cur != PLAYER_3)
+							{
+								mc[PLAYER_3].throwToStart(mc[Player_Cur].getDistance());
+								Entity_Camera.autoMoveCamera(PLAYER_3);
 							}
 							
-							if(mc[Player_Cur].Posisi_Mc_Current == mc[PLAYER_3].Posisi_Mc_Current)
+							if(mc[Player_Cur].Posisi_Mc_Current == mc[PLAYER_4].Posisi_Mc_Current && Player_Cur != PLAYER_4)
 							{
-								if(Player_Cur != PLAYER_3)
-								{
-									mc[PLAYER_3].throwToStart(mc[Player_Cur].getDistance());
-									Entity_Camera.autoMoveCamera(PLAYER_3);
-								}
+								mc[PLAYER_4].throwToStart(mc[Player_Cur].getDistance());
+								Entity_Camera.autoMoveCamera(PLAYER_4);
 							}
-							
-							if(mc[Player_Cur].Posisi_Mc_Current == mc[PLAYER_4].Posisi_Mc_Current)
+						}
+						
+						// pengecekan tangga
+						for(int i = 0; i < Game_Level_Handler.LADDER[0].length; i++)
+						{
+							if(mc[Player_Cur].Posisi_Mc_Current == Game_Level_Handler.LADDER[0][i])
 							{
-								if(Player_Cur != PLAYER_4)
-								{
-									mc[PLAYER_4].throwToStart(mc[Player_Cur].getDistance());
-									Entity_Camera.autoMoveCamera(PLAYER_4);
-								}
+								mc[Player_Cur].moveLadder(Game_Level_Handler.LADDER[0][i], Game_Level_Handler.LADDER[1][i]);
+								Entity_Camera.autoMoveCamera(Player_Cur);
 							}
 						}
 						
 						//	acak otomatis (singgle player) 
-						if(singlePlayer)
+						if(singlePlayer && Player_Cur != Player_Max - 1)
 						{
-							if(Player_Cur != Player_Max - 1)
+							if(timer(2))
 							{
-								if(timer(2))
-								{
-									switchPlayer();
-									Utils.setRandomValue();
-									mc[Player_Cur].setMove(Utils.getRandomValuie());
-								}
+								switchPlayer();
+								Utils.setRandomValue();
+								mc[Player_Cur].setMove(Utils.getRandomValuie());
 							}
 						}
 					}
