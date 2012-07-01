@@ -2,7 +2,7 @@ package com.amikomgamedev.ulartangga;
 
 import java.util.Random;
 
-import org.anddev.andengine.entity.sprite.Sprite;
+import org.anddev.andengine.entity.sprite.AnimatedSprite;
 
 public class Utils
 {
@@ -19,11 +19,12 @@ public class Utils
 		return (int) (1 + random);
 	}
 
-	public static float getCellCenterX(Sprite sprite)
+	public static float getCellCenterX(AnimatedSprite sprite)
 	{
 		return (Define.GAME_MAP_CELL_WIDTH - sprite.getWidth()) / 2;
 	}
-	public static float getCellCenterY(Sprite sprite)
+	
+	public static float getCellCenterY(AnimatedSprite sprite)
 	{
 		return (Define.GAME_MAP_CELL_HEIGHT - sprite.getHeight()) / 2;
 	}

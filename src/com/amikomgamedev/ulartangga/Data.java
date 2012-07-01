@@ -1,7 +1,7 @@
 package com.amikomgamedev.ulartangga;
 
 public interface Data {
-	public static final String FONT_FILE_SLOCATION = "fnt/Droid.ttf";
+	public static final String FONT_FILE_LOCATION = "fnt/Droid.ttf";
 	public static final int FONT_SIZE_SMALL		= 0;
 	public static final int FONT_SIZE_MEDIUM	= 1;
 	public static final int FONT_SIZE_BIG		= 2;
@@ -15,6 +15,10 @@ public interface Data {
 	public static final String IMG_LOGO_LOCATION = "gfx/appopen/";
 	public static final String IMG_INGAME_FOLDER_LOCATION = "gfx/ingame/img/";
 	public static final String SPR_INGAME_FOLDER_LOCATION = "gfx/ingame/spr/";
+	public static final String IMG_INMENU_FOLDER_LOCATION = "gfx/inmenu/img/";
+	public static final String SPR_INMENU_FOLDER_LOCATION = "gfx/inmenu/spr/";
+	public static final String SND_INGAME_FOLDER_LOCATION = "snd/ingame/";
+	
 	//arief
 	public static final String MNU_FOLDER_LOCATION = "gfx/mnu/";
 	
@@ -26,14 +30,31 @@ public interface Data {
 			MNU_FOLDER_LOCATION + "btn_option.png";
 	public static final String IMG_MNU_TITLE =
 			MNU_FOLDER_LOCATION + "title.png";
+	public static final String IMG_SPR_DADU = 
+			SPR_INGAME_FOLDER_LOCATION + "sprite_dadu.png" ;
 	//
+	
+	public static final String[] MSC_INGAME_GAMEPLAY = 
+		{
+			SND_INGAME_FOLDER_LOCATION + "msc_ingame_bg_modern.ogg",
+			SND_INGAME_FOLDER_LOCATION + "msc_ingame_bg_modern.ogg",
+			SND_INGAME_FOLDER_LOCATION + "msc_ingame_bg_modern.ogg",
+			SND_INGAME_FOLDER_LOCATION + "msc_ingame_bg_modern.ogg"
+		};
+	
 	public static final String IMG_LOGO =
 			IMG_LOGO_LOCATION + "agd_logo.png";
+
+	public static final String IMG_INMENU_SELECT_MAP_BG = IMG_INMENU_FOLDER_LOCATION + "img_select_map_bg.jpg";
+	public static final String IMG_INMENU_SELECT_MC_BG = IMG_INMENU_FOLDER_LOCATION + "img_select_mc_bg.jpg";
 	
 	public static final String IMG_INGAME_BACKGROUND_MAP[] =
 		{
-		IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_map1.jpg",
-		IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_map1.jpg"
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_map1.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_klasik.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_galaksi.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_kolosal.jpg"
 		};
 	
 	public static final String IMG_INGAME_BOTTON_DICE =
@@ -46,24 +67,76 @@ public interface Data {
 			IMG_INGAME_FOLDER_LOCATION + "header.jpg";
 
 	public static final int ANI_FRAME_START	= 0;
-	public static final int ANI_FRAME_END		= 1;
+	public static final int ANI_FRAME_END	= 1;
 	
-	public static final int SPR_MC_COLUMN	= 5;
-	public static final int SPR_MC_ROW			= 5;
+	public static final int SPR_MC_COLUMN	= 1;
+	public static final int SPR_MC_ROW		= 1;
 	
-	public static final String SPR_MC[] =
+	public static final String SPR_MC[][] =
 		{
-		SPR_INGAME_FOLDER_LOCATION + "kucing.png",
-		SPR_INGAME_FOLDER_LOCATION + "anjing.png",
-		SPR_INGAME_FOLDER_LOCATION + "anjing 2.png",
-		SPR_INGAME_FOLDER_LOCATION + "anjing 3.png"
+			{
+				SPR_INGAME_FOLDER_LOCATION + "kucing.png",
+				SPR_INGAME_FOLDER_LOCATION + "anjing.png",
+				SPR_INGAME_FOLDER_LOCATION + "anjing 2.png",
+				SPR_INGAME_FOLDER_LOCATION + "anjing 3.png"
+			},
+			{
+				SPR_INGAME_FOLDER_LOCATION + "kit_modern.png",
+				SPR_INGAME_FOLDER_LOCATION + "pea_modern.png",
+				SPR_INGAME_FOLDER_LOCATION + "dew_modern.png",
+				SPR_INGAME_FOLDER_LOCATION + "row_modern.png"
+			},
+			{
+				SPR_INGAME_FOLDER_LOCATION + "kit_klasik.png",
+				SPR_INGAME_FOLDER_LOCATION + "pea_klasik.png",
+				SPR_INGAME_FOLDER_LOCATION + "dew_klasik.png",
+				SPR_INGAME_FOLDER_LOCATION + "row_klasik.png"
+			},
+			{
+				SPR_INGAME_FOLDER_LOCATION + "kit_galaksi.png",
+				SPR_INGAME_FOLDER_LOCATION + "pea_galaksi.png",
+				SPR_INGAME_FOLDER_LOCATION + "dew_galaksi.png",
+				SPR_INGAME_FOLDER_LOCATION + "row_galaksi.png"
+			},
+			{
+				SPR_INGAME_FOLDER_LOCATION + "kit_kolosal.png",
+				SPR_INGAME_FOLDER_LOCATION + "pea_kolosal.png",
+				SPR_INGAME_FOLDER_LOCATION + "dew_kolosal.png",
+				SPR_INGAME_FOLDER_LOCATION + "row_kolosal.png"
+			}
 		};
 	
-	public static final String SPR_ICON_MC[] =
+	public static final String SPR_ICON_MC[][] =
 		{
-		IMG_INGAME_FOLDER_LOCATION + "kucing.png",
-		IMG_INGAME_FOLDER_LOCATION + "anjing.png",
-		IMG_INGAME_FOLDER_LOCATION + "kucing.png",
-		IMG_INGAME_FOLDER_LOCATION + "kucing.png"
+			{
+				IMG_INGAME_FOLDER_LOCATION + "kucing.png",
+				IMG_INGAME_FOLDER_LOCATION + "anjing.png",
+				IMG_INGAME_FOLDER_LOCATION + "kucing.png",
+				IMG_INGAME_FOLDER_LOCATION + "kucing.png"
+			},
+			{
+				IMG_INGAME_FOLDER_LOCATION + "kit_modern.png",
+				IMG_INGAME_FOLDER_LOCATION + "pea_modern.png",
+				IMG_INGAME_FOLDER_LOCATION + "dew_modern.png",
+				IMG_INGAME_FOLDER_LOCATION + "row_modern.png"
+			},
+			{
+				IMG_INGAME_FOLDER_LOCATION + "kit_klasik.png",
+				IMG_INGAME_FOLDER_LOCATION + "pea_klasik.png",
+				IMG_INGAME_FOLDER_LOCATION + "dew_klasik.png",
+				IMG_INGAME_FOLDER_LOCATION + "row_klasik.png"
+			},
+			{
+				IMG_INGAME_FOLDER_LOCATION + "kit_galaksi.png",
+				IMG_INGAME_FOLDER_LOCATION + "pea_galaksi.png",
+				IMG_INGAME_FOLDER_LOCATION + "dew_galaksi.png",
+				IMG_INGAME_FOLDER_LOCATION + "row_galaksi.png"
+			},
+			{
+				IMG_INGAME_FOLDER_LOCATION + "kit_kolosal.png",
+				IMG_INGAME_FOLDER_LOCATION + "pea_kolosal.png",
+				IMG_INGAME_FOLDER_LOCATION + "dew_kolosal.png",
+				IMG_INGAME_FOLDER_LOCATION + "row_kolosal.png"
+			}
 		};
 }
