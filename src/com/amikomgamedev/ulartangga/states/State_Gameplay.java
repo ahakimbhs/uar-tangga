@@ -150,8 +150,8 @@ public class State_Gameplay extends 	BaseGameActivity
 				}
 				else
 				{
-					Game.spr_Img_Logo.registerEntityModifier(new FadeOutModifier(1f));
-					if(timer(1))
+//					Game.spr_Img_Logo.registerEntityModifier(new FadeOutModifier(1f));
+//					if(timer(1))
 						switchState(STATE_GAME_INGAME);
 				}
 				break;
@@ -262,9 +262,9 @@ public class State_Gameplay extends 	BaseGameActivity
 			case STATE_GAME_LOADING:
 				scene.detachChildren();
 				scene.setBackground(new ColorBackground(1, 1, 1));
-				scene.attachChild(Game.spr_Img_Logo);
+//				scene.attachChild(Game.spr_Img_Logo);
 
-				Game.spr_Img_Logo.registerEntityModifier(new FadeInModifier(1f));
+//				Game.spr_Img_Logo.registerEntityModifier(new FadeInModifier(1f));
 				
 				Loading.setLoading(Loading.LOADING_TYPE_GAMEPLAY, Map);
 				break;

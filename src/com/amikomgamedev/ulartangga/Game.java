@@ -315,11 +315,11 @@ public class Game implements Data,
 	
 	public static void loadButtonMenu()
 	{
-		tex_Img_Hud_Menu = new BitmapTextureAtlas(128, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		tex_Img_Hud_Menu = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 		reg_Img_Btn_Credit = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(tex_Img_Hud_Menu, activity, IMG_MENU_BTN_CREDIT, 0, 0);
 		reg_Img_Btn_Option = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(tex_Img_Hud_Menu, activity, IMG_MENU_BTN_OPTION, 0 , 20);
+				.createFromAsset(tex_Img_Hud_Menu, activity, IMG_MENU_BTN_OPTION, 100 , 80);
 		loadTexture(tex_Img_Hud_Menu);
 	}
 
