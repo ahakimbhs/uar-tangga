@@ -50,4 +50,7 @@ public interface Define
 			"Player Three",
 			"Player Four"
 		};
+
+	public static final int MAP_HEIGHT 	= 700;
+	public static final int MAP_WIDTH 	= 700;
 }

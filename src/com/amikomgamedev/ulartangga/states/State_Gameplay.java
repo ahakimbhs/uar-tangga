@@ -34,6 +34,7 @@ import com.amikomgamedev.ulartangga.Define;
 import com.amikomgamedev.ulartangga.Game;
 import com.amikomgamedev.ulartangga.Loading;
 import com.amikomgamedev.ulartangga.Utils;
+import com.amikomgamedev.ulartangga.serverData;
 import com.amikomgamedev.ulartangga.entity.Entity_Camera;
 import com.amikomgamedev.ulartangga.entity.Entity_Mc;
 import com.amikomgamedev.ulartangga.gamelevel.Game_Level_Handler;
@@ -58,7 +59,7 @@ public class State_Gameplay extends 	BaseGameActivity
 	private static int Player_Max = 4;
 	public static int Player_Cur = Player_Max - 1;
 
-	private static int Map = MAP_MODERN;
+	private static int Map = -1;
 	private static float CurrentSecond = 0;
 	public static float Second;
 	
@@ -76,6 +77,8 @@ public class State_Gameplay extends 	BaseGameActivity
 	private static boolean diceEnable = true;
 	private static boolean singlePlayer = false;
 	
+	serverData sData = serverData.getInstance();
+	
 	public Engine onLoadEngine()
 	{
 		Game.appInit();
@@ -90,6 +93,13 @@ public class State_Gameplay extends 	BaseGameActivity
 	public void onLoadResources()
 	{
 		Game.setContext(this);
+		sData.setSelectMap(MAP_KLASIK);
+		sData.setCharPlayer1(CARACTER_1);
+		sData.setCharPlayer2(CARACTER_2);
+		sData.setCharPlayer3(CARACTER_3);
+		sData.setCharPlayer4(CARACTER_4);
+		
+		Map = sData.getSelectMap();
 	}
 	
 	public Scene onLoadScene()
@@ -266,12 +276,22 @@ public class State_Gameplay extends 	BaseGameActivity
 				scene.attachChild(Game.spr_Img_Map);
 				
 				mc = new Entity_Mc[Player_Max];
+/*
 				for(int i = 0; i < Player_Max; i++)
 				{
 					mc[i] = new Entity_Mc(Game.spr_MC[i]);
 					scene.attachChild(Game.spr_MC[i]);
 				}
-				
+*/		
+				mc[0] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer1()]);
+				mc[1] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer2()]);
+				mc[2] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer3()]);
+				mc[3] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer4()]);
+
+				scene.attachChild(Game.spr_MC[0]);
+				scene.attachChild(Game.spr_MC[1]);
+				scene.attachChild(Game.spr_MC[2]);
+				scene.attachChild(Game.spr_MC[3]);
 				Sprite spr_Img_Botton_Dice = new Sprite(Game.dicePosX, Game.dicePosY, Game.reg_Img_Button_Dice)
 				{
 					public boolean onAreaTouched(TouchEvent pSceneTouchEvent,

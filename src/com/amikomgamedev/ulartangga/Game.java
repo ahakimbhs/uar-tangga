@@ -180,7 +180,7 @@ public class Game implements Data,
 
 		float posX = 0;
 		float posY = Config.GAME_SCREEN_HEIGHT - reg_Img_Map.getHeight() - reg_Img_Informasi_Footer.getHeight();
-		spr_Img_Map = new Sprite(posX, posY, reg_Img_Map);
+		spr_Img_Map = new Sprite(posX, posY, MAP_WIDTH, MAP_HEIGHT, reg_Img_Map);
 	}
 	
 	public static void loadMC()
