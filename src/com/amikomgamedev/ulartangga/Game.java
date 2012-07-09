@@ -172,7 +172,7 @@ public class Game implements Data,
 				0, 0, 
 				Utils.getRatioW(Config.GAME_SCREEN_WIDTH), 
 				Utils.getRatioH(Config.GAME_SCREEN_HEIGHT), 
-				reg_Img_Logo);
+				reg_Img_Loading);
 	}
 	
 	public static void loadHud()
