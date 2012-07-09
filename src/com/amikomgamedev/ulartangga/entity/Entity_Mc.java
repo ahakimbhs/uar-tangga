@@ -5,6 +5,7 @@ import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.util.Debug;
 
 import com.amikomgamedev.ulartangga.Config;
+import com.amikomgamedev.ulartangga.Data;
 import com.amikomgamedev.ulartangga.Define;
 import com.amikomgamedev.ulartangga.Game;
 import com.amikomgamedev.ulartangga.Utils;
@@ -12,7 +13,7 @@ import com.amikomgamedev.ulartangga.states.State_Gameplay;
 
 public class Entity_Mc implements Define
 {
-	private AnimatedSprite spr_Mc;
+	private AnimatedSprite mc_Spr;
 	private PhysicsHandler handler;
 
 	public int 	POSISI_MC_START = 1;
@@ -33,11 +34,13 @@ public class Entity_Mc implements Define
 	private float sisiPanjang	= 0;
 	private float sisiMiring 	= 0;
 	
+	private int curState;
+	
 	public Entity_Mc(AnimatedSprite spr)
 	{
-		spr_Mc 	= spr;
-		handler = new PhysicsHandler(spr_Mc);
-		spr_Mc.registerUpdateHandler(handler);
+		mc_Spr 	= spr;
+		handler = new PhysicsHandler(mc_Spr);
+		mc_Spr.registerUpdateHandler(handler);
 
 		Posisi_Mc_Current		= POSISI_MC_START;
 		Posisi_Mc_Current_Row	= 1;
@@ -49,41 +52,53 @@ public class Entity_Mc implements Define
 		Posisi_Mc_Max = Posisi_Mc_Current + valueDice;
 	}
 	
-	public void updateMove()
+	private void setAnim(int anim)
 	{
-		if(Posisi_Mc_Current_Row > ROW_COUNT)						// move right after finish
+		mc_Spr.animate(
+				Data.SPR_MC_ANIM_SPEED[anim], 
+				Data.SPR_MC_ANIM_FRAME[anim][Data.ANI_FRAME_START], 
+				Data.SPR_MC_ANIM_FRAME[anim][Data.ANI_FRAME_END], 
+				true);
+	}
+	
+	public void cekMove()
+	{
+		// move right after finish
+		if(Posisi_Mc_Current_Row > ROW_COUNT)						
 		{
 			if(Posisi_Mc_Current % COLUMN_COUNT == 0)
 				Posisi_Mc_Current--;
-			if(spr_Mc.getX() > 
-			(COLUMN_COUNT + 1 - Posisi_Mc_Current % COLUMN_COUNT) * GAME_MAP_CELL_WIDTH + Utils.getCellCenterX(spr_Mc))
+			
+			if(mc_Spr.getX() > 
+				(COLUMN_COUNT + 1 - Posisi_Mc_Current % COLUMN_COUNT) * GAME_MAP_CELL_WIDTH + Utils.getCellCenterX(mc_Spr))
 			{
 				Posisi_Mc_Current--;
-				Debug.d("ok2");
 			}
-			handler.setVelocity(SPEED_MOVE, 0);
-			Debug.d("ok");
+			curState = STATE_MOVE_RIGHT;
 		}
-		else if(Posisi_Mc_Current % COLUMN_COUNT != 0) 				// move left or right
+		// move left or right
+		else if(Posisi_Mc_Current % COLUMN_COUNT != 0)
 		{
-			if(Posisi_Mc_Current_Row % 2 == 1)  					// move right
+			// move right
+			if(Posisi_Mc_Current_Row % 2 == 1)  					
 			{
-				if(spr_Mc.getX() > 
-				Posisi_Mc_Current % COLUMN_COUNT  * GAME_MAP_CELL_WIDTH	+ Utils.getCellCenterX(spr_Mc))
+				if(mc_Spr.getX() > 
+				Posisi_Mc_Current % COLUMN_COUNT  * GAME_MAP_CELL_WIDTH	+ Utils.getCellCenterX(mc_Spr))
 				{
 					Posisi_Mc_Current++;
 				}
-				handler.setVelocity(SPEED_MOVE, 0);
+				curState = STATE_MOVE_RIGHT;
 			}
-			else 													// move left
+			else
 			{
-				if(spr_Mc.getX() + spr_Mc.getWidth() < 
+				// move left
+				if(mc_Spr.getX() + mc_Spr.getWidth() < 
 				(COLUMN_COUNT - Posisi_Mc_Current % COLUMN_COUNT) * GAME_MAP_CELL_WIDTH)
 //				- Utils.getCellCenterX(spr_Mc))
 				{
 					Posisi_Mc_Current++;
 				}
-				handler.setVelocity(-SPEED_MOVE, 0);
+				curState = STATE_MOVE_LEFT;
 			}
 		} 
 		else if(Posisi_Mc_Current % COLUMN_COUNT == 0) 				// move up or back
@@ -96,16 +111,60 @@ public class Entity_Mc implements Define
 			}
 			else //move up
 			{
-				if(spr_Mc.getY() + spr_Mc.getHeight() < 
+				if(mc_Spr.getY() + mc_Spr.getHeight() < 
 						Config.GAME_SCREEN_HEIGHT - Posisi_Mc_Current_Row * 
 						GAME_MAP_CELL_HEIGHT - Game.reg_Img_Informasi_Footer.getHeight()
-						- Utils.getCellCenterY(spr_Mc))
+						- Utils.getCellCenterY(mc_Spr))
 				{
 					Posisi_Mc_Current++;
 					Posisi_Mc_Current_Row++;
 				}
-				handler.setVelocity(0, -SPEED_MOVE);
+				curState = STATE_MOVE_UP;
 			}
+		}
+	}
+	
+	public void updateMove()
+	{
+		switch(curState)
+		{
+			case STATE_IDLE:
+				
+				mc_Spr.stopAnimation();
+				
+				break;
+				
+			case STATE_MOVE_RIGHT:
+
+				mc_Spr.getTextureRegion().setFlippedHorizontal(false);
+				
+				if(!mc_Spr.isAnimationRunning())
+					setAnim(STATE_MOVE_RIGHT);
+				
+				handler.setVelocity(SPEED_MOVE, 0);
+				
+				break;
+			case STATE_MOVE_UP:
+				
+				handler.setVelocity(0, -SPEED_MOVE);
+				
+				break;
+			case STATE_MOVE_LEFT:
+				
+				mc_Spr.getTextureRegion().setFlippedHorizontal(true);
+				
+				if(!mc_Spr.isAnimationRunning())
+					setAnim(STATE_MOVE_RIGHT);
+				
+				handler.setVelocity(-SPEED_MOVE, 0);
+				
+				break;
+			case STATE_SNAKE:
+				break;
+			case STATE_LEADDER:
+				break;
+			case STATE_MOVE_TO_START:
+				break;
 		}
 	}
 	
@@ -124,22 +183,18 @@ public class Entity_Mc implements Define
 		{
 			Posisi_Mc_Current_Row--;
 		}
-	}
-	
-	public PhysicsHandler getHandler()
-	{
-		return handler;
+		curState = STATE_IDLE;
 	}
 	
 	public float getDistance()
 	{
-		return spr_Mc.getX();
+		return mc_Spr.getX() + mc_Spr.getWidth();
 	}
 	
 	public void throwToStart(float distance)
 	{
 //		rumus parabola (fisika)
-		second = second+State_Gameplay.Second;;
+		second += State_Gameplay.Second;;
 		int time	= 2;
 		velocityX	= distance / time;
 		gravitasi	= velocityX;
@@ -149,10 +204,10 @@ public class Entity_Mc implements Define
 
 		if(second >= time)
 		{
-			float mcPosX	= Utils.getCellCenterX(spr_Mc);
+			float mcPosX	= Utils.getCellCenterX(mc_Spr);
 			float mcPosY	= Config.GAME_SCREEN_HEIGHT - GAME_MAP_CELL_HEIGHT + 
-					((GAME_MAP_CELL_HEIGHT - spr_Mc.getHeight()) / 2) - Game.reg_Img_Informasi_Footer.getHeight();
-			spr_Mc.setPosition(mcPosX, mcPosY);
+					((GAME_MAP_CELL_HEIGHT - mc_Spr.getHeight()) / 2) - Game.reg_Img_Informasi_Footer.getHeight();
+			mc_Spr.setPosition(mcPosX, mcPosY);
 			stop();
 			Posisi_Mc_Current		= POSISI_MC_START;
 			Posisi_Mc_Current_Row	= 1;
@@ -299,7 +354,11 @@ public class Entity_Mc implements Define
 		if(second >= time)
 		{
 			stop();
-			Posisi_Mc_Current_Row	= posisiTanggaAkhir / COLUMN_COUNT + 1;
+			if(posisiTanggaAkhir % COLUMN_COUNT == 0)
+				Posisi_Mc_Current_Row	= posisiTanggaAkhir / COLUMN_COUNT;
+			else
+				Posisi_Mc_Current_Row	= posisiTanggaAkhir / COLUMN_COUNT + 1;
+				
 			Posisi_Mc_Current		= posisiTanggaAkhir;
 			Posisi_Mc_Max			= posisiTanggaAkhir;
 			second = 0;

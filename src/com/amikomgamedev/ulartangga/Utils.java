@@ -28,4 +28,16 @@ public class Utils
 	{
 		return (Define.GAME_MAP_CELL_HEIGHT - sprite.getHeight()) / 2;
 	}
+
+	public static int getRatioW(int def)
+	{
+		return (int) ((def/Define.GAME_RATIO_SCREEN_WIDTH) 
+				* Config.GAME_SCREEN_WIDTH);
+	}
+
+	public static int getRatioH(int def)
+	{
+		return (int) ((def/Define.GAME_RATIO_SCREEN_HEIGHT) 
+				* Config.GAME_SCREEN_HEIGHT);
+	}
 }

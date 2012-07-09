@@ -9,8 +9,4 @@ public class Config
 
 	public static int GAME_SCREEN_WIDTH;
 	public static int GAME_SCREEN_HEIGHT;
-	
-	// texture region main caracter
-	public static final int TREG_SPR_MC_WIDTH	= 64;
-	public static final int TREG_SPR_MC_HEIGHT 	= 64;
 }

@@ -33,6 +33,7 @@ import com.amikomgamedev.ulartangga.Config;
 import com.amikomgamedev.ulartangga.Define;
 import com.amikomgamedev.ulartangga.Game;
 import com.amikomgamedev.ulartangga.Loading;
+import com.amikomgamedev.ulartangga.Utils;
 import com.amikomgamedev.ulartangga.scene.Scene_Credits;
 import com.amikomgamedev.ulartangga.scene.Scene_Option;
 
@@ -92,7 +93,7 @@ public class State_MainMenu extends BaseGameActivity
 		switch(State_Game_Current) {
 			case STATE_GAME_START :
 				mScene.setBackground(new ColorBackground(1, 1, 1));
-				Loading.setLoading(Loading.LOADING_TYPE_GAMEPLAY_OPEN);
+				Loading.setLoading(Loading.LOADING_TYPE_APP_OPEN);
 				break;
 			case STATE_GAME_LOADING :
 				mScene.attachChild(Game.spr_Img_Logo);
@@ -100,6 +101,7 @@ public class State_MainMenu extends BaseGameActivity
 				Loading.setLoading(Loading.LOADING_TYPE_MAIN_MENU);
 				break;
 			case STATE_GAME_MENU :
+				Game.bgm_Menu.play();
 				mScene.detachChildren();
 				mScene.attachChild(Game.spr_Img_Back_Menu);
 				mScene.attachChild(Game.spr_Img_Title_Menu);
@@ -107,10 +109,15 @@ public class State_MainMenu extends BaseGameActivity
 				AnimatedSprite spr_Img_Dadu = new AnimatedSprite(40, 150, Game.reg_Img_Dadu);
 				AnimatedSprite spr_Img_Dadu2 = new AnimatedSprite(170, 150, Game.reg_Img_Dadu);
 				spr_Img_Dadu.animate(200);
-				mScene.attachChild(spr_Img_Dadu);
-				mScene.attachChild(spr_Img_Dadu2);
-			
-					Sprite spr_Img_Btn_Credit = new Sprite(30, 360, 80,64, Game.reg_Img_Btn_Credit){
+//				mScene.attachChild(spr_Img_Dadu);
+//				mScene.attachChild(spr_Img_Dadu2);
+				
+				int border = 30;
+				
+					Sprite spr_Img_Btn_Credit = new Sprite(0, 0, 
+							Utils.getRatioW(50),
+							Utils.getRatioH(50),
+							Game.reg_Img_Btn_Credit){
 						public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
 							float pTouchAreaLocalX, float pTouchAreaLocalY){
 							Scene_Credits sCredits = new Scene_Credits();
@@ -120,40 +127,57 @@ public class State_MainMenu extends BaseGameActivity
 						}
 					
 				};
+				spr_Img_Btn_Credit.setPosition(
+						Utils.getRatioW(border), 
+						Utils.getRatioH((int) (Config.GAME_SCREEN_HEIGHT - spr_Img_Btn_Credit.getHeight() - border)));
 				mScene.registerTouchArea(spr_Img_Btn_Credit);
 				
-					Sprite spr_Img_Btn_Option = new Sprite(210, 360, 80, 64, Game.reg_Img_Btn_Option){
-						
-						public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
-							float pTouchAreaLocalX, float pTouchAreaLocalY){
-							Scene_Option option = new Scene_Option();
-							mEngine.setScene(option.option(activity, mEngine));
-							return true;
+				Sprite spr_Img_Btn_Option = new Sprite(210, 360,
+						Utils.getRatioW(50),
+						Utils.getRatioH(50),
+						Game.reg_Img_Btn_Option){
 					
+					public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
+						float pTouchAreaLocalX, float pTouchAreaLocalY){
+						Scene_Option option = new Scene_Option();
+						mEngine.setScene(option.option(activity, mEngine));
+						return true;
 					}
-
-					
 				};
+				spr_Img_Btn_Option.setPosition(
+						Utils.getRatioW((int) (Config.GAME_SCREEN_WIDTH - spr_Img_Btn_Option.getWidth() - border)), 
+						Utils.getRatioH((int) (Config.GAME_SCREEN_HEIGHT - spr_Img_Btn_Option.getHeight() - border)));
 				mScene.registerTouchArea(spr_Img_Btn_Option);
 				
 				mScene.attachChild(spr_Img_Btn_Option);
 				mScene.attachChild(spr_Img_Btn_Credit);
-				mText = new Text(100, 300, Game.font[1],"Let's Play" ){
-					
+//				mText = new Text(100, 300, Game.font[1],"Let's Play" ){
+				Sprite spr_Img_Btn_Play = new Sprite(
+						0, 0, 
+						Utils.getRatioW(140),
+						Utils.getRatioH(35),
+						Game.reg_Img_Btn_Play)
+				{
 					@Override
 					public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
 							float pTouchAreaLocalX, float pTouchAreaLocalY) {
 						startActivity(new Intent(State_MainMenu.this, State_Gameplay.class));
-						
+//					mEngine.setScene(chosePlayerType());
+						finish();
 						return true;
 								
 					}
 				};
-								
-				mScene.registerTouchArea(mText);
+
+//				mScene.registerTouchArea(mText);
+				spr_Img_Btn_Play.setPosition(
+						(Config.GAME_SCREEN_WIDTH - spr_Img_Btn_Play.getWidth()) / 2, 
+						Utils.getRatioH(325)); 
+				mScene.registerTouchArea(spr_Img_Btn_Play);
 				
-				mText.setColor(0, 0, 0);
-				mScene.attachChild(mText);
+//				mText.setColor(0, 0, 0);
+//				mScene.attachChild(mText);
+				mScene.attachChild(spr_Img_Btn_Play);
 				break;
 			case STATE_GAME_OPTION :
 				

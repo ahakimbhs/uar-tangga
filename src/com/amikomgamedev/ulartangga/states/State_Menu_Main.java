@@ -12,6 +12,7 @@ import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.sprite.Sprite;
+import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
@@ -22,6 +23,7 @@ import android.content.Intent;
 import com.amikomgamedev.ulartangga.Config;
 import com.amikomgamedev.ulartangga.Game;
 import com.amikomgamedev.ulartangga.Loading;
+import com.amikomgamedev.ulartangga.scene.Scene_Option;
 
 public class State_Menu_Main extends BaseGameActivity
 							 implements	IUpdateHandler
@@ -31,6 +33,9 @@ public class State_Menu_Main extends BaseGameActivity
 	
 	public static Camera	camera;
 	public static Scene 	scene;
+	private Text mText, mText2;
+	
+	private BaseGameActivity activity = this;
 	
 	private static final int STATE_MENU_START			= 0;
 	private static final int STATE_MENU_LOADING			= 1;
@@ -106,6 +111,16 @@ public class State_Menu_Main extends BaseGameActivity
 					}
 				}
 			break;
+			case STATE_MENU_PLAY:
+				if (Loading.isLoading())
+				{
+					Loading.updateLoading();
+				}
+				else 
+				{
+					switchState(STATE_MENU_INMENU);
+				}
+				break;
 			case STATE_MENU_INMENU:
 				break;
 			case STATE_MENU_SELECT_MAP:
@@ -159,7 +174,9 @@ public class State_Menu_Main extends BaseGameActivity
 					public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
 						float pTouchAreaLocalX, float pTouchAreaLocalY){
 //							Scene_Option option = new Scene_Option();
-//							mEngine.setScene(option.option());
+//							mEngine.setScene(option.option(activity, mEngine));
+						startActivity(new Intent(State_Menu_Main.this,
+								State_Gameplay.class));
 						return true;
 				
 				}
@@ -170,6 +187,27 @@ public class State_Menu_Main extends BaseGameActivity
 				
 				scene.attachChild(spr_Img_Btn_Option);
 				scene.attachChild(spr_Img_Btn_Credit);
+				Text mText = new Text(100, 300, Game.font[1],"Let's Play" ){
+					
+					@Override
+					public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
+							float pTouchAreaLocalX, float pTouchAreaLocalY) {
+//						startActivity(new Intent(State_Menu_Main.this, State_Gameplay.class));
+						State_Menu_Select_Type_Player select = new State_Menu_Select_Type_Player();
+						mEngine.setScene(select.select_Player_Type());
+						return true;
+								
+					}
+				};
+				scene.attachChild(mText);
+				scene.registerTouchArea(mText);
+//				Loading.setLoading(Loading.LOADING_TYPE_MAIN_MENU_2);
+				break;
+			case STATE_MENU_PLAY:
+//				scene.detachChildren();
+//				mText2 = new Text(100, 10,Game.font[1], "Chose Player");
+//				scene.attachChild(mText2);
+//				scene.attachChild(Game.spr_Img_Back_Menu);
 				break;
 			case STATE_MENU_SELECT_MAP:
 //				scene.detachChildren();

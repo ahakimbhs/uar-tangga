@@ -29,6 +29,7 @@ public class Loading {
 	private static final int LOADING_SUB_TYPE_SELECT_MAP_ICON_MAP		= 16;
 	private static final int LOADING_SUB_TYPE_SELECT_MC_BACKGROUND		= 17;
 	private static final int LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER	= 18;
+	private static final int LOADING_SUB_TYPE_SOUND_MENU			= 19;
 	//
 	private static int Loading_Max_Progress;
 	private static int Loading_Cur_Progress;
@@ -39,13 +40,14 @@ public class Loading {
 		{
 			LOADING_SUB_TYPE_LOGO,
 //			LOADING_SUB_TYPE_WALPAPER,
-			LOADING_SUB_TYPE_FONT
+//			LOADING_SUB_TYPE_FONT
 		};
 	private static final int LOADING_TYPE_MAIN_MENU_LIST_ITEM[] =
 		{
 			LOADING_SUB_TYPE_MAIN_MENU_INTERFACE,
 			LOADING_SUB_TYPE_MAIN_MENU_BUTTON,
-			LOADING_SUB_TYPE_FONT
+			LOADING_SUB_TYPE_FONT,
+			LOADING_SUB_TYPE_SOUND_MENU
 		};
 	//dwi
 	private static final int LOADING_TYPE_MAIN_MENU_2_LIST_ITEM[] =
@@ -156,7 +158,7 @@ public class Loading {
 				Game.loadFont();
 				break;
 			case LOADING_SUB_TYPE_LOADING_INTERFACE:
-				Game.loadLogo();
+				Game.loadLoadingBg();
 				break;
 			case LOADING_SUB_TYPE_MC:
 				Game.loadMC();
@@ -187,6 +189,9 @@ public class Loading {
 			case LOADING_SUB_TYPE_SELECT_MC_BACKGROUND:
 				break;
 			case LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER:
+				break;
+			case LOADING_SUB_TYPE_SOUND_MENU:
+				Game.loadSoundMenu();
 				break;
 		}
 	}

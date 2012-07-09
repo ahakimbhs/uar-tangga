@@ -42,7 +42,7 @@ public class Scene_Credits extends State_MainMenu{
 			Loading.setLoading(Loading.LOADING_TYPE_MAIN_MENU);
 			break;
 		case STATE_END:
-			float x = (320 - Game.font[1].getTexture().getWidth()) / 2; 
+			float x = (320 - Game.font[1].getTexture().getWidth()) / 2;
 			mText = new Text(x, 10, Game.font[1], "Credit");
 			mScene.attachChild(mText);
 			break;

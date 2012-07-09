@@ -28,6 +28,10 @@ import org.anddev.andengine.util.modifier.ease.EaseBackOut;
 import org.anddev.andengine.util.modifier.ease.EaseLinear;
 import org.anddev.andengine.util.modifier.ease.EaseStrongIn;
 
+import android.content.Intent;
+import android.util.Log;
+import android.view.KeyEvent;
+
 import com.amikomgamedev.ulartangga.Config;
 import com.amikomgamedev.ulartangga.Data;
 import com.amikomgamedev.ulartangga.Define;
@@ -43,8 +47,7 @@ public class State_Gameplay extends 	BaseGameActivity
 							implements 	IUpdateHandler,
 										IScrollDetectorListener,
 										IOnSceneTouchListener,
-										Define,
-										Game_Level_Handler
+										Define
 {
 	
 	private static final int STATE_GAME_START		= 0;
@@ -56,7 +59,7 @@ public class State_Gameplay extends 	BaseGameActivity
 	private static final int STATE_GAME_UNLOADING	= 6;
 	private static int State_Game_Current			= STATE_GAME_START;
 	
-	private static int Player_Max = 4;
+	private static int Player_Max = 3;
 	public static int Player_Cur = Player_Max - 1;
 
 	private static int Map = -1;
@@ -97,7 +100,7 @@ public class State_Gameplay extends 	BaseGameActivity
 		sData.setCharPlayer1(CARACTER_1);
 		sData.setCharPlayer2(CARACTER_2);
 		sData.setCharPlayer3(CARACTER_3);
-		sData.setCharPlayer4(CARACTER_4);
+//		sData.setCharPlayer4(CARACTER_4);
 		
 		Map = sData.getSelectMap();
 	}
@@ -150,17 +153,19 @@ public class State_Gameplay extends 	BaseGameActivity
 				}
 				else
 				{
-//					Game.spr_Img_Logo.registerEntityModifier(new FadeOutModifier(1f));
-//					if(timer(1))
+					Game.spr_Img_Logo.registerEntityModifier(new FadeOutModifier(1f));
+					if(timer(1))
 						switchState(STATE_GAME_INGAME);
 				}
 				break;
 			case STATE_GAME_INGAME:
 				if(mc != null)
 				{
+					mc[Player_Cur].updateMove();
+					
 					if(mc[Player_Cur].isMoving())
 					{
-						mc[Player_Cur].updateMove();
+						mc[Player_Cur].cekMove();
 						Entity_Camera.autoMoveCamera(Player_Cur);
 						playerName.setText(PLAYER_NAME[Player_Cur] + " Is Moving");
 					}
@@ -255,21 +260,24 @@ public class State_Gameplay extends 	BaseGameActivity
 		switch(State_Game_Current)
 		{
 			case STATE_GAME_START:
-				scene.setBackground(new ColorBackground(0, 0, 0));
 				
-				Loading.setLoading(Loading.LOADING_TYPE_GAMEPLAY_OPEN);
-				break;
-			case STATE_GAME_LOADING:
-				scene.detachChildren();
 				scene.setBackground(new ColorBackground(1, 1, 1));
-//				scene.attachChild(Game.spr_Img_Logo);
-
-//				Game.spr_Img_Logo.registerEntityModifier(new FadeInModifier(1f));
+				Loading.setLoading(Loading.LOADING_TYPE_GAMEPLAY_OPEN);
+				
+				break;
+				
+			case STATE_GAME_LOADING:
+				
+				scene.attachChild(Game.spr_Img_Loading);
+				Game.spr_Img_Logo.registerEntityModifier(new FadeInModifier(1f));
 				
 				Loading.setLoading(Loading.LOADING_TYPE_GAMEPLAY, Map);
+				
 				break;
+				
 			case STATE_GAME_INGAME:
-				Game.msc_Gameplay.play();
+				
+				Game.bgm_Gameplay.play();
 				
 				scene.detachChildren();
 				scene.setBackground(new ColorBackground(0, 0, 0));
@@ -286,12 +294,12 @@ public class State_Gameplay extends 	BaseGameActivity
 				mc[0] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer1()]);
 				mc[1] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer2()]);
 				mc[2] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer3()]);
-				mc[3] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer4()]);
+//				mc[3] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer4()]);
 
 				scene.attachChild(Game.spr_MC[0]);
 				scene.attachChild(Game.spr_MC[1]);
 				scene.attachChild(Game.spr_MC[2]);
-				scene.attachChild(Game.spr_MC[3]);
+//				scene.attachChild(Game.spr_MC[3]);
 				Sprite spr_Img_Botton_Dice = new Sprite(Game.dicePosX, Game.dicePosY, Game.reg_Img_Button_Dice)
 				{
 					public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
@@ -323,7 +331,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				valueDice = new ChangeableText(280, 1, Game.font[Data.FONT_SIZE_BIG], "", 1);
 				playerName = new ChangeableText(5, Config.GAME_SCREEN_HEIGHT - 20, Game.font[Data.FONT_SIZE_SMALL], "", 30);
 				
-				for(int i = 0; i < Game.spr_Icon_MC.length; i++)
+				for(int i = 0; i < Player_Max; i++)
 				{
 					Game.hud.attachChild(Game.spr_Icon_MC[i]);
 					curPosition[i] = new ChangeableText(posX, 20, Game.font[Data.FONT_SIZE_SMALL], "1", 3);
@@ -349,26 +357,19 @@ public class State_Gameplay extends 	BaseGameActivity
 	private void switchPlayer()
 	{
 		if(Player_Max == Player_Cur + 1)
-		{
 			Player_Cur = PLAYER_1;
-		}
 		else
-		{
 			Player_Cur++;
-		}
 	}
 	
 	private int nextPlayer()
 	{
 		int nextPlayer;
 		if(Player_Max == Player_Cur + 1)
-		{
 			nextPlayer = PLAYER_1;
-		}
 		else
-		{
 			nextPlayer = Player_Cur + 1;
-		}
+		
 		return nextPlayer;
 	}
 	
@@ -383,4 +384,16 @@ public class State_Gameplay extends 	BaseGameActivity
 		
 		return false;
 	}
+	
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) 
+	{
+		if(keyCode == KeyEvent.KEYCODE_BACK)
+		{
+			startActivity(new Intent(State_Gameplay.this, State_MainMenu.class));
+			finish();
+		}
+		return super.onKeyUp(keyCode, event);
+	}
+	
 }
