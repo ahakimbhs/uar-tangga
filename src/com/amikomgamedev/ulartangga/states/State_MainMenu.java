@@ -1,13 +1,8 @@
 package com.amikomgamedev.ulartangga.states;
 
-import java.util.Timer;
-
-import javax.security.auth.PrivateCredentialPermission;
-
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.handler.IUpdateHandler;
-import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
@@ -21,16 +16,10 @@ import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
-import org.anddev.andengine.util.Debug;
 
-import android.R.bool;
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.Menu;
 
 import com.amikomgamedev.ulartangga.Config;
-import com.amikomgamedev.ulartangga.Define;
 import com.amikomgamedev.ulartangga.Game;
 import com.amikomgamedev.ulartangga.Loading;
 import com.amikomgamedev.ulartangga.Utils;
@@ -129,7 +118,7 @@ public class State_MainMenu extends BaseGameActivity
 				};
 				spr_Img_Btn_Credit.setPosition(
 						Utils.getRatioW(border), 
-						Utils.getRatioH((int) (Config.GAME_SCREEN_HEIGHT - spr_Img_Btn_Credit.getHeight() - border)));
+						Config.GAME_SCREEN_HEIGHT - spr_Img_Btn_Credit.getHeight() - border);
 				mScene.registerTouchArea(spr_Img_Btn_Credit);
 				
 				Sprite spr_Img_Btn_Option = new Sprite(210, 360,
@@ -145,8 +134,8 @@ public class State_MainMenu extends BaseGameActivity
 					}
 				};
 				spr_Img_Btn_Option.setPosition(
-						Utils.getRatioW((int) (Config.GAME_SCREEN_WIDTH - spr_Img_Btn_Option.getWidth() - border)), 
-						Utils.getRatioH((int) (Config.GAME_SCREEN_HEIGHT - spr_Img_Btn_Option.getHeight() - border)));
+						Config.GAME_SCREEN_WIDTH - spr_Img_Btn_Option.getWidth() - Utils.getRatioW(border), 
+						Config.GAME_SCREEN_HEIGHT - spr_Img_Btn_Option.getHeight() - Utils.getRatioW(border));
 				mScene.registerTouchArea(spr_Img_Btn_Option);
 				
 				mScene.attachChild(spr_Img_Btn_Option);

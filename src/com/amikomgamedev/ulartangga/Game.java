@@ -109,7 +109,6 @@ public class Game implements Data,
 	public static int dicePosX;
 	public static int dicePosY;
 	
-	
 	public static void appInit()
 	{
 		switch(Config.GAME_RES_USE)
@@ -154,9 +153,9 @@ public class Game implements Data,
 				Utils.getRatioH(147), 
 				reg_Img_Logo);
 		
-		float centerX = (Config.GAME_SCREEN_WIDTH	- spr_Img_Logo.getWidth()) / 2;
-		float centerY = (Config.GAME_SCREEN_HEIGHT 	- spr_Img_Logo.getHeight()) / 2;
-		spr_Img_Logo.setPosition(centerX, centerY);
+		spr_Img_Logo.setPosition(
+				(Config.GAME_SCREEN_WIDTH	- spr_Img_Logo.getWidth()) / 2, 
+				(Config.GAME_SCREEN_HEIGHT 	- spr_Img_Logo.getHeight()) / 2);
 	}
 	
 	public static void loadLoadingBg()
@@ -169,9 +168,9 @@ public class Game implements Data,
 		loadTexture(tex_Img_Loading);
 		
 		spr_Img_Loading = new Sprite(
-				0, 0, 
-				Utils.getRatioW(Config.GAME_SCREEN_WIDTH), 
-				Utils.getRatioH(Config.GAME_SCREEN_HEIGHT), 
+				0, 0,
+				Config.GAME_SCREEN_WIDTH,
+				Config.GAME_SCREEN_HEIGHT,
 				reg_Img_Loading);
 	}
 	
@@ -191,7 +190,8 @@ public class Game implements Data,
 			tex_Font[i] = new BitmapTextureAtlas(256, 256, 
 					TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 			font[i] = FontFactory.createFromAsset(tex_Font[i], activity, 
-					FONT_FILE_LOCATION,	FONT_SIZE[i], true, Color.BLACK);
+					FONT_FILE_LOCATION,	Utils.getRatioH(FONT_SIZE[i]),
+					true, Color.BLACK);
 			
 			activity.getEngine().getFontManager().loadFont(font[i]);
 			loadTexture(tex_Font[i]);
@@ -201,16 +201,16 @@ public class Game implements Data,
 	public static void loadGameMap(int pMap)
 	{
 		map = pMap;
-		tex_Img_Map = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		
+		tex_Img_Map = new BitmapTextureAtlas(
+				1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 		reg_Img_Map = BitmapTextureAtlasTextureRegionFactory.
 				createFromAsset(tex_Img_Map, activity, IMG_INGAME_BACKGROUND_MAP[map], 0, 0);
+		
 		loadTexture(tex_Img_Map);
-
-		float posX = 0;
-		float posY = Config.GAME_SCREEN_HEIGHT - reg_Img_Map.getHeight() - reg_Img_Informasi_Footer.getHeight();
 		
 		spr_Img_Map = new Sprite(
-				posX, posY, 
+				0, 0, 
 				Utils.getRatioW(MAP_WIDTH), 
 				Utils.getRatioH(MAP_HEIGHT), 
 				reg_Img_Map);
@@ -238,13 +238,6 @@ public class Game implements Data,
 					Utils.getRatioW(60), 
 					Utils.getRatioH(60), 
 					reg_MC[i]);
-			
-			float posX = 0;
-			float posY = Config.GAME_SCREEN_HEIGHT - GAME_MAP_CELL_HEIGHT + 
-					((GAME_MAP_CELL_HEIGHT - spr_MC[i].getHeight()) / 2) 
-					- reg_Img_Informasi_Footer.getHeight();
-			
-			spr_MC[i].setPosition(posX, posY);
 		}
 	}
 	
@@ -254,7 +247,7 @@ public class Game implements Data,
 		reg_Icon_MC = new TextureRegion[SPR_ICON_MC[map].length];
 		spr_Icon_MC = new Sprite[SPR_ICON_MC[map].length];
 
-		int posX = 5;
+		float posX = 5;
 		
 		for(int i = 0; i < SPR_ICON_MC[map].length; i++)
 		{
@@ -266,9 +259,15 @@ public class Game implements Data,
 			
 			loadTexture(tex_Icon_MC[i]);
 			
-			int posY = (reg_Img_Informasi_Header.getHeight() - reg_Icon_MC[i].getHeight()) / 2;
+			spr_Icon_MC[i] = new Sprite(
+					0, 0,
+					Utils.getRatioW(32), 
+					Utils.getRatioH(32),
+					reg_Icon_MC[i]);
 			
-			spr_Icon_MC[i] = new Sprite(posX, posY, reg_Icon_MC[i]);
+			float posY = (spr_Img_Informasi_Header.getHeight() - spr_Icon_MC[i].getHeight()) / 2;
+			
+			spr_Icon_MC[i].setPosition(posX, i);
 
 			posX += GAME_MAP_CELL_WIDTH;
 		}
@@ -299,13 +298,20 @@ public class Game implements Data,
 				createFromAsset(tex_Img_Informasi, activity, IMG_INGAME_HEADER, 0, 20);
 		loadTexture(tex_Img_Informasi);
 		
-		float posX = 0;
-		float posY = Config.GAME_SCREEN_HEIGHT - reg_Img_Informasi_Footer.getHeight();
-		spr_Img_Informasi_Footer = new Sprite(posX, posY, reg_Img_Informasi_Footer);
+		spr_Img_Informasi_Footer = new Sprite(
+				0, 0, 
+				Config.GAME_SCREEN_WIDTH, 
+				Utils.getRatioH(20), 
+				reg_Img_Informasi_Footer);
+		spr_Img_Informasi_Header = new Sprite(
+				0, 0, 
+				Config.GAME_SCREEN_WIDTH, 
+				Utils.getRatioH(40), 
+				reg_Img_Informasi_Header);
 		
-		posX = 0;
-		posY = 0;
-		spr_Img_Informasi_Header = new Sprite(posX, posY, reg_Img_Informasi_Header);
+		float posY = State_Gameplay.camera.getMaxY() - spr_Img_Informasi_Footer.getHeight();
+		spr_Img_Informasi_Footer.setPosition(0, posY);
+		
 	}
 	
 	public static void loadSelectMapBg()
@@ -362,8 +368,8 @@ public class Game implements Data,
 		loadTexture(tex_Img_Back_Menu);
 		spr_Img_Back_Menu = new Sprite(
 				0, 0, 
-				Utils.getRatioW(Config.GAME_SCREEN_WIDTH),
-				Utils.getRatioH(Config.GAME_SCREEN_HEIGHT),
+				Config.GAME_SCREEN_WIDTH,
+				Config.GAME_SCREEN_HEIGHT,
 				reg_Img_Back_Menu);
 	}
 	
@@ -382,7 +388,7 @@ public class Game implements Data,
 				reg_Img_Title_Menu);
 		
 		spr_Img_Title_Menu.setPosition(
-				Utils.getRatioW((int) ((Config.GAME_SCREEN_WIDTH - spr_Img_Title_Menu.getWidth()) / 2)), 
+				(Config.GAME_SCREEN_WIDTH - spr_Img_Title_Menu.getWidth()) / 2, 
 				Utils.getRatioH(50));
 		
 	}

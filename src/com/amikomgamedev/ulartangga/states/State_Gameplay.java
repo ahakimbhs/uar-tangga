@@ -6,7 +6,6 @@ import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.anddev.andengine.entity.IEntity;
 import org.anddev.andengine.entity.modifier.FadeInModifier;
 import org.anddev.andengine.entity.modifier.FadeOutModifier;
 import org.anddev.andengine.entity.scene.Scene;
@@ -21,15 +20,8 @@ import org.anddev.andengine.input.touch.detector.ScrollDetector;
 import org.anddev.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.anddev.andengine.input.touch.detector.SurfaceScrollDetector;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
-import org.anddev.andengine.util.Debug;
-import org.anddev.andengine.util.modifier.IModifier;
-import org.anddev.andengine.util.modifier.ease.EaseBackIn;
-import org.anddev.andengine.util.modifier.ease.EaseBackOut;
-import org.anddev.andengine.util.modifier.ease.EaseLinear;
-import org.anddev.andengine.util.modifier.ease.EaseStrongIn;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import com.amikomgamedev.ulartangga.Config;
@@ -41,7 +33,6 @@ import com.amikomgamedev.ulartangga.Utils;
 import com.amikomgamedev.ulartangga.serverData;
 import com.amikomgamedev.ulartangga.entity.Entity_Camera;
 import com.amikomgamedev.ulartangga.entity.Entity_Mc;
-import com.amikomgamedev.ulartangga.gamelevel.Game_Level_Handler;
 
 public class State_Gameplay extends 	BaseGameActivity
 							implements 	IUpdateHandler,
@@ -69,7 +60,8 @@ public class State_Gameplay extends 	BaseGameActivity
 	public static Camera camera;
 	public static Scene scene;
 	public static Entity_Mc[] mc;
-	private static SurfaceScrollDetector mScrollDetector;
+	private SurfaceScrollDetector mScrollDetector;
+	private Entity_Camera cam;
 	
 	private static ChangeableText valueDice;
 	private static ChangeableText playerName;
@@ -137,36 +129,47 @@ public class State_Gameplay extends 	BaseGameActivity
 		switch(State_Game_Current)
 		{
 			case STATE_GAME_START:
+				
 				if(Loading.isLoading())
-				{
 					Loading.updateLoading();
-				}
 				else
-				{
 					switchState(STATE_GAME_LOADING);
-				}
+				
 				break;
+				
 			case STATE_GAME_LOADING:
+				
 				if(Loading.isLoading())
-				{
 					Loading.updateLoading();
-				}
 				else
 				{
-					Game.spr_Img_Logo.registerEntityModifier(new FadeOutModifier(1f));
-					if(timer(1))
+					Game.spr_Img_Loading.registerEntityModifier(new FadeOutModifier(1f));
+					if(timer(0.5f))
 						switchState(STATE_GAME_INGAME);
 				}
+				
 				break;
+				
 			case STATE_GAME_INGAME:
+				
+				cam.backCameraToMap();
+				
 				if(mc != null)
 				{
-					mc[Player_Cur].updateMove();
+					for(int i = 0; i < Player_Max; i++)
+					{
+						curPosition[i].setText("" +mc[i].Posisi_Mc_Current);
+						mc[i].updateMove();
+					}
 					
 					if(mc[Player_Cur].isMoving())
 					{
 						mc[Player_Cur].cekMove();
-						Entity_Camera.autoMoveCamera(Player_Cur);
+
+						cam.autoMoveCamera(
+								mc[Player_Cur],
+								Define.GAME_MAP_CELL_WIDTH);
+						
 						playerName.setText(PLAYER_NAME[Player_Cur] + " Is Moving");
 					}
 					else
@@ -174,7 +177,6 @@ public class State_Gameplay extends 	BaseGameActivity
 						mc[Player_Cur].stop();
 						moveCamera = true;
 
-						Utils.setRandomValue();
 						valueDice.setText(""+Utils.getRandomValuie());
 						playerName.setText(PLAYER_NAME[nextPlayer()] + " Move");
 						
@@ -185,8 +187,11 @@ public class State_Gameplay extends 	BaseGameActivity
 							{
 								if(mc[Player_Cur].Posisi_Mc_Current == mc[i].Posisi_Mc_Current && Player_Cur != i)
 								{
-									mc[i].throwToStart(mc[i].getDistance());
-									Entity_Camera.autoMoveCamera(i);
+									mc[i].throwToStart(mc[Player_Cur].getDistance());
+//									Entity_Camera.autoMoveCamera(i);
+									cam.autoMoveCamera(
+											mc[i],
+											Utils.getRatioW(((camera.getWidth() - mc[i].getAnimatedSprite().getWidth()) / 2)));
 									playerName.setText(PLAYER_NAME[i] + " Back To Start");
 								}
 							}
@@ -198,7 +203,11 @@ public class State_Gameplay extends 	BaseGameActivity
 							if(mc[Player_Cur].Posisi_Mc_Current == SNAKE_N_LADDER[Map][CELL_LADDER_START][i])
 							{
 								mc[Player_Cur].moveSnakeOrLadder(SNAKE_N_LADDER[Map][CELL_LADDER_START][i], SNAKE_N_LADDER[Map][CELL_LADDER_END][i]);
-								Entity_Camera.autoMoveCamera(Player_Cur);
+
+//								Entity_Camera.autoMoveCamera(Player_Cur);
+								cam.autoMoveCamera(
+										mc[Player_Cur],
+										50);
 								playerName.setText(PLAYER_NAME[Player_Cur] + " Get Ladder");
 							}
 						}
@@ -209,7 +218,11 @@ public class State_Gameplay extends 	BaseGameActivity
 							if(mc[Player_Cur].Posisi_Mc_Current == SNAKE_N_LADDER[Map][CELL_SNAKE_START][i])
 							{
 								mc[Player_Cur].moveSnakeOrLadder(SNAKE_N_LADDER[Map][CELL_SNAKE_START][i], SNAKE_N_LADDER[Map][CELL_SNAKE_END][i]);
-								Entity_Camera.autoMoveCamera(Player_Cur);
+
+//								Entity_Camera.autoMoveCamera(Player_Cur);
+								cam.autoMoveCamera(
+										mc[Player_Cur],
+										50);
 								playerName.setText(PLAYER_NAME[Player_Cur] + " Get Snake");
 							}
 						}
@@ -220,7 +233,6 @@ public class State_Gameplay extends 	BaseGameActivity
 							if(timer(2))
 							{
 								switchPlayer();
-								Utils.setRandomValue();
 								mc[Player_Cur].setMove(Utils.getRandomValuie());
 							}
 						}
@@ -250,7 +262,7 @@ public class State_Gameplay extends 	BaseGameActivity
 	{
 		if(moveCamera)
 		{
-			Entity_Camera.moveCamera(pDistanceX, pDistanceY);
+			cam.moveCamera(-pDistanceX, -pDistanceY);
 		}
 	}
 	
@@ -269,7 +281,7 @@ public class State_Gameplay extends 	BaseGameActivity
 			case STATE_GAME_LOADING:
 				
 				scene.attachChild(Game.spr_Img_Loading);
-				Game.spr_Img_Logo.registerEntityModifier(new FadeInModifier(1f));
+				Game.spr_Img_Loading.registerEntityModifier(new FadeInModifier(0.5f));
 				
 				Loading.setLoading(Loading.LOADING_TYPE_GAMEPLAY, Map);
 				
@@ -280,10 +292,15 @@ public class State_Gameplay extends 	BaseGameActivity
 				Game.bgm_Gameplay.play();
 				
 				scene.detachChildren();
-				scene.setBackground(new ColorBackground(0, 0, 0));
 				scene.attachChild(Game.spr_Img_Map);
 				
 				mc = new Entity_Mc[Player_Max];
+				cam = new Entity_Camera(
+						camera,
+						Game.spr_Img_Map.getX(), 
+						Game.spr_Img_Map.getX() + Game.spr_Img_Map.getWidth(),
+						Game.spr_Img_Map.getY() - Game.spr_Img_Informasi_Header.getHeight(), 
+						Game.spr_Img_Map.getY() + Game.spr_Img_Map.getHeight() + Game.spr_Img_Informasi_Footer.getHeight());
 /*
 				for(int i = 0; i < Player_Max; i++)
 				{
@@ -310,7 +327,6 @@ public class State_Gameplay extends 	BaseGameActivity
 							{
 								switchPlayer();
 								
-								Utils.setRandomValue();
 								int value = Utils.getRandomValuie();
 								
 								mc[Player_Cur].setMove(value);
@@ -326,15 +342,15 @@ public class State_Gameplay extends 	BaseGameActivity
 				Game.hud.attachChild(Game.spr_Img_Informasi_Header);
 				Game.hud.attachChild(spr_Img_Botton_Dice);
 				
-				int posX = 40;
+				float posX = Utils.getRatioW(40);
 				curPosition = new ChangeableText[Game.spr_Icon_MC.length];
 				valueDice = new ChangeableText(280, 1, Game.font[Data.FONT_SIZE_BIG], "", 1);
-				playerName = new ChangeableText(5, Config.GAME_SCREEN_HEIGHT - 20, Game.font[Data.FONT_SIZE_SMALL], "", 30);
+				playerName = new ChangeableText(5, Config.GAME_SCREEN_HEIGHT - Utils.getRatioH(20), Game.font[Data.FONT_SIZE_SMALL], "", 30);
 				
 				for(int i = 0; i < Player_Max; i++)
 				{
 					Game.hud.attachChild(Game.spr_Icon_MC[i]);
-					curPosition[i] = new ChangeableText(posX, 20, Game.font[Data.FONT_SIZE_SMALL], "1", 3);
+					curPosition[i] = new ChangeableText(posX, Utils.getRatioH(20), Game.font[Data.FONT_SIZE_SMALL], "1", 3);
 					Game.hud.attachChild(curPosition[i]);
 					posX+=70;
 				}

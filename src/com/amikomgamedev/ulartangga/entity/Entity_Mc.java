@@ -4,6 +4,8 @@ import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.util.Debug;
 
+import android.util.Log;
+
 import com.amikomgamedev.ulartangga.Config;
 import com.amikomgamedev.ulartangga.Data;
 import com.amikomgamedev.ulartangga.Define;
@@ -16,7 +18,7 @@ public class Entity_Mc implements Define
 	private AnimatedSprite mc_Spr;
 	private PhysicsHandler handler;
 
-	public int 	POSISI_MC_START = 1;
+	public int 	POSISI_MC_START = 0;
 	public int 	Posisi_Mc_Current;
 	private int Posisi_Mc_Current_Row;
 	private int Posisi_Mc_Max;
@@ -30,9 +32,9 @@ public class Entity_Mc implements Define
 
 	private int selisihBaris 	= 0;
 	private int selisihKolom	= 0;
-	private float sisiDepan		= 0;
-	private float sisiPanjang	= 0;
-	private float sisiMiring 	= 0;
+	private int sisiDepan		= 0;
+	private int sisiPanjang		= 0;
+	private int sisiMiring 		= 0;
 	
 	private int curState;
 	
@@ -40,11 +42,16 @@ public class Entity_Mc implements Define
 	{
 		mc_Spr 	= spr;
 		handler = new PhysicsHandler(mc_Spr);
+		
 		mc_Spr.registerUpdateHandler(handler);
+		mc_Spr.setPosition(
+				-mc_Spr.getWidth(), 
+//				MAP_HEIGHT - GAME_MAP_CELL_HEIGHT + Utils.getCellCenterY(mc_Spr));
+				Game.spr_Img_Map.getHeight() - mc_Spr.getHeight());
 
 		Posisi_Mc_Current		= POSISI_MC_START;
 		Posisi_Mc_Current_Row	= 1;
-		Posisi_Mc_Max			= 0;
+		Posisi_Mc_Max			= POSISI_MC_START;
 	}
 	
 	public void setMove(int valueDice)
@@ -61,6 +68,21 @@ public class Entity_Mc implements Define
 				true);
 	}
 	
+	public AnimatedSprite getAnimatedSprite()
+	{
+		return mc_Spr;
+	}
+	
+	public float getVelocityX()
+	{
+		return handler.getVelocityX();
+	}
+	
+	public float getVelocityY()
+	{
+		return handler.getVelocityY();
+	}
+	
 	public void cekMove()
 	{
 		// move right after finish
@@ -69,56 +91,66 @@ public class Entity_Mc implements Define
 			if(Posisi_Mc_Current % COLUMN_COUNT == 0)
 				Posisi_Mc_Current--;
 			
-			if(mc_Spr.getX() > 
-				(COLUMN_COUNT + 1 - Posisi_Mc_Current % COLUMN_COUNT) * GAME_MAP_CELL_WIDTH + Utils.getCellCenterX(mc_Spr))
+			if(mc_Spr.getX() 
+					> (COLUMN_COUNT + 1 - Posisi_Mc_Current % COLUMN_COUNT) 
+					* GAME_MAP_CELL_WIDTH + Utils.getCellCenterX(mc_Spr))
 			{
 				Posisi_Mc_Current--;
 			}
+			
 			curState = STATE_MOVE_RIGHT;
 		}
 		// move left or right
-		else if(Posisi_Mc_Current % COLUMN_COUNT != 0)
+		else if(Posisi_Mc_Current % COLUMN_COUNT != 0 || Posisi_Mc_Current == 0)
 		{
 			// move right
 			if(Posisi_Mc_Current_Row % 2 == 1)  					
 			{
-				if(mc_Spr.getX() > 
-				Posisi_Mc_Current % COLUMN_COUNT  * GAME_MAP_CELL_WIDTH	+ Utils.getCellCenterX(mc_Spr))
+				if(mc_Spr.getX() 
+						> Posisi_Mc_Current % COLUMN_COUNT 
+						* GAME_MAP_CELL_WIDTH 
+						+ Utils.getCellCenterX(mc_Spr))
 				{
 					Posisi_Mc_Current++;
 				}
+
 				curState = STATE_MOVE_RIGHT;
 			}
+			// move left
 			else
 			{
-				// move left
-				if(mc_Spr.getX() + mc_Spr.getWidth() < 
-				(COLUMN_COUNT - Posisi_Mc_Current % COLUMN_COUNT) * GAME_MAP_CELL_WIDTH)
-//				- Utils.getCellCenterX(spr_Mc))
+				if(mc_Spr.getX() + mc_Spr.getWidth() 
+						< (COLUMN_COUNT - Posisi_Mc_Current % COLUMN_COUNT)
+						* GAME_MAP_CELL_WIDTH 
+						- Utils.getCellCenterX(mc_Spr))
 				{
 					Posisi_Mc_Current++;
 				}
+				
 				curState = STATE_MOVE_LEFT;
 			}
-		} 
-		else if(Posisi_Mc_Current % COLUMN_COUNT == 0) 				// move up or back
+		}
+		// move up or back
+		else if(Posisi_Mc_Current % COLUMN_COUNT == 0)
 		{
-			if(Posisi_Mc_Current_Row == ROW_COUNT) 					// back
+			// back
+			if(Posisi_Mc_Current_Row == ROW_COUNT)
 			{
 				Posisi_Mc_Current_Row++;
-				Posisi_Mc_Max = ROW_COUNT * COLUMN_COUNT - Posisi_Mc_Max % ROW_COUNT;
-				Debug.d("max " +Posisi_Mc_Max);
+				Posisi_Mc_Max = ROW_COUNT * COLUMN_COUNT 
+						- Posisi_Mc_Max % ROW_COUNT;
 			}
-			else //move up
+			//move up
+			else
 			{
-				if(mc_Spr.getY() + mc_Spr.getHeight() < 
-						Config.GAME_SCREEN_HEIGHT - Posisi_Mc_Current_Row * 
-						GAME_MAP_CELL_HEIGHT - Game.reg_Img_Informasi_Footer.getHeight()
-						- Utils.getCellCenterY(mc_Spr))
+				if(mc_Spr.getY() + mc_Spr.getHeight() 
+						< Game.spr_Img_Map.getHeight() - 
+						Posisi_Mc_Current_Row * GAME_MAP_CELL_HEIGHT)
 				{
 					Posisi_Mc_Current++;
 					Posisi_Mc_Current_Row++;
 				}
+				
 				curState = STATE_MOVE_UP;
 			}
 		}
@@ -178,12 +210,12 @@ public class Entity_Mc implements Define
 	
 	public void stop() 
 	{
-		handler.setVelocity(0, 0);
-		if(Posisi_Mc_Current_Row > ROW_COUNT)
-		{
-			Posisi_Mc_Current_Row--;
-		}
 		curState = STATE_IDLE;
+		
+		handler.setVelocity(0, 0);
+		
+		if(Posisi_Mc_Current_Row > ROW_COUNT)
+			Posisi_Mc_Current_Row--;
 	}
 	
 	public float getDistance()
@@ -204,12 +236,14 @@ public class Entity_Mc implements Define
 
 		if(second >= time)
 		{
-			float mcPosX	= Utils.getCellCenterX(mc_Spr);
-			float mcPosY	= Config.GAME_SCREEN_HEIGHT - GAME_MAP_CELL_HEIGHT + 
-					((GAME_MAP_CELL_HEIGHT - mc_Spr.getHeight()) / 2) - Game.reg_Img_Informasi_Footer.getHeight();
-			mc_Spr.setPosition(mcPosX, mcPosY);
+			mc_Spr.setPosition(
+					-mc_Spr.getWidth(), 
+//					MAP_HEIGHT - GAME_MAP_CELL_HEIGHT + Utils.getCellCenterY(mc_Spr));
+					Game.spr_Img_Map.getHeight() - mc_Spr.getHeight());
+			
 			stop();
 			Posisi_Mc_Current		= POSISI_MC_START;
+			Posisi_Mc_Max			= POSISI_MC_START;
 			Posisi_Mc_Current_Row	= 1;
 			second					= 0;
 		}
@@ -231,28 +265,34 @@ public class Entity_Mc implements Define
 				{
 					if(selisihBaris % 2 == 0) 												// selisih baris genap
 					{
-						selisihKolom = posisiTanggaAkhir  % COLUMN_COUNT - posisiTanggaAwal  % COLUMN_COUNT;
+						selisihKolom = posisiTanggaAkhir  % COLUMN_COUNT 
+								- posisiTanggaAwal  % COLUMN_COUNT;
 					}
 					else 																	// selisih baris ganjil
 					{
-						selisihKolom = (COLUMN_COUNT + 1 - posisiTanggaAkhir  % COLUMN_COUNT) - posisiTanggaAwal  % COLUMN_COUNT;
+						selisihKolom = (COLUMN_COUNT + 1 - posisiTanggaAkhir  % COLUMN_COUNT) 
+								- posisiTanggaAwal  % COLUMN_COUNT;
 					}
 				}
 				else 																		// arah jalan kiri ( <== )
 				{
 					if(selisihBaris % 2 == 0) 												// selisih baris genap
 					{
-						selisihKolom = posisiTanggaAwal  % COLUMN_COUNT - posisiTanggaAkhir  % COLUMN_COUNT;
+						selisihKolom = posisiTanggaAwal  % COLUMN_COUNT 
+								- posisiTanggaAkhir  % COLUMN_COUNT;
 					}
 					else 																	// selisih baris ganjil
 					{
-						selisihKolom = posisiTanggaAwal  % COLUMN_COUNT - (COLUMN_COUNT + 1 - posisiTanggaAkhir  % COLUMN_COUNT);
+						selisihKolom = posisiTanggaAwal  % COLUMN_COUNT 
+								- (COLUMN_COUNT + 1 - posisiTanggaAkhir  % COLUMN_COUNT);
 					}
 				}
 			}
 			else 																			// ujung dari tiap baris untuk posisi cell tanggal akhir
 			{
-				selisihBaris = posisiTanggaAkhir / COLUMN_COUNT - posisiTanggaAwal / COLUMN_COUNT - 1;
+				selisihBaris = posisiTanggaAkhir / COLUMN_COUNT 
+						- posisiTanggaAwal / COLUMN_COUNT - 1;
+				
 				if((posisiTanggaAwal / COLUMN_COUNT) % 2 == 0) 								// arah jalan kanan ( ==> )
 				{
 					if(selisihBaris % 2 == 0) 												// selisih baris genap
@@ -354,6 +394,7 @@ public class Entity_Mc implements Define
 		if(second >= time)
 		{
 			stop();
+			
 			if(posisiTanggaAkhir % COLUMN_COUNT == 0)
 				Posisi_Mc_Current_Row	= posisiTanggaAkhir / COLUMN_COUNT;
 			else

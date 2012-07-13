@@ -1,123 +1,186 @@
 package com.amikomgamedev.ulartangga.entity;
 
-import com.amikomgamedev.ulartangga.Config;
+import org.anddev.andengine.engine.camera.Camera;
+
 import com.amikomgamedev.ulartangga.Define;
-import com.amikomgamedev.ulartangga.Game;
 import com.amikomgamedev.ulartangga.states.State_Gameplay;
 
 public class Entity_Camera implements Define
 {
-	public static void moveCamera(float pDistanceX, float pDistanceY)
+	private Camera camera;
+	
+	private float	minX, 
+					maxX,
+					minY,
+					maxY;
+	
+	public Entity_Camera(
+			Camera camera,
+			float minX, 
+			float maxX,
+			float minY,
+			float maxY) 
 	{
-		if(pDistanceX > 0)
-		{
-			if(State_Gameplay.camera.getMinX() <= Game.spr_Img_Map.getX())
-			{
-				State_Gameplay.camera.setCenter(CAMERA_CENTER_MAP_X1, State_Gameplay.camera.getCenterY());
-			}
-			else
-			{
-				State_Gameplay.camera.offsetCenter(-pDistanceX, 0);
-			}
-		}
-
-		if(pDistanceX < 0)
-		{
-			if(State_Gameplay.camera.getMaxX() >= Game.spr_Img_Map.getWidth())
-			{
-				State_Gameplay.camera.setCenter(CAMERA_CENTER_MAP_X2, State_Gameplay.camera.getCenterY());
-			}
-			else
-			{
-				State_Gameplay.camera.offsetCenter(-pDistanceX, 0);
-			}
-		}
+		this.camera	= camera;
+		this.minX	= minX;
+		this.maxX	= maxX;
+		this.minY	= minY;
+		this.maxY	= maxY;
 		
-		if(pDistanceY > 0)
-		{
-			if(State_Gameplay.camera.getMinY() <= Config.GAME_SCREEN_HEIGHT - Game.spr_Img_Map.getHeight()
-					- Game.reg_Img_Informasi_Header.getHeight() - Game.reg_Img_Informasi_Footer.getHeight())
-			{
-				State_Gameplay.camera.setCenter(State_Gameplay.camera.getCenterX(), CAMERA_CENTER_MAP_Y1);
-			}
-			else
-			{
-				State_Gameplay.camera.offsetCenter(0, -pDistanceY);
-			}
-		}
-
-		if(pDistanceY < 0)
-		{
-			if(State_Gameplay.camera.getMaxY() >= Config.GAME_SCREEN_HEIGHT)
-			{
-				State_Gameplay.camera.setCenter(State_Gameplay.camera.getCenterX(), CAMERA_CENTER_MAP_Y2);
-			}
-			else
-			{
-				State_Gameplay.camera.offsetCenter(0, -pDistanceY);
-			}
-		}
+		camera.setCenter(
+				minX - camera.getWidth() / 2,
+				maxY + camera.getHeight() / 2);
 	}
 	
-	public static void autoMoveCamera(int player)
+	public void backCameraToMap()
 	{
-		State_Gameplay.moveCamera = false;
-		State_Gameplay.curPosition[player].setText("" +State_Gameplay.mc[player].Posisi_Mc_Current);
+		if(camera.getMinX() < minX)
+			camera.setCenter(
+					minX + camera.getWidth() / 2, 
+					camera.getCenterY());
 		
-		if(Game.spr_MC[player].getX() - GAME_MAP_CELL_WIDTH <= Game.spr_Img_Map.getX())
-		{
-			State_Gameplay.camera.setCenter(CAMERA_CENTER_MAP_X1, State_Gameplay.camera.getCenterY());
-		}
-		else if(Game.spr_MC[player].getX() - GAME_MAP_CELL_WIDTH <= State_Gameplay.camera.getMinX())
-		{
-		
-			State_Gameplay.camera.setCenter(Game.spr_MC[player].getX() - GAME_MAP_CELL_WIDTH + 
-					CAMERA_CENTER_X, 
-					State_Gameplay.camera.getCenterY());
-		}
-		else if(Game.spr_MC[player].getX() + Game.spr_MC[player].getWidth() + GAME_MAP_CELL_WIDTH >= 
-				Game.spr_Img_Map.getX() + Game.spr_Img_Map.getWidth())
-		{
-			State_Gameplay.camera.setCenter(CAMERA_CENTER_MAP_X2, State_Gameplay.camera.getCenterY());
-		}
-		else if(Game.spr_MC[player].getX() + Game.spr_MC[player].getWidth() + GAME_MAP_CELL_WIDTH >= 
-				State_Gameplay.camera.getMaxX())
-		{
-		
-			State_Gameplay.camera.setCenter(Game.spr_MC[player].getX() + Game.spr_MC[player].getWidth() + 
-					GAME_MAP_CELL_WIDTH - CAMERA_CENTER_X, 
-					State_Gameplay.camera.getCenterY());
-		}
+		if(camera.getMaxX() > maxX)
+			camera.setCenter(
+					maxX - camera.getWidth() / 2, 
+					camera.getCenterY());
 
-		if(Game.spr_MC[player].getY() - GAME_MAP_CELL_HEIGHT <= Config.GAME_SCREEN_HEIGHT - Game.spr_Img_Map.getHeight()
-				- Game.reg_Img_Informasi_Header.getHeight() - Game.reg_Img_Informasi_Footer.getHeight())
-		{
-			State_Gameplay.camera.setCenter(State_Gameplay.camera.getCenterX(), CAMERA_CENTER_MAP_Y1);
-		}
-		else if(Game.spr_MC[player].getY() - GAME_MAP_CELL_HEIGHT <= State_Gameplay.camera.getMinY() + Game.reg_Img_Informasi_Header.getHeight())
-		{
+		if(camera.getMinY() < minY)
+			camera.setCenter(
+					camera.getCenterX(),
+					minY + camera.getHeight() / 2);
+
+		if(camera.getMaxY() > maxY)
+			camera.setCenter(
+					camera.getCenterX(), 
+					maxY - camera.getHeight() / 2);
+	}
+	
+	public void moveCamera(
+			float disX, 
+			float disY)
+	{
+		if(camera.getMinX() > minX
+				&& disX < 0)
+			camera.offsetCenter(disX, 0);
 		
-			State_Gameplay.camera.setCenter
-			(
-					State_Gameplay.camera.getCenterX(),
-					Game.spr_MC[player].getY() - GAME_MAP_CELL_HEIGHT + CAMERA_CENTER_Y - Game.reg_Img_Informasi_Header.getHeight()
-			);
-		}
-		else if(Game.spr_MC[player].getY() + Game.spr_MC[player].getHeight() + GAME_MAP_CELL_HEIGHT >= 
-				Game.spr_Img_Map.getY() + Game.spr_Img_Map.getHeight())
-		{
-			State_Gameplay.camera.setCenter(State_Gameplay.camera.getCenterX(), CAMERA_CENTER_MAP_Y2);
-		}
-		else if(Game.spr_MC[player].getY() + Game.spr_MC[player].getHeight() + GAME_MAP_CELL_HEIGHT >= 
-				State_Gameplay.camera.getMaxY())
-		{
+		if(camera.getMaxX() < maxX
+				&& disX > 0)
+			camera.offsetCenter(disX, 0);
 		
-			State_Gameplay.camera.setCenter
-			(
-					State_Gameplay.camera.getCenterX(),
-					Game.spr_MC[player].getY() + Game.spr_MC[player].getHeight() + 
-					GAME_MAP_CELL_HEIGHT - CAMERA_CENTER_Y + Game.spr_Img_Informasi_Footer.getHeight()
-			);
-		}
+		if(camera.getMinY() > minY
+				&& disY < 0)
+			camera.offsetCenter(0, disY);
+		
+		if(camera.getMaxY() < maxY
+				&& disY > 0)
+			camera.offsetCenter(0, disY);
+	}
+	
+	public void autoMoveCamera(
+			Entity_Mc mc,
+			float dis)
+	{
+		float mcX1 	= mc.getAnimatedSprite().getX();
+		float mcX2	= mc.getAnimatedSprite().getX() + mc.getAnimatedSprite().getWidth();
+		float velX	= mc.getVelocityX();
+		
+		float mcY1 	= mc.getAnimatedSprite().getY();
+		float mcY2	= mc.getAnimatedSprite().getY() + mc.getAnimatedSprite().getHeight();
+		float velY	= mc.getVelocityY();
+		
+		// codingan masih jelek
+		// fungsi pada method backCameraToMap()
+		// muncul lagi disini
+		
+		if(velX > 0)
+			if(mcX1 - dis < minX)
+				camera.setCenter(
+						minX + camera.getWidth() / 2, 
+						camera.getCenterY());
+//			else if(camera.getMaxX() >= maxX && mcX1 > camera.getMinX())
+			else if(mcX1 - dis + camera.getWidth() > maxX)
+				camera.setCenter(
+						maxX - camera.getWidth() / 2, 
+						camera.getCenterY());
+			else
+				camera.setCenter(
+						mcX1 - dis + camera.getWidth() / 2,
+						camera.getCenterY());
+		
+		if(velX < 0)
+			if(mcX2 + dis > maxX)
+				camera.setCenter(
+						maxX - camera.getWidth() / 2, 
+						camera.getCenterY());
+//			else if(camera.getMinX() <= minX && mcX2 < camera.getMaxX())
+			else if(mcX2 + dis - camera.getWidth() < minX)
+				camera.setCenter(
+						minX + camera.getWidth() / 2, 
+						camera.getCenterY());
+			else
+				camera.setCenter(
+						mcX2 + dis - camera.getWidth() / 2,
+						camera.getCenterY());
+		
+		if(velX != 0 && velY == 0)
+			if(mcY2 + dis > maxY)
+				camera.setCenter(
+						camera.getCenterX(), 
+						maxY - camera.getHeight() / 2);
+			else if(mcY2 + dis - camera.getHeight() < minY)
+				camera.setCenter(
+						camera.getCenterX(),
+						minY + camera.getHeight() / 2);
+			else
+				camera.setCenter(
+						camera.getCenterX(),
+						mcY2 + dis - camera.getHeight() / 2);
+		
+		
+		// PR copas pengecekan atas ke pengecekan bawah
+		if(velY > 0)
+			if(mcY1 - dis < minY)
+				camera.setCenter(
+						camera.getCenterX(),
+						minY + camera.getHeight() / 2);
+			else if(mcY1 - dis + camera.getHeight() > maxY)
+				camera.setCenter(
+						camera.getCenterX(),
+						maxY - camera.getHeight() / 2);
+			else
+				camera.setCenter(
+						camera.getCenterX(),
+						mcY1 - dis + camera.getHeight() / 2);
+		
+		if(velY < 0)
+			if(mcY2 + dis > maxY)
+				camera.setCenter(
+						camera.getCenterX(),
+						maxY - camera.getHeight() / 2);
+			else if(mcY2 + dis - camera.getHeight() < minY)
+				camera.setCenter(
+						camera.getCenterX(),
+						minY + camera.getHeight() / 2);
+			else
+				camera.setCenter(
+						camera.getCenterX(),
+						mcY2 + dis - camera.getHeight() / 2);
+		
+		if(velX == 0 && velY != 0)
+			if(mcX2 + dis > maxX)
+				camera.setCenter( 
+						maxX - camera.getWidth() / 2,
+						camera.getCenterY());
+			else if(mcX2 + dis - camera.getWidth() < minX)
+				camera.setCenter(
+						minX + camera.getWidth() / 2,
+						camera.getCenterY());
+			else
+				camera.setCenter(
+						mcX2 + dis - camera.getWidth() / 2,
+						camera.getCenterY());
+		
+		State_Gameplay.moveCamera = false;
+		
 	}
 }

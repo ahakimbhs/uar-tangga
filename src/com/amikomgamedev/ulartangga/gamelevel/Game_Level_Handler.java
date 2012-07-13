@@ -1,9 +1,8 @@
 package com.amikomgamedev.ulartangga.gamelevel;
 
-public class Game_Level_Handler
+import com.amikomgamedev.ulartangga.Define;
+
+public class Game_Level_Handler implements Define
 {
-	public static void setMove()
-	{
-		
-	}
+	
 }
