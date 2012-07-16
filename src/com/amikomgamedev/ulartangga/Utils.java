@@ -5,6 +5,7 @@ import java.util.Random;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.input.touch.TouchEvent;
+import org.anddev.andengine.opengl.texture.TextureOptions;
 
 public class Utils
 {
@@ -53,5 +54,22 @@ public class Utils
 			bol = true;
 		
 		return bol;
+	}
+
+	public static void TRACE(String arg)
+	{
+//		if(Game_Config.DEBUG)
+		{
+			System.out.println(arg);
+		}
+	}
+	
+	public static TextureOptions getTextureOption()
+	{
+		return Config.USE_AA 
+				? TextureOptions.REPEATING_BILINEAR
+				: Config.GAME_RES_USE == Config.GAME_RES_MINI
+						? TextureOptions.DEFAULT
+						:TextureOptions.REPEATING_NEAREST;
 	}
 }

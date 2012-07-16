@@ -26,7 +26,8 @@ import com.amikomgamedev.ulartangga.states.State_Gameplay;
 public class Game implements Data,
 							 Define
 {
-	private static int map;
+	private static int map = -1;
+	private static int maxPlayer = -1;
 	
 	private static BaseGameActivity activity;
 
@@ -57,8 +58,8 @@ public class Game implements Data,
 	public static Sprite[]				spr_Icon_MC;
 	
 	private static BitmapTextureAtlas 	tex_Img_Button_Dice;
-	public static TextureRegion 		reg_Img_Button_Dice;
-	public static Sprite 				spr_Img_Botton_Dice;
+	public static TiledTextureRegion 	reg_Img_Button_Dice;
+	public static AnimatedSprite 		spr_Img_Botton_Dice;
 	
 	private static BitmapTextureAtlas 	tex_Img_Informasi;
 	public static TextureRegion 		reg_Img_Informasi_Footer,
@@ -81,6 +82,14 @@ public class Game implements Data,
 	private static BitmapTextureAtlas[]	tex_Img_Select_Mc_Icon_Mc;
 	private static TextureRegion[]		reg_Img_Select_Mc_Icon_Mc;
 	public static Sprite[]				spr_Img_Select_Mc_Icon_Mc;
+	
+	private static BitmapTextureAtlas 	tex_GameOver_Bg;
+	private static TextureRegion		reg_GameOver_Bg;
+	public static Sprite				spr_GameOver_Bg;
+	
+	private static BitmapTextureAtlas[] tex_GameOver_Mc;
+	private static TiledTextureRegion[]	reg_GameOver_Mc;
+	public static AnimatedSprite[]		spr_GameOver_Mc;
 	
 //	arief
 	private static BitmapTextureAtlas tex_Img_Back_Menu;
@@ -106,8 +115,8 @@ public class Game implements Data,
 	
 	public static HUD hud;
 
-	public static int dicePosX;
-	public static int dicePosY;
+	public static float dicePosX;
+	public static float dicePosY;
 	
 	public static void appInit()
 	{
@@ -131,6 +140,12 @@ public class Game implements Data,
 	public static void setContext(Context context)
 	{
 		activity = (BaseGameActivity)context;
+	}
+	
+	public static void setSetting(int map, int maxPlayer)
+	{
+		Game.map = map;
+		Game.maxPlayer = maxPlayer;
 	}
 	
 	private static void loadTexture(Texture texture)
@@ -203,7 +218,7 @@ public class Game implements Data,
 		map = pMap;
 		
 		tex_Img_Map = new BitmapTextureAtlas(
-				1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+				MAP_TEX_WIDTH, MAP_TEX_HEIGHT, Utils.getTextureOption());
 		reg_Img_Map = BitmapTextureAtlasTextureRegionFactory.
 				createFromAsset(tex_Img_Map, activity, IMG_INGAME_BACKGROUND_MAP[map], 0, 0);
 		
@@ -218,15 +233,15 @@ public class Game implements Data,
 	
 	public static void loadMC()
 	{
-		tex_MC = new BitmapTextureAtlas[SPR_MC[map].length];
-		reg_MC = new TiledTextureRegion[SPR_MC[map].length];
-		spr_MC = new AnimatedSprite[SPR_MC[map].length];
+		tex_MC = new BitmapTextureAtlas[maxPlayer];
+		reg_MC = new TiledTextureRegion[maxPlayer];
+		spr_MC = new AnimatedSprite[maxPlayer];
 		
-		for(int i = 0; i < SPR_MC[map].length; i++)
+		for(int i = 0; i < maxPlayer; i++)
 		{
 			tex_MC[i] = new BitmapTextureAtlas(
 					TREG_SPR_MC_WIDTH, TREG_SPR_MC_HEIGHT, 
-					TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+					Utils.getTextureOption());
 			reg_MC[i] = BitmapTextureAtlasTextureRegionFactory.
 					createTiledFromAsset(tex_MC[i], activity, SPR_MC[map][i], 
 					0, 0, Data.SPR_MC_COLUMN, Data.SPR_MC_ROW);
@@ -235,8 +250,8 @@ public class Game implements Data,
 			
 			spr_MC[i] = new AnimatedSprite(
 					0, 0, 
-					Utils.getRatioW(60), 
-					Utils.getRatioH(60), 
+					Utils.getRatioW(MC_WIDTH), 
+					Utils.getRatioH(MC_HEIGHT), 
 					reg_MC[i]);
 		}
 	}
@@ -251,8 +266,8 @@ public class Game implements Data,
 		
 		for(int i = 0; i < SPR_ICON_MC[map].length; i++)
 		{
-			tex_Icon_MC[i] = new BitmapTextureAtlas(32, 32, 
-					TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+			tex_Icon_MC[i] = new BitmapTextureAtlas(MC_ICON_TEX_WIDTH, MC_ICON_TEX_HEIGHT, 
+					Utils.getTextureOption());
 			reg_Icon_MC[i] = BitmapTextureAtlasTextureRegionFactory.
 					createFromAsset(tex_Icon_MC[i], activity, 
 					SPR_ICON_MC[map][i], 0, 0);
@@ -261,13 +276,15 @@ public class Game implements Data,
 			
 			spr_Icon_MC[i] = new Sprite(
 					0, 0,
-					Utils.getRatioW(32), 
-					Utils.getRatioH(32),
+					Utils.getRatioW(MC_ICON_WIDTH), 
+					Utils.getRatioH(MC_ICON_HEIGHT),
 					reg_Icon_MC[i]);
+
+//			float posY = (spr_Img_Informasi_Header.getHeight() - spr_Icon_MC[i].getHeight()) / 2;
+			float posY = spr_Img_Informasi_Footer.getY() + 
+					(spr_Img_Informasi_Footer.getHeight() - spr_Icon_MC[i].getHeight()) / 2;
 			
-			float posY = (spr_Img_Informasi_Header.getHeight() - spr_Icon_MC[i].getHeight()) / 2;
-			
-			spr_Icon_MC[i].setPosition(posX, i);
+			spr_Icon_MC[i].setPosition(posX, posY);
 
 			posX += GAME_MAP_CELL_WIDTH;
 		}
@@ -275,23 +292,23 @@ public class Game implements Data,
 	
 	public static void loadGameButton()
 	{
-		tex_Img_Button_Dice = new BitmapTextureAtlas(64, 64, 
-				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		tex_Img_Button_Dice = new BitmapTextureAtlas(512, 256, 
+				Utils.getTextureOption());
 		reg_Img_Button_Dice = BitmapTextureAtlasTextureRegionFactory.
-				createFromAsset(tex_Img_Button_Dice, activity, 
-				IMG_INGAME_BOTTON_DICE, 0, 0);
+				createTiledFromAsset(tex_Img_Button_Dice, activity, 
+				IMG_INGAME_BUTTON_SLOT_MACHINE, 0, 0, SPR_BOTTON_DICE_COLUMN,SPR_BOTTON_DICE_ROW);
 		
 		loadTexture(tex_Img_Button_Dice);
 
 		dicePosX = Config.GAME_SCREEN_WIDTH - 20 - reg_Img_Button_Dice.getWidth();
-		dicePosY = Config.GAME_SCREEN_HEIGHT - 20 - 
-				reg_Img_Button_Dice.getHeight() - reg_Img_Informasi_Footer.getHeight();
+		dicePosY = spr_Img_Informasi_Footer.getY() - 20 - 
+				reg_Img_Button_Dice.getHeight();
 	}
 	
 	public static void loadGameInformasi()
 	{
 		tex_Img_Informasi = new BitmapTextureAtlas(512, 128, 
-				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+				Utils.getTextureOption());
 		reg_Img_Informasi_Footer = BitmapTextureAtlasTextureRegionFactory.
 				createFromAsset(tex_Img_Informasi, activity, IMG_INGAME_FOOTER, 0, 0);
 		reg_Img_Informasi_Header = BitmapTextureAtlasTextureRegionFactory.
@@ -301,25 +318,17 @@ public class Game implements Data,
 		spr_Img_Informasi_Footer = new Sprite(
 				0, 0, 
 				Config.GAME_SCREEN_WIDTH, 
-				Utils.getRatioH(20), 
+				Utils.getRatioH(40), 
 				reg_Img_Informasi_Footer);
 		spr_Img_Informasi_Header = new Sprite(
 				0, 0, 
 				Config.GAME_SCREEN_WIDTH, 
-				Utils.getRatioH(40), 
+				Utils.getRatioH(20), 
 				reg_Img_Informasi_Header);
 		
 		float posY = State_Gameplay.camera.getMaxY() - spr_Img_Informasi_Footer.getHeight();
 		spr_Img_Informasi_Footer.setPosition(0, posY);
 		
-	}
-	
-	public static void loadSelectMapBg()
-	{
-		tex_Img_Select_Map_Bg = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-		reg_Img_Select_Map_Bg = BitmapTextureAtlasTextureRegionFactory.createFromAsset(tex_Img_Select_Map_Bg, activity, Data.IMG_INMENU_SELECT_MAP_BG, 0, 0);
-		loadTexture(tex_Img_Select_Map_Bg);
-		spr_Img_Select_Map_Bg = new Sprite(0, 0, Config.GAME_SCREEN_WIDTH, Config.GAME_SCREEN_HEIGHT, reg_Img_Select_Map_Bg);
 	}
 	
 	public static void loadSoundGamePlay()
@@ -342,21 +351,104 @@ public class Game implements Data,
 		}
 	}
 	
+	public static void loadSelectMapBg()
+	{
+		tex_Img_Select_Map_Bg = new BitmapTextureAtlas(1024, 1024, Utils.getTextureOption());
+		reg_Img_Select_Map_Bg = BitmapTextureAtlasTextureRegionFactory.createFromAsset(tex_Img_Select_Map_Bg, activity, Data.IMG_INMENU_SELECT_MAP_BG, 0, 0);
+		loadTexture(tex_Img_Select_Map_Bg);
+		spr_Img_Select_Map_Bg = new Sprite(0, 0, Config.GAME_SCREEN_WIDTH, Config.GAME_SCREEN_HEIGHT, reg_Img_Select_Map_Bg);
+	}
+	
 	public static void loadSelectMapIconMap()
 	{
-//		tex_Img_Select_Map_Icon_Map = new BitmapTextureAtlas[IMG_INGAME_BACKGROUND_MAP.length];
-//		reg_Img_Select_Map_Icon_Map = new TextureRegion[IMG_INGAME_BACKGROUND_MAP.length];
-//		spr_Img_Select_Map_Icon_Map = new Sprite[IMG_INGAME_BACKGROUND_MAP.length];
+		tex_Img_Select_Map_Icon_Map = new BitmapTextureAtlas[IMG_INGAME_BACKGROUND_MAP.length];
+		reg_Img_Select_Map_Icon_Map = new TextureRegion[IMG_INGAME_BACKGROUND_MAP.length];
+		spr_Img_Select_Map_Icon_Map = new Sprite[IMG_INGAME_BACKGROUND_MAP.length];
+		
+		float pX = 70;
+		for(int i = 0; i < IMG_INGAME_BACKGROUND_MAP.length; i++)
+		{
+			tex_Img_Select_Map_Icon_Map[i] = new BitmapTextureAtlas(
+					MAP_TEX_WIDTH, MAP_TEX_HEIGHT, 
+					Utils.getTextureOption());
+			reg_Img_Select_Map_Icon_Map[i] = BitmapTextureAtlasTextureRegionFactory.
+					createFromAsset(tex_Img_Select_Map_Icon_Map[i], activity, IMG_INGAME_BACKGROUND_MAP[i], 
+					0, 0);
+			
+			loadTexture(tex_Img_Select_Map_Icon_Map[i]);
+			
+			spr_Img_Select_Map_Icon_Map[i] = new Sprite(
+					0, 0, 
+					Utils.getRatioW(MAP_ICON_WIDTH), 
+					Utils.getRatioH(MAP_ICON_HEIGHT), 
+					reg_Img_Select_Map_Icon_Map[i]);
+			
+			spr_Img_Select_Map_Icon_Map[i].setPosition(pX, 200);
+			pX = pX + spr_Img_Select_Map_Icon_Map[i].getWidth() + 70;
+		}
 	}
 	
 	public static void loadSelectMcBg()
 	{
-		
+		tex_Img_Select_Mc_Bg = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		reg_Img_Select_Mc_Bg = BitmapTextureAtlasTextureRegionFactory.createFromAsset(tex_Img_Select_Mc_Bg, activity, Data.IMG_INMENU_SELECT_MC_BG, 0, 0);
+		loadTexture(tex_Img_Select_Mc_Bg);
+		spr_Img_Select_Mc_Bg = new Sprite(0, 0, Config.GAME_SCREEN_WIDTH >> 1, Config.GAME_SCREEN_HEIGHT >> 1, reg_Img_Select_Mc_Bg);
 	}
 	
 	public static void loadSelectMcIcon()
 	{
 //		tex_Img_Select_Mc_Icon_Mc = new BitmapTextureAtlas[SPR_ICON_MC[map].length];
+	}
+	
+	public static void loadGameOverBackground()
+	{
+		tex_GameOver_Bg = new BitmapTextureAtlas(
+				GAMEOVER_BG_TEX_WIDTH, 
+				GAMEOVER_BG_TEX_HEIGHT, 
+				Utils.getTextureOption());
+		
+		reg_GameOver_Bg = BitmapTextureAtlasTextureRegionFactory.
+				createFromAsset(tex_GameOver_Bg, activity, 
+				Data.IMG_GAMEOVER_BG, 0, 0);
+		
+		loadTexture(tex_GameOver_Bg);
+		
+		spr_GameOver_Bg = new Sprite(
+				0, 0, 
+				Utils.getRatioW(GAMEOVER_BG_WIDTH), 
+				Utils.getRatioH(GAMEOVER_BG_HEIGHT), 
+				reg_GameOver_Bg);
+		
+		spr_GameOver_Bg.setPosition(
+				(Config.GAME_SCREEN_WIDTH - spr_GameOver_Bg.getWidth()) / 2,
+				(Config.GAME_SCREEN_HEIGHT - spr_GameOver_Bg.getHeight()) / 2);
+		
+	}
+	
+	public static void loadGameOverMC()
+	{
+		tex_GameOver_Mc = new BitmapTextureAtlas[maxPlayer];
+		reg_GameOver_Mc = new TiledTextureRegion[maxPlayer];
+		spr_GameOver_Mc = new AnimatedSprite[maxPlayer];
+		
+		for(int i = 0; i < maxPlayer; i++)
+		{
+			tex_GameOver_Mc[i] = new BitmapTextureAtlas(
+					GAMEOVER_MC_TEX_WIDTH, GAMEOVER_MC_TEX_HEIGHT, 
+					Utils.getTextureOption());
+			reg_GameOver_Mc[i] = BitmapTextureAtlasTextureRegionFactory.
+					createTiledFromAsset(tex_GameOver_Mc[i], activity, GAMEOVER_MC[map][i], 
+					0, 0, GAMEOVER_MC_COLUMN, GAMEOVER_MC_ROW);
+			
+			loadTexture(tex_GameOver_Mc[i]);
+			
+			spr_GameOver_Mc[i] = new AnimatedSprite(
+					0, 0, 
+					Utils.getRatioW(GAMEOVER_MC_WIDTH), 
+					Utils.getRatioH(GAMEOVER_MC_HEIGHT), 
+					reg_GameOver_Mc[i]);
+		}
 	}
 	
 	//arief

@@ -29,7 +29,10 @@ public class Loading {
 	private static final int LOADING_SUB_TYPE_SELECT_MAP_ICON_MAP		= 16;
 	private static final int LOADING_SUB_TYPE_SELECT_MC_BACKGROUND		= 17;
 	private static final int LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER	= 18;
-	private static final int LOADING_SUB_TYPE_SOUND_MENU			= 19;
+	private static final int LOADING_SUB_TYPE_SOUND_MENU				= 19;
+	private static final int LOADING_SUB_TYPE_GAME_OVER					= 20;
+	private static final int LOADING_SUB_TYPE_GAME_OVER_MC				= 21;
+	
 	//
 	private static int Loading_Max_Progress;
 	private static int Loading_Cur_Progress;
@@ -75,7 +78,9 @@ public class Loading {
 			LOADING_SUB_TYPE_HUD,
 			LOADING_SUB_TYPE_FONT,
 			LOADING_SUB_TYPE_GAME_BUTTON,
-			LOADING_SUB_TYPE_SOUND_GAMEPLAY
+			LOADING_SUB_TYPE_SOUND_GAMEPLAY,
+			LOADING_SUB_TYPE_GAME_OVER,
+			LOADING_SUB_TYPE_GAME_OVER_MC
 		};
 	
 	public static void setLoading(int loadingType)
@@ -186,13 +191,22 @@ public class Loading {
 				Game.loadSelectMapBg();
 				break;
 			case LOADING_SUB_TYPE_SELECT_MAP_ICON_MAP:
+				Game.loadSelectMapIconMap();
 				break;
 			case LOADING_SUB_TYPE_SELECT_MC_BACKGROUND:
+				Game.loadSelectMcBg();
 				break;
 			case LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER:
 				break;
 			case LOADING_SUB_TYPE_SOUND_MENU:
 				Game.loadSoundMenu();
+				break;
+			case LOADING_SUB_TYPE_GAME_OVER:
+				Game.loadGameOverBackground();
+				break;
+			case LOADING_SUB_TYPE_GAME_OVER_MC:
+				Utils.TRACE("gameov");
+				Game.loadGameOverMC();
 				break;
 		}
 	}

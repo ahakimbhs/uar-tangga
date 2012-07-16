@@ -17,7 +17,12 @@ import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
+import org.anddev.andengine.util.DialogUtils;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.view.KeyEvent;
 
 import com.amikomgamedev.ulartangga.Config;
@@ -29,10 +34,10 @@ public class State_Menu_Main extends BaseGameActivity
 							 implements	IUpdateHandler,
 							 			IOnSceneTouchListener
 {
-	private static float CurrentSecond = 0;
-	private static float Second;
+	private float CurrentSecond = 0;
+	private float Second;
 	
-	public static Camera	camera;
+	public Camera camera;
 	protected Scene scene;
 	private MenuScene menuScene;
 	private Text mText, mText2;
@@ -40,19 +45,21 @@ public class State_Menu_Main extends BaseGameActivity
 	private BaseGameActivity activity = this;
 	
 	private final int STATE_MENU_START		= 0;
-	private final int STATE_MENU_LOADING		= 1;
+	private final int STATE_MENU_LOADING	= 1;
 	private final int STATE_MENU_INMENU		= 2;
 	private final int STATE_MENU_SELECT_MAP	= 3;
 	private final int STATE_MENU_SELECT_MC	= 4;
-	private int State_Game_Current	= STATE_MENU_START;
+	private int State_Game_Current	= -1;
 	
 	private int[] State_Level 	= new int[4];
 	private int State_Level_Cur	= 0;
 	
 	Sprite spr_Img_Btn_Play;
+	private AlertDialog dialog;
 
 	public Engine onLoadEngine() 
 	{
+		Utils.TRACE("Engine");
 		Game.appInit();
 		
 		camera = new Camera(0, 0, Config.GAME_SCREEN_WIDTH, Config.GAME_SCREEN_HEIGHT);
@@ -84,7 +91,7 @@ public class State_Menu_Main extends BaseGameActivity
 		return scene;
 	}
 
-	public void onLoadComplete() {}
+	public void onLoadComplete() {Utils.TRACE("Complete");}
 
 	public void onUpdate(float pSecondsElapsed) 
 	{
@@ -248,7 +255,22 @@ public class State_Menu_Main extends BaseGameActivity
 		if(keyCode == KeyEvent.KEYCODE_BACK)
 		{
 			if(State_Level[State_Level_Cur] == STATE_MENU_INMENU)
-				finish();
+			{
+				dialog = new AlertDialog.Builder(this)
+				.setMessage("Are You Sure?")
+				.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				})
+				.setPositiveButton("no", new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				}).create();
+			}
 			else
 			{
 				State_Level_Cur--;

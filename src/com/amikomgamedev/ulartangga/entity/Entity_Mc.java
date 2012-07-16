@@ -2,11 +2,7 @@ package com.amikomgamedev.ulartangga.entity;
 
 import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
-import org.anddev.andengine.util.Debug;
 
-import android.util.Log;
-
-import com.amikomgamedev.ulartangga.Config;
 import com.amikomgamedev.ulartangga.Data;
 import com.amikomgamedev.ulartangga.Define;
 import com.amikomgamedev.ulartangga.Game;
@@ -46,7 +42,6 @@ public class Entity_Mc implements Define
 		mc_Spr.registerUpdateHandler(handler);
 		mc_Spr.setPosition(
 				-mc_Spr.getWidth(), 
-//				MAP_HEIGHT - GAME_MAP_CELL_HEIGHT + Utils.getCellCenterY(mc_Spr));
 				Game.spr_Img_Map.getHeight() - mc_Spr.getHeight());
 
 		Posisi_Mc_Current		= POSISI_MC_START;
@@ -82,14 +77,17 @@ public class Entity_Mc implements Define
 	{
 		return handler.getVelocityY();
 	}
-	
-	public void cekMove()
+		
+ 	public void cekMove()
 	{
 		// move right after finish
 		if(Posisi_Mc_Current_Row > ROW_COUNT)						
 		{
-			if(Posisi_Mc_Current % COLUMN_COUNT == 0)
+			if(Posisi_Mc_Current % COLUMN_COUNT == 0
+					&& mc_Spr.getX() > GAME_MAP_CELL_WIDTH + Utils.getCellCenterX(mc_Spr))
+			{
 				Posisi_Mc_Current--;
+			}
 			
 			if(mc_Spr.getX() 
 					> (COLUMN_COUNT + 1 - Posisi_Mc_Current % COLUMN_COUNT) 
@@ -98,7 +96,11 @@ public class Entity_Mc implements Define
 				Posisi_Mc_Current--;
 			}
 			
-			curState = STATE_MOVE_RIGHT;
+			if(curState != STATE_MOVE_RIGHT)
+			{
+				mc_Spr.stopAnimation();
+				curState = STATE_MOVE_RIGHT;
+			}
 		}
 		// move left or right
 		else if(Posisi_Mc_Current % COLUMN_COUNT != 0 || Posisi_Mc_Current == 0)
@@ -113,8 +115,12 @@ public class Entity_Mc implements Define
 				{
 					Posisi_Mc_Current++;
 				}
-
-				curState = STATE_MOVE_RIGHT;
+				
+				if(curState != STATE_MOVE_RIGHT)
+				{
+					mc_Spr.stopAnimation();
+					curState = STATE_MOVE_RIGHT;
+				}
 			}
 			// move left
 			else
@@ -126,8 +132,11 @@ public class Entity_Mc implements Define
 				{
 					Posisi_Mc_Current++;
 				}
-				
-				curState = STATE_MOVE_LEFT;
+				if(curState != STATE_MOVE_LEFT)
+				{
+					mc_Spr.stopAnimation();
+					curState = STATE_MOVE_LEFT;
+				}
 			}
 		}
 		// move up or back
@@ -150,8 +159,11 @@ public class Entity_Mc implements Define
 					Posisi_Mc_Current++;
 					Posisi_Mc_Current_Row++;
 				}
-				
-				curState = STATE_MOVE_UP;
+				if(curState != STATE_MOVE_UP)
+				{
+					mc_Spr.stopAnimation();
+					curState = STATE_MOVE_UP;
+				}
 			}
 		}
 	}

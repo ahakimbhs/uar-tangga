@@ -69,6 +69,7 @@ public class State_MainMenu extends BaseGameActivity
 
 		
 	}
+	
 	public Scene sceneMenu () {
 		mScene = new Scene();
 		switchState(STATE_GAME_START);
@@ -213,6 +214,7 @@ public class State_MainMenu extends BaseGameActivity
 	}
 
 	public void reset() {}
+	
 	private static boolean timer(float maxSecond)
 	{
 		CurrentSecond +=Second;

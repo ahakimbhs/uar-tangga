@@ -43,9 +43,6 @@ public interface Define
 			"Player Four"
 		};
 
-	public static final int MAP_HEIGHT 	= 700;
-	public static final int MAP_WIDTH 	= 700;
-
 	public static float GAME_RATIO_SCREEN_WIDTH = 320;
 	public static float GAME_RATIO_SCREEN_HEIGHT = 480;
 	
@@ -63,8 +60,8 @@ public interface Define
 				{7,	17,	25,	35,	22,	45,	9,	68,	80}			// posisi Ular Ahir
 			},
 			{// klasik
-				{38,58, 9},		// posisi Tangga Awal
-				{78,78,	52},		// posisi Tangga Akhir
+				{9,	38,	58},		// posisi Tangga Awal
+				{52,78,	78},		// posisi Tangga Akhir
 				{41,99,	84,	16,	86,	70},		// posisi Ular Awal
 				{20,19,	24,	5,	66, 10}			// posisi Ular Ahir
 			},
