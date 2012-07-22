@@ -3,8 +3,6 @@ package com.amikomgamedev.ulartangga.entity;
 import org.anddev.andengine.engine.camera.Camera;
 
 import com.amikomgamedev.ulartangga.Define;
-import com.amikomgamedev.ulartangga.Game;
-import com.amikomgamedev.ulartangga.Utils;
 import com.amikomgamedev.ulartangga.states.State_Gameplay;
 
 public class Entity_Camera implements Define
@@ -34,6 +32,14 @@ public class Entity_Camera implements Define
 		this.maxX	= maxX;
 		this.minY	= minY;
 		this.maxY	= maxY;
+		
+		camera.setCenter(
+				minX - camera.getWidth() / 2,
+				maxY + camera.getHeight() / 2);
+	}
+	
+	public void restart()
+	{
 		
 		camera.setCenter(
 				minX - camera.getWidth() / 2,
@@ -172,7 +178,7 @@ public class Entity_Camera implements Define
 		
 		if(velX == 0 && velY != 0)
 			if(mcX2 + disX > maxX)
-				camera.setCenter( 
+				camera.setCenter(
 						maxX - camera.getWidth() / 2,
 						camera.getCenterY());
 			else if(mcX2 + disX - camera.getWidth() < minX)

@@ -86,4 +86,10 @@ public interface Define
 	public static final int STATE_SNAKE			= 4;
 	public static final int STATE_LEADDER		= 5;
 	public static final int STATE_MOVE_TO_START	= 6;
+
+	public final int SCENE_GAME_LOADING		= 0;
+	public final int SCENE_GAME_INGAME		= 1;
+	public final int SCENE_GAME_PAUSE		= 2;
+	public final int SCENE_GAME_OVER		= 3;
+	public final int SCENE_GAME_COUNT		= 4;
 }

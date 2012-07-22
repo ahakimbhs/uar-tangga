@@ -1,8 +1,5 @@
 package com.amikomgamedev.ulartangga;
 
-import org.anddev.andengine.util.Debug;
-
-
 public class Loading {
 	public static final int LOADING_TYPE_APP_OPEN		= 0;
 	public static final int LOADING_TYPE_MAIN_MENU		= 1;
@@ -32,6 +29,7 @@ public class Loading {
 	private static final int LOADING_SUB_TYPE_SOUND_MENU				= 19;
 	private static final int LOADING_SUB_TYPE_GAME_OVER					= 20;
 	private static final int LOADING_SUB_TYPE_GAME_OVER_MC				= 21;
+	private static final int LOADING_SUB_TYPE_GAME_PAUSE				= 22;
 	
 	//
 	private static int Loading_Max_Progress;
@@ -80,7 +78,8 @@ public class Loading {
 			LOADING_SUB_TYPE_GAME_BUTTON,
 			LOADING_SUB_TYPE_SOUND_GAMEPLAY,
 			LOADING_SUB_TYPE_GAME_OVER,
-			LOADING_SUB_TYPE_GAME_OVER_MC
+			LOADING_SUB_TYPE_GAME_OVER_MC,
+			LOADING_SUB_TYPE_GAME_PAUSE
 		};
 	
 	public static void setLoading(int loadingType)
@@ -179,7 +178,6 @@ public class Loading {
 				Game.loadSoundGamePlay();
 				break;
 			case LOADING_SUB_TYPE_HUD:
-				Game.loadHud();
 				break;
 			case LOADING_SUB_TYPE_FIELD_INFORMASI:
 				Game.loadGameInformasi();
@@ -189,6 +187,8 @@ public class Loading {
 				break;
 			case LOADING_SUB_TYPE_SELECT_MAP_BACKGROUND:
 				Game.loadSelectMapBg();
+				Game.loadSelectMapBtn();
+				Game.loadSelectMapBgSelect();
 				break;
 			case LOADING_SUB_TYPE_SELECT_MAP_ICON_MAP:
 				Game.loadSelectMapIconMap();
@@ -203,10 +203,16 @@ public class Loading {
 				break;
 			case LOADING_SUB_TYPE_GAME_OVER:
 				Game.loadGameOverBackground();
+				Game.loadGameOverButton();
 				break;
 			case LOADING_SUB_TYPE_GAME_OVER_MC:
-				Utils.TRACE("gameov");
 				Game.loadGameOverMC();
+				break;
+			case LOADING_SUB_TYPE_GAME_PAUSE:
+				Game.loadGamePauseBackground();
+				Game.loadGamePauseText();
+				Game.loadGamePauseMc();
+				Game.loadGamePauseButton();
 				break;
 		}
 	}

@@ -26,11 +26,11 @@ public class Entity_Mc implements Define
 	private float velocityX;
 	private float velocityY;
 
-	private int selisihBaris 	= 0;
-	private int selisihKolom	= 0;
-	private int sisiDepan		= 0;
-	private int sisiPanjang		= 0;
-	private int sisiMiring 		= 0;
+	private float selisihBaris 	= 0;
+	private float selisihKolom	= 0;
+	private float sisiDepan		= 0;
+	private float sisiPanjang	= 0;
+	private float sisiMiring 	= 0;
 	
 	private int curState;
 	
@@ -40,6 +40,17 @@ public class Entity_Mc implements Define
 		handler = new PhysicsHandler(mc_Spr);
 		
 		mc_Spr.registerUpdateHandler(handler);
+		mc_Spr.setPosition(
+				-mc_Spr.getWidth(), 
+				Game.spr_Img_Map.getHeight() - mc_Spr.getHeight());
+
+		Posisi_Mc_Current		= POSISI_MC_START;
+		Posisi_Mc_Current_Row	= 1;
+		Posisi_Mc_Max			= POSISI_MC_START;
+	}
+	
+	public void restart()
+	{
 		mc_Spr.setPosition(
 				-mc_Spr.getWidth(), 
 				Game.spr_Img_Map.getHeight() - mc_Spr.getHeight());
@@ -244,16 +255,19 @@ public class Entity_Mc implements Define
 		gravitasi	= velocityX;
 		velocity	= (float) (velocityX / Math.cos(Math.toRadians(45)));
 		velocityY	= (float) (velocity * Math.sin(Math.toRadians(45))) - (gravitasi * second);
+		
+		Utils.TRACE("velocityX = " +velocityX+ ", velocityY" +velocityY);
 		handler.setVelocity(-velocityX, -velocityY);
 
 		if(second >= time)
 		{
+			stop();
+			
 			mc_Spr.setPosition(
 					-mc_Spr.getWidth(), 
 //					MAP_HEIGHT - GAME_MAP_CELL_HEIGHT + Utils.getCellCenterY(mc_Spr));
 					Game.spr_Img_Map.getHeight() - mc_Spr.getHeight());
 			
-			stop();
 			Posisi_Mc_Current		= POSISI_MC_START;
 			Posisi_Mc_Max			= POSISI_MC_START;
 			Posisi_Mc_Current_Row	= 1;
@@ -386,8 +400,8 @@ public class Entity_Mc implements Define
 		}
 
 		sisiDepan 	= selisihBaris * GAME_MAP_CELL_WIDTH;;
-		sisiPanjang	=  selisihKolom * GAME_MAP_CELL_WIDTH;
-		sisiMiring 	= (int) Math.sqrt(sisiDepan * sisiDepan + sisiPanjang * sisiPanjang);		
+		sisiPanjang	= selisihKolom * GAME_MAP_CELL_WIDTH;
+		sisiMiring 	= (float) Math.sqrt(sisiDepan * sisiDepan + sisiPanjang * sisiPanjang);		
 		second 		= second+State_Gameplay.Second;
 		int time	= 2;
 		velocityX	= sisiPanjang / time;
@@ -402,7 +416,7 @@ public class Entity_Mc implements Define
 			velocityY	= velocity * (sisiDepan / sisiMiring);
 		}
 		handler.setVelocity(velocityX, -velocityY);
-				
+		
 		if(second >= time)
 		{
 			stop();

@@ -2,6 +2,7 @@ package com.amikomgamedev.ulartangga;
 
 import java.util.Random;
 
+import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.input.touch.TouchEvent;
@@ -11,7 +12,12 @@ public class Utils
 {
 	public static int getRandomValuie()
 	{
-		return (int) (1 + 6 * new Random().nextFloat());
+		return getRandomValuie(1, 6);
+	}
+
+	public static int getRandomValuie(float min, float max)
+	{
+		return (int) (min + (max - 1 + min) * new Random().nextFloat());
 	}
 
 	public static float getCellCenterX(AnimatedSprite sprite)
@@ -35,19 +41,57 @@ public class Utils
 		return ((def/Define.GAME_RATIO_SCREEN_HEIGHT) 
 				* Config.GAME_SCREEN_HEIGHT);
 	}
-	
+
 	public static boolean isOnArea(
 			TouchEvent event,
 			Sprite sprite)
 	{
+		float minX = sprite.getX();
+		float maxX = sprite.getX() + sprite.getWidth();
+		float minY = sprite.getY();
+		float maxY = sprite.getY() + sprite.getHeight();
+		
+		return isOnArea(event, minX, maxX, minY, maxY);
+	}
+
+	public static boolean isOnArea(
+			TouchEvent event,
+			Camera camera,
+			Sprite spriteParrent,
+			Sprite sprite)
+	{
+		float minX = camera.getMinX() + spriteParrent.getX() + sprite.getX();
+		float maxX = camera.getMinX() + spriteParrent.getX() + sprite.getX() + sprite.getWidth();
+		float minY = camera.getMinY() + spriteParrent.getY() + sprite.getY();
+		float maxY = camera.getMinY() + spriteParrent.getY() + sprite.getY() + sprite.getHeight();
+		
+		return isOnArea(event, minX, maxX, minY, maxY);
+	}
+
+	public static boolean isOnArea(
+			TouchEvent event,
+			Camera camera,
+			Sprite sprite)
+	{
+		float minX = camera.getMinX() + sprite.getX();
+		float maxX = camera.getMinX() + sprite.getX() + sprite.getWidth();
+		float minY = camera.getMinY() + sprite.getY();
+		float maxY = camera.getMinY() + sprite.getY() + sprite.getHeight();
+		
+		return isOnArea(event, minX, maxX, minY, maxY);
+	}
+	
+	public static boolean isOnArea(
+			TouchEvent event,
+			float minX,
+			float maxX,
+			float minY,
+			float maxY)
+	{
 		boolean bol = false;
 
 		float posX = event.getX();
-		float minX = sprite.getX();
-		float maxX = sprite.getX() + sprite.getWidth();
 		float posY = event.getY();
-		float minY = sprite.getY();
-		float maxY = sprite.getY() + sprite.getHeight();
 		
 		if(posX > minX && posX < maxX
 				&& posY > minY && posY < maxY)
@@ -55,7 +99,7 @@ public class Utils
 		
 		return bol;
 	}
-
+	
 	public static void TRACE(String arg)
 	{
 //		if(Game_Config.DEBUG)
