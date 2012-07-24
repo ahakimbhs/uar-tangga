@@ -39,7 +39,7 @@ public class Game implements Data,
 						bgm_Gameplay;
 	
 	private static BitmapTextureAtlas	tex_Img_Logo;
-	private static TextureRegion 		reg_Img_Logo;
+	public static TextureRegion 		reg_Img_Logo;
 	public static Sprite 				spr_Img_Logo;
 	
 	private static BitmapTextureAtlas	tex_Img_Loading;

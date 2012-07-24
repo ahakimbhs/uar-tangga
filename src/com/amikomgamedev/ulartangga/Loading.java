@@ -30,8 +30,10 @@ public class Loading {
 	private static final int LOADING_SUB_TYPE_GAME_OVER					= 20;
 	private static final int LOADING_SUB_TYPE_GAME_OVER_MC				= 21;
 	private static final int LOADING_SUB_TYPE_GAME_PAUSE				= 22;
-	
 	//
+	
+	private static final int LOADING_SUB_TYPE_CREDIT_BACKGROUND			= 23; 
+	
 	private static int Loading_Max_Progress;
 	private static int Loading_Cur_Progress;
 	
@@ -60,7 +62,8 @@ public class Loading {
 			LOADING_SUB_TYPE_SELECT_MC_BACKGROUND,
 			LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER,
 			LOADING_SUB_TYPE_FONT,
-			LOADING_SUB_TYPE_SOUND_MENU
+			LOADING_SUB_TYPE_SOUND_MENU,
+			LOADING_SUB_TYPE_CREDIT_BACKGROUND
 		};
 	//
 	private static final int LOADING_TYPE_GAMEPLAY_OPEN_LIST_ITEM[] =
@@ -170,6 +173,12 @@ public class Loading {
 				break;
 			case LOADING_SUB_TYPE_MAP_BACKGROUND:
 				Game.loadGameMap(map);
+				break;
+			case LOADING_SUB_TYPE_CREDIT_BACKGROUND:
+//				Game.loadBackgroundMenu();
+				Game.loadLogo();
+//				Game.loadTitle();
+				Game.loadFont();	
 				break;
 			case LOADING_SUB_TYPE_GAME_BUTTON:
 				Game.loadGameButton();

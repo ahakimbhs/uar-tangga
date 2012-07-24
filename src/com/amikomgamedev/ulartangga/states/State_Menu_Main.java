@@ -20,6 +20,7 @@ import org.anddev.andengine.input.touch.detector.ScrollDetector;
 import org.anddev.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.anddev.andengine.input.touch.detector.SurfaceScrollDetector;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
+import org.anddev.andengine.util.Debug;
 
 import android.content.Intent;
 import android.view.KeyEvent;
@@ -53,13 +54,22 @@ public class State_Menu_Main extends BaseGameActivity
 	private final int STATE_MENU_INMENU		= 2;
 	private final int STATE_MENU_SELECT_MAP	= 3;
 	private final int STATE_MENU_SELECT_MC	= 4;
+	private final int STATE_MENU_SELECT_PLAYER = 5;
+	private final int STATE_MENU_CREDIT 	= 6;
+	private final int STATE_MENU_OPTION 	= 7;
+
 	private int State_Game_Current	= -1;
 	
 	private Sprite spr_Img_Btn_Play;
 	private Sprite spr_Img_Btn_Credit;
 	private Sprite spr_Img_Btn_Option;
 	
+	private Sprite spr_Img_Logo;
+	private Sprite spr_Img_Title;
+	
 	serverData sData = serverData.getInstance();
+	
+	private float y = 0;
 
 	public Engine onLoadEngine() 
 	{
@@ -125,6 +135,7 @@ public class State_Menu_Main extends BaseGameActivity
 						scene.detachChild(Game.spr_Img_Logo);
 						attachInMenu();
 						attachSelectMap();
+//						attachCredit();
 						switchState(STATE_MENU_INMENU);
 					}
 				}
@@ -157,7 +168,22 @@ public class State_Menu_Main extends BaseGameActivity
 				
 				
 				break;
+			case STATE_MENU_CREDIT:
+			
+				
+				Game.spr_Img_Title_Menu.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth()) /2, y);
+				Debug.d("Y = "+y);
+				y-=3;
+				
+//				y = y -pSecondsElapsed;
+				if(y < 0)
+				Game.spr_Img_Title_Menu.setPosition(Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth() /2,y);
+				
+				break;
+								
 		}
+		
+		
 	}
 
 	public void reset() {}
@@ -191,7 +217,8 @@ public class State_Menu_Main extends BaseGameActivity
 				{
 					Game.spr_Img_Select_Map_Icon_Map[i].setVisible(false);
 				}
-
+				Game.spr_Img_Logo.setVisible(false);
+				
 				break;
 				
 			case STATE_MENU_SELECT_MAP :
@@ -209,6 +236,16 @@ public class State_Menu_Main extends BaseGameActivity
 				break;
 				
 			case STATE_MENU_SELECT_MC :
+				
+				break;
+			case STATE_MENU_CREDIT:
+				
+				spr_Img_Btn_Play.setVisible(false);
+				spr_Img_Btn_Option.setVisible(false);
+				spr_Img_Btn_Credit.setVisible(false);
+				y = Config.GAME_SCREEN_HEIGHT;
+				Game.spr_Img_Title_Menu.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth()) /2, y);
+				
 				
 				break;
 		}
@@ -264,6 +301,33 @@ public class State_Menu_Main extends BaseGameActivity
 		Game.spr_Img_Select_Map_Bg.attachChild(Game.spr_Img_Select_Map_Btn_Back);
 	}
 	
+	private void attachCredit(){
+		int Margin = 20;
+		spr_Img_Logo = new Sprite(
+				0, 0, 
+				Utils.getRatioW(100),
+				Utils.getRatioH(50),
+				Game.reg_Img_Logo);
+		spr_Img_Title = new Sprite(
+				0, 0,
+				Utils.getRatioW(100),
+				Utils.getRatioW(50),
+				Game.reg_Img_Title_Menu);
+			
+		spr_Img_Logo.setPosition(
+				Config.GAME_SCREEN_WIDTH - Game.reg_Img_Logo.getWidth() / 2,
+				Margin
+				);
+		spr_Img_Title.setPosition(
+				Config.GAME_SCREEN_WIDTH - Game.reg_Img_Title_Menu.getWidth() / 2,
+				Margin
+				);
+//		scene.attachChild(Game.spr_Img_Back_Menu);
+		scene.attachChild(spr_Img_Title);
+		scene.attachChild(spr_Img_Logo);
+		
+	}
+	
 	private boolean timer(float maxSecond)
 	{
 		CurrentSecond +=Second;
@@ -310,6 +374,17 @@ public class State_Menu_Main extends BaseGameActivity
 			case STATE_MENU_SELECT_MC:
 				
 				break;
+			case STATE_MENU_CREDIT:
+				if(keyCode == KeyEvent.KEYCODE_BACK)
+				{	
+					
+					switchState(STATE_MENU_INMENU);
+					Game.spr_Img_Title_Menu.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth()) /2, 50);
+					spr_Img_Btn_Play.setVisible(true);
+					spr_Img_Btn_Option.setVisible(true);
+					spr_Img_Btn_Credit.setVisible(true);
+				}
+				break;
 		}
 		
 		return false;
@@ -331,9 +406,11 @@ public class State_Menu_Main extends BaseGameActivity
 			case STATE_MENU_INMENU:
 				
 				if(Utils.isOnArea(pSceneTouchEvent, spr_Img_Btn_Play)
-						&& pSceneTouchEvent.isActionUp())
+						&& pSceneTouchEvent.isActionUp()){
 					switchState(STATE_MENU_SELECT_MAP);
-				
+				}else if(Utils.isOnArea(pSceneTouchEvent, spr_Img_Btn_Credit)
+						&& pSceneTouchEvent.isActionUp())
+					switchState(STATE_MENU_CREDIT);
 				break;
 				
 			case STATE_MENU_SELECT_MAP:
@@ -369,6 +446,9 @@ public class State_Menu_Main extends BaseGameActivity
 				break;
 				
 			case STATE_MENU_SELECT_MC:
+				
+				break;
+			case STATE_MENU_CREDIT:
 				
 				break;
 		}
