@@ -5,7 +5,12 @@ public class Loading {
 	public static final int LOADING_TYPE_MAIN_MENU		= 1;
 	public static final int LOADING_TYPE_GAMEPLAY_OPEN	= 2;
 	public static final int LOADING_TYPE_GAMEPLAY		= 3;
-	public static final int LOADING_TYPE_MAIN_MENU_2	= 4; // dwi
+	// << dwi
+	public static final int LOADING_TYPE_MAIN_MENU_2		= 4;
+	public static final int LOADING_TYPE_MAIN_MENU_OPEN		= 5;
+	public static final int LOADING_TYPE_SELECT_MAP			= 6;
+	public static final int LOADING_TYPE_SELECT_MC			= 7;
+	// >>
 	public static int Loading_Type_Current				= LOADING_TYPE_APP_OPEN;
 
 	private static final int LOADING_SUB_TYPE_LOGO						= 0;
@@ -45,6 +50,10 @@ public class Loading {
 //			LOADING_SUB_TYPE_WALPAPER,
 //			LOADING_SUB_TYPE_FONT
 		};
+	private static final int LOADING_TYPE_MAIN_MENU_OPEN_LIST_ITEM[] =
+		{
+			LOADING_SUB_TYPE_LOADING_INTERFACE,
+		};
 	private static final int LOADING_TYPE_MAIN_MENU_LIST_ITEM[] =
 		{
 			LOADING_SUB_TYPE_MAIN_MENU_INTERFACE,
@@ -57,8 +66,20 @@ public class Loading {
 		{
 			LOADING_SUB_TYPE_MAIN_MENU_INTERFACE,
 			LOADING_SUB_TYPE_MAIN_MENU_BUTTON,
+//			LOADING_SUB_TYPE_SELECT_MAP_BACKGROUND,
+//			LOADING_SUB_TYPE_SELECT_MAP_ICON_MAP,
+//			LOADING_SUB_TYPE_SELECT_MC_BACKGROUND,
+//			LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER,
+			LOADING_SUB_TYPE_FONT,
+			LOADING_SUB_TYPE_SOUND_MENU
+		};
+	private static final int LOADING_TYPE_SELECT_MAP_LIST_ITEM[] =
+		{
 			LOADING_SUB_TYPE_SELECT_MAP_BACKGROUND,
 			LOADING_SUB_TYPE_SELECT_MAP_ICON_MAP,
+		};
+	private static final int LOADING_TYPE_SELECT_MC_LIST_ITEM[] =
+		{
 			LOADING_SUB_TYPE_SELECT_MC_BACKGROUND,
 			LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER,
 			LOADING_SUB_TYPE_FONT,
@@ -107,6 +128,15 @@ public class Loading {
 			case LOADING_TYPE_GAMEPLAY:
 				Loading_Max_Progress = LOADING_TYPE_GAMEPLAY_LIST_ITEM.length;
 				break;
+			case LOADING_TYPE_MAIN_MENU_OPEN:
+				Loading_Max_Progress = LOADING_TYPE_MAIN_MENU_OPEN_LIST_ITEM.length;
+				break;
+			case LOADING_TYPE_SELECT_MAP:
+				Loading_Max_Progress = LOADING_TYPE_SELECT_MAP_LIST_ITEM.length;
+				break;
+			case LOADING_TYPE_SELECT_MC:
+				Loading_Max_Progress = LOADING_TYPE_SELECT_MC_LIST_ITEM.length;
+				break;
 		}
 	}
 	
@@ -141,6 +171,15 @@ public class Loading {
 			case LOADING_TYPE_MAIN_MENU_2:
 				loadItem(LOADING_TYPE_MAIN_MENU_2_LIST_ITEM[Loading_Cur_Progress]);
 				break;
+			case LOADING_TYPE_MAIN_MENU_OPEN:
+				loadItem(LOADING_TYPE_MAIN_MENU_OPEN_LIST_ITEM[Loading_Cur_Progress]);
+				break;
+			case LOADING_TYPE_SELECT_MAP:
+				loadItem(LOADING_TYPE_SELECT_MAP_LIST_ITEM[Loading_Cur_Progress]);
+				break;
+			case LOADING_TYPE_SELECT_MC:
+				loadItem(LOADING_TYPE_SELECT_MC_LIST_ITEM[Loading_Cur_Progress]);
+				break;
 		}
 	}
 	
@@ -170,6 +209,7 @@ public class Loading {
 				break;
 			case LOADING_SUB_TYPE_MC:
 				Game.loadMC();
+				Game.loadSmoke();
 				break;
 			case LOADING_SUB_TYPE_MAP_BACKGROUND:
 				Game.loadGameMap(map);
@@ -204,6 +244,12 @@ public class Loading {
 				break;
 			case LOADING_SUB_TYPE_SELECT_MC_BACKGROUND:
 				Game.loadSelectMcBg();
+				Game.loadSelectMcIconBg();
+				Game.loadSelectMcIcon();
+				Game.loadSelectMcBtnDelete();
+				Game.loadSelectMcBtnType();
+				Game.loadSelectMcBtnAdd();
+				Game.loadSelectMcBtnArrow();
 				break;
 			case LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER:
 				break;

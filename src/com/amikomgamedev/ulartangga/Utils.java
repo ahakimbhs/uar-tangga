@@ -70,6 +70,32 @@ public class Utils
 
 	public static boolean isOnArea(
 			TouchEvent event,
+			Sprite spriteParrent,
+			Sprite sprite)
+	{
+		float minX = spriteParrent.getX() + sprite.getX();
+		float maxX = spriteParrent.getX() + sprite.getX() + sprite.getWidth();
+		float minY = spriteParrent.getY() + sprite.getY();
+		float maxY = spriteParrent.getY() + sprite.getY() + sprite.getHeight();
+		
+		return isOnArea(event, minX, maxX, minY, maxY);
+	}
+
+	public static boolean isOnArea(
+			TouchEvent event,
+			Sprite spriteParrent,
+			AnimatedSprite sprite)
+	{
+		float minX = spriteParrent.getX() + sprite.getX();
+		float maxX = spriteParrent.getX() + sprite.getX() + sprite.getWidth();
+		float minY = spriteParrent.getY() + sprite.getY();
+		float maxY = spriteParrent.getY() + sprite.getY() + sprite.getHeight();
+		
+		return isOnArea(event, minX, maxX, minY, maxY);
+	}
+
+	public static boolean isOnArea(
+			TouchEvent event,
 			Camera camera,
 			Sprite sprite)
 	{

@@ -53,16 +53,29 @@ public interface Data {
 	public static final String IMG_LOADING =
 			IMG_LOGO_LOCATION + "loading.jpg";
 
-	public static final String MENU_SELECT_MAP_BG = IMG_INMENU_FOLDER_LOCATION + "img_select_map_bg.jpg";
-	public static final String MENU_SELECT_MAP_BG_SELECT = IMG_INMENU_FOLDER_LOCATION + "bg.jpg";
-	public static final String MENU_SELECT_MAP_BTN_BACK = IMG_INGAME_FOLDER_LOCATION + "btnBack.png";
+	public static final String MENU_SELECT_MAP_BG			= IMG_INMENU_FOLDER_LOCATION + "Select_Mc_Bg.jpg";
+	public static final String MENU_SELECT_MAP_BG_SELECT	= IMG_INMENU_FOLDER_LOCATION + "bg.png";
+	public static final String MENU_SELECT_MAP_BTN_BACK		= IMG_INMENU_FOLDER_LOCATION + "btnArrow.png";
 
-	public static final String MENU_SELECT_MC_BG = IMG_INMENU_FOLDER_LOCATION + "img_select_mc_bg.jpg";
+	public static final String MENU_SELECT_MC_BG		= IMG_INMENU_FOLDER_LOCATION + "Select_Mc_Bg.jpg";
+	public static final String MENU_SELECT_MC_ICON_BG	= IMG_INMENU_FOLDER_LOCATION + "Select_Mc_Bg_Icon_Mc.jpg";
+	public static final String MENU_SELECT_MC_BTN_ADD	= IMG_INMENU_FOLDER_LOCATION + "btnAdd.jpg";
+	public static final String MENU_SELECT_MC_BTN_DELETE= IMG_INMENU_FOLDER_LOCATION + "btnHapus.png";
+	public static final String MENU_SELECT_MC_BTN_TYPE	= SPR_INMENU_FOLDER_LOCATION + "Select_Mc_Type_Character.jpg";
+	public static final String MENU_SELECT_MC_BTN_ARROW	= IMG_INMENU_FOLDER_LOCATION + "btnArrow.png";
 	
 	public static final String IMG_INGAME_BACKGROUND_MAP[] =
 		{
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_map1.jpg",
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_klasik.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_galaksi.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_kolosal.jpg"
+		};
+	public static final String SELECT_MAP_ICON[] =
+		{
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_map1.jpg",
+			IMG_INMENU_FOLDER_LOCATION + "img_bg_gameplay_modern.png",
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_klasik.jpg",
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_galaksi.jpg",
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_kolosal.jpg"
@@ -132,12 +145,6 @@ public interface Data {
 				IMG_INGAME_FOLDER_LOCATION + "kucing.png"
 			},
 			{
-				IMG_INGAME_FOLDER_LOCATION + "kucing.png",
-				IMG_INGAME_FOLDER_LOCATION + "anjing.png",
-				IMG_INGAME_FOLDER_LOCATION + "kucing.png",
-				IMG_INGAME_FOLDER_LOCATION + "kucing.png"
-			},
-			{
 				IMG_INGAME_FOLDER_LOCATION + "kit_modern.png",
 				IMG_INGAME_FOLDER_LOCATION + "pea_modern.png",
 				IMG_INGAME_FOLDER_LOCATION + "dew_modern.png",
@@ -162,16 +169,56 @@ public interface Data {
 				IMG_INGAME_FOLDER_LOCATION + "row_kolosal.png"
 			}
 		};
+	
+	public static final String SELECT_MC_ICON[][] =
+		{
+			{
+				SPR_INGAME_FOLDER_LOCATION + "kucing.png",
+				SPR_INGAME_FOLDER_LOCATION + "anjing.png",
+				SPR_INGAME_FOLDER_LOCATION + "anjing 2.png",
+				SPR_INGAME_FOLDER_LOCATION + "anjing 3.png"
+			},
+			{
+				IMG_INMENU_FOLDER_LOCATION + "KIT.png",
+				IMG_INMENU_FOLDER_LOCATION + "PEA.png",
+				IMG_INMENU_FOLDER_LOCATION + "DEW.png",
+				SPR_INGAME_FOLDER_LOCATION + "row_modern.png"
+			}
+		};
 
-	public static final String GAMEPAUSE_BG = IMG_INGAME_FOLDER_LOCATION + "footer.jpg";
-	public static final String GAMEPAUSE_BTN_MAINMENU = IMG_INGAME_FOLDER_LOCATION + "btnHome.png";
-	public static final String GAMEPAUSE_BTN_RESUME = IMG_INGAME_FOLDER_LOCATION + "btnResume.png";
+	public static final String GAMEPLAY_SMOKE = SPR_INGAME_FOLDER_LOCATION + "BERANTEM.png";
 	
-	public static final String GAMEOVER_BG = IMG_INGAME_FOLDER_LOCATION + "footer.jpg";
-	public static final String GAMEOVER_BTN_MAINMENU = IMG_INGAME_FOLDER_LOCATION + "btnHome.png";
-	public static final String GAMEOVER_BTN_RESTART = IMG_INGAME_FOLDER_LOCATION + "btnRestart.png";
+	public static final int[] GAMEPLAY_SMOKE_ANIM_FRAME = {0, 3};
+	public static final long[] GAMEPLAY_SMOKE_ANIM_SPEED = {150, 150, 150, 150};
 	
-	public static final String[][] GAMEOVER_MC = 
+	public static final String GAMEPAUSE_BG				= IMG_INGAME_FOLDER_LOCATION + "footer.jpg";
+	public static final String GAMEPAUSE_BTN_MAINMENU	= IMG_INGAME_FOLDER_LOCATION + "btnHome.png";
+	public static final String GAMEPAUSE_BTN_RESUME		= IMG_INGAME_FOLDER_LOCATION + "btnResume.png";
+	
+	public static final String[][] GAMEPAUSE_MC_IDLE =
+		{
+			{
+				SPR_INGAME_FOLDER_LOCATION + "KIT IDLE.png",
+				SPR_INGAME_FOLDER_LOCATION + "PEA IDLE.png",
+				SPR_INGAME_FOLDER_LOCATION + "DEW IDLE.png",
+				SPR_INGAME_FOLDER_LOCATION + "ROO IDLE.png"
+			},
+			{
+				SPR_INGAME_FOLDER_LOCATION + "KIT IDLE.png",
+				SPR_INGAME_FOLDER_LOCATION + "PEA IDLE.png",
+				SPR_INGAME_FOLDER_LOCATION + "DEW IDLE.png",
+				SPR_INGAME_FOLDER_LOCATION + "ROO IDLE.png"
+			},
+		};
+	
+	public static final int[]	GAMEPAUSE_MC_IDLE_ANIM_FRAME = {0, 2};
+	public static final long[]	GAMEPAUSE_MC_IDLE_ANIM_SPEED = {250, 250, 250};
+	
+	public static final String GAMEOVER_BG				= IMG_INGAME_FOLDER_LOCATION + "footer.jpg";
+	public static final String GAMEOVER_BTN_MAINMENU	= IMG_INGAME_FOLDER_LOCATION + "btnHome.png";
+	public static final String GAMEOVER_BTN_RESTART		= IMG_INGAME_FOLDER_LOCATION + "btnRestart.png";
+	
+	public static final String[][] GAMEOVER_MC_WIN = 
 		{
 		{
 			SPR_INGAME_FOLDER_LOCATION + "kucing.png",
@@ -180,28 +227,10 @@ public interface Data {
 			SPR_INGAME_FOLDER_LOCATION + "anjing 3.png"
 		},
 		{
-			SPR_INGAME_FOLDER_LOCATION + "kit_modern.png",
-			SPR_INGAME_FOLDER_LOCATION + "pea_modern.png",
-			SPR_INGAME_FOLDER_LOCATION + "dew_modern.png",
-			SPR_INGAME_FOLDER_LOCATION + "row_modern.png"
-		},
-		{
-			SPR_INGAME_FOLDER_LOCATION + "kit_klasik.png",
-			SPR_INGAME_FOLDER_LOCATION + "pea_klasik.png",
-			SPR_INGAME_FOLDER_LOCATION + "dew_klasik.png",
-			SPR_INGAME_FOLDER_LOCATION + "row_klasik.png"
-		},
-		{
-			SPR_INGAME_FOLDER_LOCATION + "kit_galaksi.png",
-			SPR_INGAME_FOLDER_LOCATION + "pea_galaksi.png",
-			SPR_INGAME_FOLDER_LOCATION + "dew_galaksi.png",
-			SPR_INGAME_FOLDER_LOCATION + "row_galaksi.png"
-		},
-		{
-			SPR_INGAME_FOLDER_LOCATION + "kit_kolosal.png",
-			SPR_INGAME_FOLDER_LOCATION + "pea_kolosal.png",
-			SPR_INGAME_FOLDER_LOCATION + "dew_kolosal.png",
-			SPR_INGAME_FOLDER_LOCATION + "row_kolosal.png"
+			SPR_INGAME_FOLDER_LOCATION + "KIT WON.png",
+			SPR_INGAME_FOLDER_LOCATION + "PEA WON.png",
+			SPR_INGAME_FOLDER_LOCATION + "DEW WON.png",
+			SPR_INGAME_FOLDER_LOCATION + "ROO WON.png"
 		}
 	};
 	public static final int [][] GAMEOVER_MC_ANIM_FRAME =
@@ -211,8 +240,8 @@ public interface Data {
 		};
 	public static final long[][] GAMEOVER_MC_ANIM_SPEED =
 		{
-			{100,	100,	100,	100,	100,	100},	// WIN
-			{100,	100,	100,	100,	100,	100}	// LOSE
+			{150,	150,	150,	150,	150,	150},	// WIN
+			{150,	150,	150,	150,	150,	150}	// LOSE
 		};
 	
 	// texture region main caracter
@@ -244,14 +273,59 @@ public interface Data {
 	public static final int MENU_SELECT_MAP_BTN_BACK_TEX_HEIGHT	= 32;
 	public static final int MENU_SELECT_MAP_BTN_BACK_WIDTH	= 70;
 	public static final int MENU_SELECT_MAP_BTN_BACK_HEIGHT	= 30;
+
+	public static final int MENU_SELECT_MC_ICON_BG_TEX_WIDTH	= 128;
+	public static final int MENU_SELECT_MC_ICON_BG_TEX_HEIGHT	= 128;
+	public static final int MENU_SELECT_MC_ICON_BG_WIDTH		= 90;
+	public static final int MENU_SELECT_MC_ICON_BG_HEIGHT		= 100;
+
+	public static final int MENU_SELECT_MC_ICON_TEX_WIDTH	= 2048;
+	public static final int MENU_SELECT_MC_ICON_TEX_HEIGHT	= 256;
+	public static final int MENU_SELECT_MC_ICON_WIDTH		= 90;
+	public static final int MENU_SELECT_MC_ICON_HEIGHT		= 100;
+
+	public static final int MENU_SELECT_MC_BTN_ADD_TEX_WIDTH	= 256;
+	public static final int MENU_SELECT_MC_BTN_ADD_TEX_HEIGHT	= 64;
+	public static final int MENU_SELECT_MC_BTN_ADD_WIDTH		= 150;
+	public static final int MENU_SELECT_MC_BTN_ADD_HEIGHT		= 50;
+
+	public static final int MENU_SELECT_MC_BTN_DELETE_TEX_WIDTH		= 64;
+	public static final int MENU_SELECT_MC_BTN_DELETE_TEX_HEIGHT	= 64;
+	public static final int MENU_SELECT_MC_BTN_DELETE_WIDTH			= 30;
+	public static final int MENU_SELECT_MC_BTN_DELETE_HEIGHT		= 30;
+
+	public static final int MENU_SELECT_MC_BTN_TYPE_TEX_WIDTH	= 128;
+	public static final int MENU_SELECT_MC_BTN_TYPE_TEX_HEIGHT	= 64;
+	public static final int MENU_SELECT_MC_BTN_TYPE_WIDTH		= 90;
+	public static final int MENU_SELECT_MC_BTN_TYPE_HEIGHT		= 20;
+	public static final int MENU_SELECT_MC_BTN_TYPE_COLUMN		= 1;
+	public static final int MENU_SELECT_MC_BTN_TYPE_ROW			= 2;
+
+	public static final int MENU_SELECT_MC_BTN_ARROW_TEX_WIDTH	= 128;
+	public static final int MENU_SELECT_MC_BTN_ARROW_TEX_HEIGHT	= 64;
+	public static final int MENU_SELECT_MC_BTN_ARROW_WIDTH		= 70;
+	public static final int MENU_SELECT_MC_BTN_ARROW_HEIGHT		= 30;
+	public static final int MENU_SELECT_MC_BTN_ARROW_MC_WIDTH	= 25;
+	public static final int MENU_SELECT_MC_BTN_ARROW_MC_HEIGHT	= 50;
+	
+	public static final int GAMEPLAY_SMOKE_TEX_WIDTH 	= 1024;
+	public static final int GAMEPLAY_SMOKE_TEX_HEIGHT 	= 256;
+	public static final int GAMEPLAY_SMOKE_WIDTH 		= 153;
+	public static final int GAMEPLAY_SMOKE_HEIGHT 		= 140;
+	public static final int GAMEPLAY_SMOKE_COLUMN		= 4;
+	public static final int GAMEPLAY_SMOKE_ROW			= 1;
 	
 	public static final int GAMEPAUSE_BG_TEX_WIDTH 	= 1024;
 	public static final int GAMEPAUSE_BG_TEX_HEIGHT = 1024;
 	public static final int GAMEPAUSE_BG_WIDTH 		= 305;
 	public static final int GAMEPAUSE_BG_HEIGHT 	= 175;
 	
+	public static final int GAMEPAUSE_MC_TEX_WIDTH 		= 512;
+	public static final int GAMEPAUSE_MC_TEX_HEIGHT 	= 128;
 	public static final int GAMEPAUSE_MC_IDLE_WIDTH 	= 90;
 	public static final int GAMEPAUSE_MC_IDLE_HEIGHT 	= 90;
+	public static final int GAMEPAUSE_MC_IDLE_COLUMN 	= 3;
+	public static final int GAMEPAUSE_MC_IDLE_ROW	 	= 1;
 	public static final int GAMEPAUSE_MC_ICON_WIDTH 	= 35;
 	public static final int GAMEPAUSE_MC_ICON_HEIGHT 	= 35;
 
@@ -262,18 +336,18 @@ public interface Data {
 	public static final int GAMEPAUSE_BTN_RESUME_WIDTH		= 40;
 	public static final int GAMEPAUSE_BTN_RESUME_HEIGHT		= 40;
 
-	public static final int GAMEOVER_BG_TEX_WIDTH 	= 1024;
-	public static final int GAMEOVER_BG_TEX_HEIGHT 	= 1024;
+	public static final int GAMEOVER_BG_TEX_WIDTH 	= 512;
+	public static final int GAMEOVER_BG_TEX_HEIGHT 	= 32;
 	public static final int GAMEOVER_BG_WIDTH 		= 305;
 	public static final int GAMEOVER_BG_HEIGHT 		= 200;
 	
-	public static final int GAMEOVER_MC_TEX_WIDTH 	= 2048;
-	public static final int GAMEOVER_MC_TEX_HEIGHT 	= 256;
+	public static final int GAMEOVER_MC_TEX_WIDTH 	= 1024;
+	public static final int GAMEOVER_MC_TEX_HEIGHT 	= 128;
 	public static final int GAMEOVER_MC_WIN_WIDTH	= 120;
 	public static final int GAMEOVER_MC_WIN_HEIGHT	= 120;
 	public static final int GAMEOVER_MC_LOSE_WIDTH 	= 35;
 	public static final int GAMEOVER_MC_LOSE_HEIGHT = 35;
-	public static final int GAMEOVER_MC_COLUMN		= 6;
+	public static final int GAMEOVER_MC_COLUMN		= 8;
 	public static final int GAMEOVER_MC_ROW			= 1;
 
 	public static final int GAMEOVER_BTN_TEX_WIDTH			= 128;

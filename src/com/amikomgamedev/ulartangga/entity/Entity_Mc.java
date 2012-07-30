@@ -49,7 +49,7 @@ public class Entity_Mc implements Define
 		Posisi_Mc_Max			= POSISI_MC_START;
 	}
 	
-	public void restart()
+	public void reset()
 	{
 		mc_Spr.setPosition(
 				-mc_Spr.getWidth(), 
@@ -256,7 +256,7 @@ public class Entity_Mc implements Define
 		velocity	= (float) (velocityX / Math.cos(Math.toRadians(45)));
 		velocityY	= (float) (velocity * Math.sin(Math.toRadians(45))) - (gravitasi * second);
 		
-		Utils.TRACE("velocityX = " +velocityX+ ", velocityY" +velocityY);
+//		Utils.TRACE("velocityX = " +velocityX+ ", velocityY" +velocityY);
 		handler.setVelocity(-velocityX, -velocityY);
 
 		if(second >= time)

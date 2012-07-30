@@ -7,8 +7,6 @@ import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.anddev.andengine.entity.modifier.FadeInModifier;
-import org.anddev.andengine.entity.modifier.FadeOutModifier;
 import org.anddev.andengine.entity.primitive.Rectangle;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
@@ -19,6 +17,8 @@ import org.anddev.andengine.entity.text.ChangeableText;
 import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.input.touch.TouchEvent;
+import org.anddev.andengine.input.touch.detector.ClickDetector;
+import org.anddev.andengine.input.touch.detector.ClickDetector.IClickDetectorListener;
 import org.anddev.andengine.input.touch.detector.ScrollDetector;
 import org.anddev.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.anddev.andengine.input.touch.detector.SurfaceScrollDetector;
@@ -41,7 +41,9 @@ public class State_Gameplay extends 	BaseGameActivity
 							implements 	IUpdateHandler,
 										IScrollDetectorListener,
 										IOnSceneTouchListener,
-										Define
+										IClickDetectorListener,
+										Define,
+										Data
 {
 	
 	private final int STATE_GAME_START		= 0;
@@ -53,10 +55,18 @@ public class State_Gameplay extends 	BaseGameActivity
 	private final int STATE_GAME_UNLOADING	= 6;
 	private int State_Game_Current			= STATE_GAME_START;
 	
-	private int Player_Max = 4;
-	private int Player_Cur = Player_Max - 1;
-
-	private int Map = -1;
+	
+	private final int CEK_SNAKE		= 0;
+	private final int CEK_LADDER	= 1;
+	private final int CEK_COLLISION	= 2;
+	private final int CEK_IDLE		= 3;
+	private int Cek_Current			= -1;
+	
+	private int cek			= -1;
+	private int Player_Max 	= -1;
+	private int Player_Cur 	= -1;
+	private int Map 		= -1;
+	
 	private float CurrentSecond = 0;
 	public static float Second;
 	private int randomValue;
@@ -64,7 +74,9 @@ public class State_Gameplay extends 	BaseGameActivity
 	public static Camera camera;
 	public static Scene scene;
 	public static Entity_Mc[] mc;
-	private SurfaceScrollDetector mScrollDetector;
+	
+	private SurfaceScrollDetector	mScrollDetector	= new SurfaceScrollDetector(this);
+	private ClickDetector			clickDetector	= new ClickDetector(this);
 	private Entity_Camera cam;
 	
 	public static AnimatedSprite spr_Img_Botton_Dice;
@@ -77,12 +89,12 @@ public class State_Gameplay extends 	BaseGameActivity
 	
 	public static boolean moveCamera = true;
 	public static boolean diceEnable = true;
-	private boolean singlePlayer = false;
 	private boolean moveAgain_1 = true;
 	private boolean moveAgain_2 = true;
 	private boolean moveAgain_3 = true;
 	private boolean move = true;
 	private boolean autoMoveNextPlayer = true;
+	private boolean throwStart = true;
 	
 	serverData sData = serverData.getInstance();
 	private HUD hud;
@@ -101,14 +113,12 @@ public class State_Gameplay extends 	BaseGameActivity
 	public void onLoadResources()
 	{
 		Game.setContext(this);
-		sData.setCharPlayer1(CARACTER_1);
-		sData.setCharPlayer2(CARACTER_2);
-		sData.setCharPlayer3(CARACTER_3);
-		sData.setCharPlayer4(CARACTER_4);
-		
-		Map = sData.getSelectMap();
+		Player_Max 	= sData.getMaxPlayer();
+		Player_Cur 	= Player_Max - 1;
+		Map 		= sData.getSelectMap();
 
-		Game.setGameplay(Map, Player_Max);
+		Game.setMap(Map);
+		Game.setMaxPlayer(Player_Max);
 	}
 	
 	public Scene onLoadScene()
@@ -121,8 +131,6 @@ public class State_Gameplay extends 	BaseGameActivity
 		
 		scene = new Scene();
 		scene.setOnSceneTouchListener(this);
- 
-		mScrollDetector = new SurfaceScrollDetector(this);
 		
 		switchState(STATE_GAME_START);
 		
@@ -133,7 +141,6 @@ public class State_Gameplay extends 	BaseGameActivity
 		
 	public void onUpdate(float pSecondsElapsed)
 	{
-		
 		Second = pSecondsElapsed;
 //		long max	= Runtime.getRuntime().maxMemory();
 //		long total	= Runtime.getRuntime().totalMemory();
@@ -160,8 +167,8 @@ public class State_Gameplay extends 	BaseGameActivity
 					Loading.updateLoading();
 				else
 				{
-					Game.spr_Img_Loading.registerEntityModifier(new FadeOutModifier(0.5f));
-					if(timer(0.5f))
+//					Game.spr_Img_Loading.registerEntityModifier(new FadeOutModifier(0.5f));
+//					if(timer(0.5f))
 					{
 						attachInGame();
 						attachGamePause();
@@ -177,163 +184,189 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				cam.backCameraToMap();
 				
-				if(mc != null)
+				for(int i = 0; i < Player_Max; i++)
 				{
-					for(int i = 0; i < Player_Max; i++)
-					{
-						curPosition[i].setText("" +mc[i].Posisi_Mc_Current);
-						mc[i].updateMove();
-					}
+					curPosition[i].setText("" +mc[i].Posisi_Mc_Current);
+					mc[i].updateMove();
+				}
 
-					if(mc[Player_Cur].isMoving())
+				if(mc[Player_Cur].isMoving())
+				{
+					if(move)
 					{
-						if(move)
-						{
-							mc[Player_Cur].cekMove();
-							playerName.setText(PLAYER_NAME[Player_Cur] + " Is Moving");
-
-							playerName.setPosition(
-									Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
-									Utils.getRatioH(2));
-						}
-						else if(timer(1))
-						{
-							move = true;
-							spr_Img_Botton_Dice.setVisible(false);
-						}
+						mc[Player_Cur].cekMove();
+						
 						cam.autoMoveCamera(
 								mc[Player_Cur],
 								Define.GAME_MAP_CELL_WIDTH);
-						
 					}
-					else
+					else if(timer(1))
 					{
-						move = false;
-						mc[Player_Cur].stop();
-						moveCamera = true;
+						move = true;
+						spr_Img_Botton_Dice.setVisible(false);
 						
-						valueDice.setText(""+Utils.getRandomValuie());
-						playerName.setText(PLAYER_NAME[nextPlayer()] + " Move");
-						
+						playerName.setText(PLAYER_NAME[Player_Cur] + " Is Moving");
 						playerName.setPosition(
 								Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
 								Utils.getRatioH(2));
-						
-						if(!autoMoveNextPlayer)
-						{
-							spr_Img_Botton_Dice.setVisible(false);
-							diceEnable = false;
-						}
-						else
-						{
-							cam.autoMoveCameraToNextPlayer(
-									mc[nextPlayer()],
-									(int) Define.GAME_MAP_CELL_WIDTH);
-						}
-						
-						// cek 2 pemain 1 cell
-						if(mc[Player_Cur].Posisi_Mc_Current != mc[Player_Cur].POSISI_MC_START)
-						{
-							for(int i = 0; i < Player_Max; i++)
+					}
+				}
+				else
+				{
+					switch (Cek_Current)
+					{
+						case CEK_SNAKE:
+							
+							mc[Player_Cur].moveSnakeOrLadder(
+									SNAKE_N_LADDER[Map][CELL_SNAKE_START][cek],
+									SNAKE_N_LADDER[Map][CELL_SNAKE_END][cek]);
+
+							cam.autoMoveCamera(
+									mc[Player_Cur],
+									Define.GAME_MAP_CELL_WIDTH);
+							
+							if(mc[Player_Cur].Posisi_Mc_Current != SNAKE_N_LADDER[Map][CELL_SNAKE_START][cek])
+								switchCek(CEK_IDLE);
+							
+							break;
+							
+						case CEK_LADDER:
+							
+							mc[Player_Cur].moveSnakeOrLadder(
+									SNAKE_N_LADDER[Map][CELL_LADDER_START][cek],
+									SNAKE_N_LADDER[Map][CELL_LADDER_END][cek]);
+							
+							cam.autoMoveCamera(
+									mc[Player_Cur],
+									Define.GAME_MAP_CELL_WIDTH);
+
+							if(mc[Player_Cur].Posisi_Mc_Current != SNAKE_N_LADDER[Map][CELL_LADDER_START][cek])
+								switchCek(CEK_IDLE);
+							
+							break;
+						case CEK_COLLISION:
+							
+							if (throwStart)
 							{
-								if(mc[Player_Cur].Posisi_Mc_Current == mc[i].Posisi_Mc_Current && Player_Cur != i)
+								mc[cek].throwToStart(mc[Player_Cur].getDistance());
+								
+								cam.autoMoveCamera(
+										mc[cek],
+										Utils.getRatioW(((camera.getWidth() - mc[cek].getAnimatedSprite().getWidth()) / 2)));
+								
+								if(timer(1f))
+									Game.spr_Smoke.setVisible(false);
+								
+								if(mc[Player_Cur].Posisi_Mc_Current != mc[cek].Posisi_Mc_Current)
+									switchCek(CEK_IDLE);
+								
+							}
+							else if(timer(1))
+								throwStart = true;
+							
+							break;
+							
+						case CEK_IDLE:
+							
+							moveCamera = true;
+							mc[Player_Cur].stop();
+							move = false;
+							
+							valueDice.setText(""+Utils.getRandomValuie());
+							
+							if(!autoMoveNextPlayer || Game.spr_Smoke.isVisible())
+							{
+								spr_Img_Botton_Dice.setVisible(false);
+								diceEnable = false;
+							}
+							else
+							{
+								cam.autoMoveCameraToNextPlayer(
+										mc[nextPlayer()],
+										(int) Define.GAME_MAP_CELL_WIDTH);
+							}
+							
+							// cek 2 pemain 1 cell
+							if(mc[Player_Cur].Posisi_Mc_Current != mc[Player_Cur].POSISI_MC_START)
+							{
+								for(int i = 0; i < Player_Max; i++)
 								{
-									mc[i].throwToStart(mc[Player_Cur].getDistance());
-//									Entity_Camera.autoMoveCamera(i);
-									cam.autoMoveCamera(
-											mc[i],
-											Utils.getRatioW(((camera.getWidth() - mc[i].getAnimatedSprite().getWidth()) / 2)));
-									playerName.setText(PLAYER_NAME[i] + " Back To Start");
-									
-									playerName.setPosition(
-											Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
-											Utils.getRatioH(2));
-									
-									moveAgain_1 = false;
-									spr_Img_Botton_Dice.setVisible(false);
+									if(mc[Player_Cur].Posisi_Mc_Current == mc[i].Posisi_Mc_Current && Player_Cur != i)
+									{
+										cek = i;
+										switchCek(CEK_COLLISION);
+										break;
+									}
+									else
+									{
+										throwStart = false;
+										moveAgain_1 = true;
+									}
+								}
+							}
+							
+							// pengecekan tangga
+							for(int i = 0; i < SNAKE_N_LADDER[Map][CELL_LADDER_START].length; i++)
+							{
+								if(mc[Player_Cur].Posisi_Mc_Current == SNAKE_N_LADDER[Map][CELL_LADDER_START][i])
+								{
+									cek = i;
+									switchCek(CEK_LADDER);
 									break;
 								}
 								else
+									moveAgain_2 = true;
+							}
+							// pengecekan ular
+							for(int i = 0; i < SNAKE_N_LADDER[Map][CELL_SNAKE_START].length; i++)
+							{
+								if(mc[Player_Cur].Posisi_Mc_Current == SNAKE_N_LADDER[Map][CELL_SNAKE_START][i])
 								{
-									moveAgain_1 = true;
+									cek = i;
+									switchCek(CEK_SNAKE);
+									break;
+								}
+								else
+									moveAgain_3 = true;
+							}
+							
+							if(mc[Player_Cur].Posisi_Mc_Current == COLUMN_COUNT * ROW_COUNT) // finish
+							{
+								switchState(STATE_GAME_OVER);
+							}
+							else if(randomValue == 6 && moveAgain_1 && moveAgain_2 && moveAgain_3)
+							{
+								randomValue = 0;
+								Player_Cur = previousPlayer();
+							}
+							
+							if(spr_Img_Botton_Dice.isVisible())
+							{
+								if(sData.getTypePlayer(nextPlayer()) == TYPE_AI && !Game.spr_Smoke.isVisible())
+								{
+//										if(timer(0.5f))
+									{
+										spr_Img_Botton_Dice.animate(
+												new long[] {200, 200, 200}, 
+												new int[] {0, 1, 0}, 
+												0);
+										
+										switchPlayer();
+										
+										randomValue = Utils.getRandomValuie();
+										
+										mc[Player_Cur].setMove(randomValue);
+										valueDice.setText(""+randomValue);
+									}
+									
+//										diceEnable = false;
 								}
 							}
-						}
-						
-						// pengecekan tangga
-						for(int i = 0; i < SNAKE_N_LADDER[Map][CELL_LADDER_START].length; i++)
-						{
-							if(mc[Player_Cur].Posisi_Mc_Current == SNAKE_N_LADDER[Map][CELL_LADDER_START][i])
-							{
-								mc[Player_Cur].moveSnakeOrLadder(SNAKE_N_LADDER[Map][CELL_LADDER_START][i], SNAKE_N_LADDER[Map][CELL_LADDER_END][i]);
-
-//								Entity_Camera.autoMoveCamera(Player_Cur);
-								cam.autoMoveCamera(
-										mc[Player_Cur],
-										Define.GAME_MAP_CELL_WIDTH);
-								playerName.setText(PLAYER_NAME[Player_Cur] + " Get Ladder");
-								
-								playerName.setPosition(
-										Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
-										Utils.getRatioH(2));
-								moveAgain_2 = false;
-								spr_Img_Botton_Dice.setVisible(false);
-								break;
-							}
-							else
-							{
-								moveAgain_2 = true;
-							}
-						}
-						
-						// pengecekan ular
-						for(int i = 0; i < SNAKE_N_LADDER[Map][CELL_SNAKE_START].length; i++)
-						{
-							if(mc[Player_Cur].Posisi_Mc_Current == SNAKE_N_LADDER[Map][CELL_SNAKE_START][i])
-							{
-								mc[Player_Cur].moveSnakeOrLadder(SNAKE_N_LADDER[Map][CELL_SNAKE_START][i], SNAKE_N_LADDER[Map][CELL_SNAKE_END][i]);
-
-//								Entity_Camera.autoMoveCamera(Player_Cur);
-								cam.autoMoveCamera(
-										mc[Player_Cur],
-										Define.GAME_MAP_CELL_WIDTH);
-								playerName.setText(PLAYER_NAME[Player_Cur] + " Get Snake");
-								
-								playerName.setPosition(
-										Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
-										Utils.getRatioH(2));
-								moveAgain_3 = false;
-								spr_Img_Botton_Dice.setVisible(false);
-								break;
-							}
-							else
-							{
-								moveAgain_3 = true;
-							}
-						}
-						
-						//	acak otomatis (singgle player) 
-						if(singlePlayer && Player_Cur != Player_Max - 1 && moveCamera)
-						{
-							if(timer(2))
-							{
-								switchPlayer();
-								mc[Player_Cur].setMove(Utils.getRandomValuie());
-							}
-						}
-						
-						if(mc[Player_Cur].Posisi_Mc_Current == COLUMN_COUNT * ROW_COUNT) // finish
-						{
-							switchState(STATE_GAME_OVER);
-						}
-						// random ulang ketika dapat nilai 6
-						else if(randomValue == 6 && moveAgain_1 && moveAgain_2 && moveAgain_3)
-						{
-							randomValue = 0;
-							Player_Cur = previousPlayer();
-						}
+							
+							break;
 					}
 				}
+				
 				break;
 		}
 	}
@@ -342,6 +375,8 @@ public class State_Gameplay extends 	BaseGameActivity
 	
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) 
 	{
+		clickDetector.onTouchEvent(pSceneTouchEvent);	
+		
 		switch (State_Game_Current)
 		{
 			case STATE_GAME_START:
@@ -365,7 +400,8 @@ public class State_Gameplay extends 	BaseGameActivity
 						camera.getMinX() + spr_Img_Botton_Dice.getX()+ rect_slot_machine.getX(),
 						camera.getMinX() + spr_Img_Botton_Dice.getX()+ rect_slot_machine.getX() + rect_slot_machine.getWidth(),
 						camera.getMinY() + spr_Img_Botton_Dice.getY()+ rect_slot_machine.getY(),
-						camera.getMinY() + spr_Img_Botton_Dice.getY()+ rect_slot_machine.getY() + rect_slot_machine.getHeight()))
+						camera.getMinY() + spr_Img_Botton_Dice.getY()+ rect_slot_machine.getY() + rect_slot_machine.getHeight())
+						&& pSceneTouchEvent.isActionDown())
 				{
 					if(moveCamera && diceEnable)
 					{
@@ -383,14 +419,6 @@ public class State_Gameplay extends 	BaseGameActivity
 					}
 				}
 				
-				if(Utils.isOnArea(
-						pSceneTouchEvent,
-						camera,
-						spr_Img_Button_Pause))
-				{
-					switchState(STATE_GAME_PAUSE);
-				}
-				
 				break;
 	
 			case STATE_GAME_PAUSE:
@@ -403,16 +431,6 @@ public class State_Gameplay extends 	BaseGameActivity
 						&& pSceneTouchEvent.isActionUp())
 				{
 					switchState(STATE_GAME_INGAME);
-				}
-				
-				if(Utils.isOnArea(
-						pSceneTouchEvent,
-						camera,
-						Game.spr_GamePause_Bg,
-						Game.spr_GamePause_Btn_MainMenu))
-				{
-					startActivity(new Intent(State_Gameplay.this, State_Menu_Main.class));
-					finish();
 				}
 				
 				break;
@@ -429,8 +447,61 @@ public class State_Gameplay extends 	BaseGameActivity
 					switchState(STATE_GAME_RESTART);
 				}
 				
+				break;
+				
+			case STATE_GAME_RESTART:
+				
+				break;
+				
+			case STATE_GAME_UNLOADING:
+				
+				break;
+		}
+		
+		return true;
+	}
+
+	public void onClick(ClickDetector pClickDetector, TouchEvent pTouchEvent)
+	{
+
+		switch (State_Game_Current)
+		{
+			case STATE_GAME_START:
+				
+				break;
+			case STATE_GAME_LOADING:
+				
+				break;
+			case STATE_GAME_INGAME:
+				
 				if(Utils.isOnArea(
-						pSceneTouchEvent,
+						pTouchEvent,
+						camera,
+						spr_Img_Button_Pause))
+				{
+					switchState(STATE_GAME_PAUSE);
+				}
+				
+				break;
+	
+			case STATE_GAME_PAUSE:
+				
+				if(Utils.isOnArea(
+						pTouchEvent,
+						camera,
+						Game.spr_GamePause_Bg,
+						Game.spr_GamePause_Btn_MainMenu))
+				{
+					startActivity(new Intent(State_Gameplay.this, State_Menu_Main.class));
+					finish();
+				}
+				
+				break;
+				
+			case STATE_GAME_OVER:
+				
+				if(Utils.isOnArea(
+						pTouchEvent,
 						camera,
 						Game.spr_GameOver_Bg,
 						Game.spr_GameOver_Btn_MainMenu))
@@ -447,17 +518,13 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				break;
 		}
-		
-		return true;
 	}
 	
 	public void onScroll(ScrollDetector pScollDetector, TouchEvent pTouchEvent,
 			float pDistanceX, float pDistanceY)
 	{
 		if(moveCamera)
-		{
 			cam.moveCamera(-pDistanceX, -pDistanceY);
-		}
 	}
 	
 	private void switchState(int curState)
@@ -475,7 +542,7 @@ public class State_Gameplay extends 	BaseGameActivity
 			case STATE_GAME_LOADING:
 				
 				scene.attachChild(Game.spr_Img_Loading);
-				Game.spr_Img_Loading.registerEntityModifier(new FadeInModifier(0.5f));
+//				Game.spr_Img_Loading.registerEntityModifier(new FadeInModifier(0.5f));
 				
 				Loading.setLoading(Loading.LOADING_TYPE_GAMEPLAY, Map);
 				
@@ -489,11 +556,11 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				Game.spr_GamePause_Bg.setVisible(false);
 				Game.txtPause.setVisible(false);
-				Game.spr_GamePause_Mc[0].setVisible(false);
 				
 				for(int i = 0; i < Player_Max; i++)
 				{
-					Game.spr_Icon_MC_Game_Pause[i].setVisible(false);
+					Game.spr_GamePause_Mc_Idle[i].setVisible(false);
+					Game.spr_GamePause_Mc_Icon[i].setVisible(false);
 					Game.curPositionPause[i].setVisible(false);
 				}
 				
@@ -504,7 +571,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				for(int i = 0; i < Player_Max; i++) 
 				{
-					Game.spr_GameOver_Mc[i].setVisible(false);
+					Game.spr_GameOver_Mc_Win[i].setVisible(false);
 				}
 				
 				break;
@@ -519,12 +586,17 @@ public class State_Gameplay extends 	BaseGameActivity
 
 				Game.spr_GamePause_Bg.setVisible(true);
 				Game.txtPause.setVisible(true);
-				Game.spr_GamePause_Mc[0].setVisible(true);
+				Game.spr_GamePause_Mc_Idle[Player_Cur].setVisible(true);
+				Game.spr_GamePause_Mc_Idle[Player_Cur].animate(
+						GAMEPAUSE_MC_IDLE_ANIM_SPEED,
+						GAMEPAUSE_MC_IDLE_ANIM_FRAME[0],
+						GAMEPAUSE_MC_IDLE_ANIM_FRAME[1],
+						true);
 				
 				for(int i = 0; i < Player_Max; i++)
 				{
 					Game.curPositionPause[i].setText(curPosition[i].getText());
-					Game.spr_Icon_MC_Game_Pause[i].setVisible(true);
+					Game.spr_GamePause_Mc_Icon[i].setVisible(true);
 					Game.curPositionPause[i].setVisible(true);
 				}	
 				break;
@@ -542,14 +614,14 @@ public class State_Gameplay extends 	BaseGameActivity
 				Game.spr_GameOver_Btn_Restart.setVisible(true);
 				for(int i = 0; i < Player_Max; i++) 
 				{
-					Game.spr_GameOver_Mc[i].setVisible(true);
+					Game.spr_GameOver_Mc_Win[i].setVisible(true);
 				}
 				
 				break;
 				
 			case STATE_GAME_RESTART:
 				for (int i = 0; i < Player_Max; i++) {
-					mc[i].restart();
+					mc[i].reset();
 				}
 //				cam.restart();
 				
@@ -558,6 +630,66 @@ public class State_Gameplay extends 	BaseGameActivity
 				break;
 				
 			case STATE_GAME_UNLOADING:
+				
+				break;
+		}
+	}
+	
+	private void switchCek(int cek)
+	{
+		Cek_Current = cek;
+		
+		switch (Cek_Current)
+		{
+			case CEK_SNAKE:
+				
+				playerName.setText(PLAYER_NAME[Player_Cur] + " Get Snake");
+				playerName.setPosition(
+						Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
+						Utils.getRatioH(2));
+				
+				moveAgain_3 = false;
+				spr_Img_Botton_Dice.setVisible(false);
+				
+				break;
+			case CEK_LADDER:
+				
+				playerName.setText(PLAYER_NAME[Player_Cur] + " Get Ladder");
+				playerName.setPosition(
+						Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
+						Utils.getRatioH(2));
+				
+				moveAgain_2 = false;
+				spr_Img_Botton_Dice.setVisible(false);
+				
+				break;
+			case CEK_COLLISION:
+				
+				playerName.setText(PLAYER_NAME[cek] + " Back To Start");
+				playerName.setPosition(
+						Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
+						Utils.getRatioH(2));
+				
+				moveAgain_1 = false;
+				spr_Img_Botton_Dice.setVisible(false);
+				
+				Game.spr_Smoke.setPosition(
+						mc[Player_Cur].getAnimatedSprite().getX() - 
+						(Game.spr_Smoke.getWidth() - mc[Player_Cur].getAnimatedSprite().getWidth()) / 2,
+						mc[Player_Cur].getAnimatedSprite().getY() - 
+						(Game.spr_Smoke.getHeight() - mc[Player_Cur].getAnimatedSprite().getHeight()) / 2);
+				
+				Game.spr_Smoke.setVisible(true);
+				
+				break;
+				
+			case CEK_IDLE:
+				
+				
+				playerName.setText(PLAYER_NAME[nextPlayer()] + " Move");
+				playerName.setPosition(
+						Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
+						Utils.getRatioH(2));
 				
 				break;
 		}
@@ -596,8 +728,10 @@ public class State_Gameplay extends 	BaseGameActivity
 	private boolean timer(float maxSecond)
 	{
 		CurrentSecond +=Second;
+		
 		if(CurrentSecond >= maxSecond)
 		{
+			Utils.TRACE("ok");
 			CurrentSecond = 0;
 			return true;
 		}
@@ -619,18 +753,14 @@ public class State_Gameplay extends 	BaseGameActivity
 			case STATE_GAME_INGAME:
 				
 				if(keyCode == KeyEvent.KEYCODE_BACK)
-				{
 					switchState(STATE_GAME_PAUSE);
-				}
 				
 				break;
 	
 			case STATE_GAME_PAUSE:
 				
 				if(keyCode == KeyEvent.KEYCODE_BACK)
-				{
 					switchState(STATE_GAME_INGAME);
-				}
 				
 				break;
 				
@@ -663,22 +793,20 @@ public class State_Gameplay extends 	BaseGameActivity
 				Game.spr_Img_Map.getX() + Game.spr_Img_Map.getWidth(),
 				Game.spr_Img_Map.getY() - Game.spr_Img_Informasi_Header.getHeight(), 
 				Game.spr_Img_Map.getY() + Game.spr_Img_Map.getHeight() + Game.spr_Img_Informasi_Footer.getHeight());
-/*
+
 		for(int i = 0; i < Player_Max; i++)
 		{
 			mc[i] = new Entity_Mc(Game.spr_MC[i]);
 			scene.attachChild(Game.spr_MC[i]);
 		}
-*/		
-		mc[0] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer1()]);
-		mc[1] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer2()]);
-		mc[2] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer3()]);
-		mc[3] = new Entity_Mc(Game.spr_MC[sData.getCharPlayer4()]);
-
-		scene.attachChild(Game.spr_MC[0]);
-		scene.attachChild(Game.spr_MC[1]);
-		scene.attachChild(Game.spr_MC[2]);
-		scene.attachChild(Game.spr_MC[3]);
+		
+		scene.attachChild(Game.spr_Smoke);
+		Game.spr_Smoke.setVisible(false);
+		Game.spr_Smoke.animate(
+				GAMEPLAY_SMOKE_ANIM_SPEED,
+				GAMEPLAY_SMOKE_ANIM_FRAME[ANI_FRAME_START],
+				GAMEPLAY_SMOKE_ANIM_FRAME[ANI_FRAME_END],
+				true);
 		
 		spr_Img_Botton_Dice = new AnimatedSprite(0, 0, Game.reg_Img_Button_Dice);
 		spr_Img_Button_Pause =  new Sprite(0, 0, 20, 20, Game.reg_Img_Button_Pause);
@@ -726,26 +854,27 @@ public class State_Gameplay extends 	BaseGameActivity
 		
 		spr_Img_Botton_Dice.attachChild(valueDice);
 		hud.attachChild(playerName);
+		
+		Cek_Current	= CEK_IDLE;
 	}
 
 	private void attachGamePause()
 	{
 		hud.attachChild(Game.spr_GamePause_Bg);
 		Game.spr_GamePause_Bg.attachChild(Game.txtPause);
-		Game.spr_GamePause_Bg.attachChild(Game.spr_GamePause_Mc[0]);
 		Game.spr_GamePause_Bg.attachChild(Game.spr_GamePause_Btn_Resume);
 		Game.spr_GamePause_Bg.attachChild(Game.spr_GamePause_Btn_MainMenu);
 		
 		for(int i = 0; i < Player_Max; i++)
 		{
-			Game.spr_GamePause_Bg.attachChild(Game.spr_Icon_MC_Game_Pause[i]);
-			Game.spr_Icon_MC_Game_Pause[i].attachChild(Game.curPositionPause[i]);
+			Game.spr_GamePause_Bg.attachChild(Game.spr_GamePause_Mc_Idle[i]);
+			Game.spr_GamePause_Bg.attachChild(Game.spr_GamePause_Mc_Icon[i]);
+			Game.spr_GamePause_Mc_Icon[i].attachChild(Game.curPositionPause[i]);
 		}
 	}
 	
 	private void attachGameOver()
 	{
-		
 		txtWin = new Text(
 				0, 0,
 				Game.font[Data.FONT_SIZE_MEDIUM],
@@ -782,10 +911,11 @@ public class State_Gameplay extends 	BaseGameActivity
 		{
 			if(i == Player_Cur)
 			{	
-				Game.spr_GameOver_Mc[i].setPosition(
-						(Game.spr_GameOver_Bg.getWidth() / 2 - Game.spr_GameOver_Mc[i].getWidth()) / 2,
-						Game.spr_GameOver_Bg.getBaseHeight() - Game.spr_GameOver_Mc[i].getHeight() - Utils.getRatioH(10));
-				Game.spr_GameOver_Mc[i].animate(
+				Game.spr_GameOver_Mc_Win[i].setPosition(
+						(Game.spr_GameOver_Bg.getWidth() / 2 - Game.spr_GameOver_Mc_Win[i].getWidth()) / 2,
+						txtWin.getY() + txtWin.getHeight() + Utils.getRatioH(10));
+//						Game.spr_GameOver_Bg.getBaseHeight() - Game.spr_GameOver_Mc_Win[i].getHeight() - Utils.getRatioH(10));
+				Game.spr_GameOver_Mc_Win[i].animate(
 						Data.GAMEOVER_MC_ANIM_SPEED[playerWin],
 						Game.GAMEOVER_MC_ANIM_FRAME[playerWin][Game.ANI_FRAME_START],
 						Game.GAMEOVER_MC_ANIM_FRAME[playerWin][Game.ANI_FRAME_END],
@@ -793,12 +923,12 @@ public class State_Gameplay extends 	BaseGameActivity
 			}
 			else
 			{
-				Game.spr_GameOver_Mc[i].setWidth(Data.GAMEOVER_MC_LOSE_WIDTH);
-				Game.spr_GameOver_Mc[i].setHeight(Data.GAMEOVER_MC_LOSE_HEIGHT);
-				Game.spr_GameOver_Mc[i].setPosition(
+				Game.spr_GameOver_Mc_Win[i].setWidth(Data.GAMEOVER_MC_LOSE_WIDTH);
+				Game.spr_GameOver_Mc_Win[i].setHeight(Data.GAMEOVER_MC_LOSE_HEIGHT);
+				Game.spr_GameOver_Mc_Win[i].setPosition(
 						Game.spr_GameOver_Bg.getWidth() / 2 + pX[playerLose],
 						pY[playerLose]);
-				Game.spr_GameOver_Mc[i].animate(
+				Game.spr_GameOver_Mc_Win[i].animate(
 						Data.GAMEOVER_MC_ANIM_SPEED[1],
 						Game.GAMEOVER_MC_ANIM_FRAME[1][Game.ANI_FRAME_START],
 						Game.GAMEOVER_MC_ANIM_FRAME[1][Game.ANI_FRAME_END],
@@ -806,7 +936,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				playerLose++;
 			}
-			Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Mc[i]);
+			Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Mc_Win[i]);
 		}
 
 		Game.spr_GameOver_Bg.attachChild(txtWin);

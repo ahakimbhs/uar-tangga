@@ -29,6 +29,9 @@ public interface Define
 	public static final int PLAYER_2	= 1;
 	public static final int PLAYER_3	= 2;
 	public static final int PLAYER_4	= 3;
+	
+	public static final int TYPE_PLAYER	= 0;
+	public static final int TYPE_AI		= 1;
 
 	public static final int MAP_MODERN	= 0;
 	public static final int MAP_KLASIK	= 1;
@@ -60,7 +63,7 @@ public interface Define
 				{7,	17,	25,	35,	22,	45,	9,	68,	80}			// posisi Ular Ahir
 			},
 			{// klasik
-				{9,	38,	58},		// posisi Tangga Awal
+				{6,	38,	58},		// posisi Tangga Awal
 				{52,78,	78},		// posisi Tangga Akhir
 				{41,99,	84,	16,	86,	70},		// posisi Ular Awal
 				{20,19,	24,	5,	66, 10}			// posisi Ular Ahir

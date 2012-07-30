@@ -38,7 +38,7 @@ public class Entity_Camera implements Define
 				maxY + camera.getHeight() / 2);
 	}
 	
-	public void restart()
+	public void reset()
 	{
 		
 		camera.setCenter(

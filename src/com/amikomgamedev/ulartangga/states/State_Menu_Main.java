@@ -16,6 +16,8 @@ import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.input.touch.TouchEvent;
+import org.anddev.andengine.input.touch.detector.ClickDetector;
+import org.anddev.andengine.input.touch.detector.ClickDetector.IClickDetectorListener;
 import org.anddev.andengine.input.touch.detector.ScrollDetector;
 import org.anddev.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.anddev.andengine.input.touch.detector.SurfaceScrollDetector;
@@ -23,6 +25,7 @@ import org.anddev.andengine.ui.activity.BaseGameActivity;
 import org.anddev.andengine.util.Debug;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.amikomgamedev.ulartangga.Config;
@@ -36,33 +39,46 @@ import com.amikomgamedev.ulartangga.serverData;
 public class State_Menu_Main extends BaseGameActivity
 							 implements	IUpdateHandler,
 					 					IScrollDetectorListener,
-							 			IOnSceneTouchListener
+							 			IOnSceneTouchListener,
+							 			IClickDetectorListener,
+							 			Define
 {
 	private float CurrentSecond = 0;
 	private float Second;
 	
 	public Camera camera;
-	protected Scene scene;
 	private MenuScene menuScene;
 	private Text mText, mText2;
-	
-	private BaseGameActivity activity = this;
-	private SurfaceScrollDetector mScrollDetector;
+
+	protected Scene 				scene = new Scene();
+	protected SurfaceScrollDetector	scrollDetector = new SurfaceScrollDetector(this);
+	protected ClickDetector			clickDetector = new ClickDetector(this);
+//	private State_Menu_Select_Map	select_Map;
 	
 	private final int STATE_MENU_START		= 0;
 	private final int STATE_MENU_LOADING	= 1;
 	private final int STATE_MENU_INMENU		= 2;
-	private final int STATE_MENU_SELECT_MAP	= 3;
-	private final int STATE_MENU_SELECT_MC	= 4;
-	private final int STATE_MENU_SELECT_PLAYER = 5;
-	private final int STATE_MENU_CREDIT 	= 6;
-	private final int STATE_MENU_OPTION 	= 7;
+	private final int STATE_MENU_SELECT_MAP_LOADING	= 3;
+	private final int STATE_MENU_SELECT_MAP	= 4;
+	private final int STATE_MENU_SELECT_MC_LOADING	= 5;
+	private final int STATE_MENU_SELECT_MC	= 6;
+	private final int STATE_MENU_SELECT_PLAYER = 7;
+	private final int STATE_MENU_CREDIT 	= 8;
+	private final int STATE_MENU_OPTION 	= 9;
 
 	private int State_Game_Current	= -1;
 	
 	private Sprite spr_Img_Btn_Play;
 	private Sprite spr_Img_Btn_Credit;
 	private Sprite spr_Img_Btn_Option;
+	
+	private float timeMove = 0.5f;
+	private float velocity = 0;
+	private int max_Player = 2;
+	
+	private boolean isActionUp = false;
+
+	int k = 0;
 	
 	private Sprite spr_Img_Logo;
 	private Sprite spr_Img_Title;
@@ -88,18 +104,17 @@ public class State_Menu_Main extends BaseGameActivity
 	public void onLoadResources() 
 	{
 		Game.setContext(this);
+		Game.spr_Img_Select_Map_Bg = null;
+		Game.spr_Img_Select_Mc_Bg = null;
 	}
 
 	public Scene onLoadScene() 
 	{
 		mEngine.registerUpdateHandler(new FPSLogger());
 		mEngine.registerUpdateHandler(this);
-
-		mScrollDetector = new SurfaceScrollDetector(this);
-		scene = new Scene();
+		
 		scene.setOnSceneTouchListener(this);
  
-		
 		switchState(STATE_MENU_START);
 		
 		return scene;
@@ -110,6 +125,13 @@ public class State_Menu_Main extends BaseGameActivity
 	public void onUpdate(float pSecondsElapsed) 
 	{
 		Second = pSecondsElapsed;
+//		long max	= Runtime.getRuntime().maxMemory();
+//		long total	= Runtime.getRuntime().totalMemory();
+//		long free	= Runtime.getRuntime().freeMemory();
+//		
+//		Log.d("Memory", "Max = " +max);
+//		Log.d("Memory", "Total = " +total);
+//		Log.d("Memory", "Free = " +free);
 		
 		switch(State_Game_Current)
 		{
@@ -128,16 +150,17 @@ public class State_Menu_Main extends BaseGameActivity
 					Loading.updateLoading();
 				else 
 				{
-					Game.spr_Img_Logo.registerEntityModifier(new FadeOutModifier(0.5f));
-					
-					if(timer(0.5f))
-					{
-						scene.detachChild(Game.spr_Img_Logo);
+//					Game.spr_Img_Loading.setVisible(false);
+					Game.spr_Img_Loading.detachSelf();
+//					Game.spr_Img_Loading.registerEntityModifier(new FadeOutModifier(0.5f));
+//					
+//					if(timer(0.5f))
+//					{
+//						scene.detachChildren();
 						attachInMenu();
-						attachSelectMap();
 //						attachCredit();
 						switchState(STATE_MENU_INMENU);
-					}
+//					}
 				}
 				
 				break;
@@ -147,25 +170,96 @@ public class State_Menu_Main extends BaseGameActivity
 				
 				break;
 				
+			case STATE_MENU_SELECT_MAP_LOADING:
+				
+				if(Loading.isLoading())
+					Loading.updateLoading();
+				else
+				{
+//					Game.spr_Img_Loading.setVisible(false);
+					Game.spr_Img_Loading.detachSelf();
+					attachSelectMap();
+					switchState(STATE_MENU_SELECT_MAP);
+				}
+				break;
+				
 			case STATE_MENU_SELECT_MAP:
+				
+				float minY = 0;
+				float maxY = 0;
+				float centerY = 0;
+				float distance = 0;
 				
 				for(int i = 0; i < Data.IMG_INGAME_BACKGROUND_MAP.length; i++)
 				{
-					float minY = Game.spr_Img_Select_Map_Icon_Map[i].getY();
-					float maxY = Game.spr_Img_Select_Map_Icon_Map[i].getY() + Game.spr_Img_Select_Map_Icon_Map[i].getHeight();
-					float centerY = Game.spr_Img_Select_Map_Bg.getHeight() / 2;
+					minY = Game.spr_Img_Select_Map_Bg_Select.getY() + Game.spr_Img_Select_Map_Icon_Map[i].getY();
+					maxY = Game.spr_Img_Select_Map_Bg_Select.getY() + Game.spr_Img_Select_Map_Icon_Map[i].getY() + Game.spr_Img_Select_Map_Icon_Map[i].getHeight();
+					centerY = Game.spr_Img_Select_Map_Bg.getHeight() / 2;
 					
 					if(minY < centerY && maxY > centerY)
 						Game.spr_Img_Select_Map_Icon_Map[i].setScale(1f);
 					else
 						Game.spr_Img_Select_Map_Icon_Map[i].setScale(0.8f);
+
+					if(isActionUp && Game.spr_Img_Select_Map_Icon_Map[i].getScaleX() == 1)
+					{
+						centerY	= (Config.GAME_SCREEN_HEIGHT - Game.spr_Img_Select_Map_Icon_Map[i].getHeight()) / 2;
+						minY		= Game.spr_Img_Select_Map_Bg_Select.getY() + Game.spr_Img_Select_Map_Icon_Map[i].getY();
+						distance	= centerY - minY;
+						velocity	= distance / timeMove;
 						
-				}	
+//						isActionUp = false;
+					}
+					
+					
+					centerY	= (Config.GAME_SCREEN_HEIGHT - Game.spr_Img_Select_Map_Icon_Map[0].getHeight()) / 2;
+					minY	= Game.spr_Img_Select_Map_Bg_Select.getY() + Game.spr_Img_Select_Map_Icon_Map[i].getY();
+					
+					if(velocity > 0 && Game.spr_Img_Select_Map_Icon_Map[i].getScaleX() == 1
+							&& minY >= centerY)
+						velocity = 0;
+					else if(velocity < 0 && Game.spr_Img_Select_Map_Icon_Map[i].getScaleX() == 1
+							&& minY <= centerY)
+						velocity = 0;
+				}
+				
+				minY = Game.spr_Img_Select_Map_Bg_Select.getY();
+				maxY = Game.spr_Img_Select_Map_Bg_Select.getY() + Game.spr_Img_Select_Map_Bg_Select.getHeight();
+				
+				if(minY > centerY)
+				{
+					distance	= centerY - minY;
+					velocity	= distance / timeMove;
+				}
+				else if(maxY < centerY + Game.spr_Img_Select_Map_Icon_Map[0].getHeight())
+				{
+					distance	= centerY + Game.spr_Img_Select_Map_Icon_Map[0].getHeight() - maxY;
+					velocity	= distance / timeMove;
+				}
+				
+				if(velocity != 0)
+				{
+					Game.spr_Img_Select_Map_Bg_Select.setPosition(
+							Game.spr_Img_Select_Map_Bg_Select.getX(),
+							Game.spr_Img_Select_Map_Bg_Select.getY() + velocity * pSecondsElapsed);
+				}
 				
 				break;
 				
-			case STATE_MENU_SELECT_MC:
+			case STATE_MENU_SELECT_MC_LOADING:
 				
+				if(Loading.isLoading())
+					Loading.updateLoading();
+				else
+				{
+//					Game.spr_Img_Loading.setVisible(false);
+					Game.spr_Img_Loading.detachSelf();
+					attachSelectMc();
+					switchState(STATE_MENU_SELECT_MC);
+				}
+				break;
+				
+			case STATE_MENU_SELECT_MC:
 				
 				break;
 			case STATE_MENU_CREDIT:
@@ -188,54 +282,87 @@ public class State_Menu_Main extends BaseGameActivity
 
 	public void reset() {}
 
-	private void switchState(int curState) 
+	public void switchState(int curState) 
 	{
 		State_Game_Current = curState;
+
 		
+		Utils.TRACE("next = " + State_Game_Current);
 		switch(State_Game_Current)
 		{
 			case STATE_MENU_START:
 				
 				scene.setBackground(new ColorBackground(1, 1, 1));
-				Loading.setLoading(Loading.LOADING_TYPE_APP_OPEN);
+				Loading.setLoading(Loading.LOADING_TYPE_MAIN_MENU_OPEN);
 				
 				break;
 				
 			case STATE_MENU_LOADING :
 
-				scene.attachChild(Game.spr_Img_Logo);
-				Game.spr_Img_Logo.registerEntityModifier(new FadeInModifier(1f));
+				scene.attachChild(Game.spr_Img_Loading);
+//				Game.spr_Img_Loading.registerEntityModifier(new FadeInModifier(1f));
 				Loading.setLoading(Loading.LOADING_TYPE_MAIN_MENU_2);
 				
 				break;
 				
 			case STATE_MENU_INMENU :
 
-				Game.spr_Img_Select_Map_Bg.setVisible(false);
-				Game.spr_Img_Select_Map_Bg_Select.setVisible(false);
-				for(int i = 0; i < Data.IMG_INGAME_BACKGROUND_MAP.length; i++)
-				{
-					Game.spr_Img_Select_Map_Icon_Map[i].setVisible(false);
-				}
+//				Game.spr_Img_Back_Menu.setVisible(true);
+//				Game.spr_Img_Title_Menu.setVisible(true);
+//				spr_Img_Btn_Credit.setVisible(true);
+//				spr_Img_Btn_Option.setVisible(true);
+//				spr_Img_Btn_Play.setVisible(true);
 				Game.spr_Img_Logo.setVisible(false);
+				
+				break;
+
+			case STATE_MENU_SELECT_MAP_LOADING:
+
+				scene.attachChild(Game.spr_Img_Loading);
+				Loading.setLoading(Loading.LOADING_TYPE_SELECT_MAP);
 				
 				break;
 				
 			case STATE_MENU_SELECT_MAP :
 
-//				State_Menu_Select_Map menu_Map = new State_Menu_Select_Map(scene);
-//				menu_Map.stateMenuSelectMap();
-
 				Game.spr_Img_Select_Map_Bg.setVisible(true);
 				Game.spr_Img_Select_Map_Bg_Select.setVisible(true);
+				
 				for(int i = 0; i < Data.IMG_INGAME_BACKGROUND_MAP.length; i++)
-				{
-					Game.spr_Img_Select_Map_Icon_Map[i].setVisible(true);
-				}				
+					Game.spr_Img_Select_Map_Icon_Map[i].setVisible(true);				
+				
+				break;
+
+			case STATE_MENU_SELECT_MC_LOADING:
+
+				scene.attachChild(Game.spr_Img_Loading);
+				Game.setMap(sData.getSelectMap());
+				Loading.setLoading(Loading.LOADING_TYPE_SELECT_MC);
 				
 				break;
 				
 			case STATE_MENU_SELECT_MC :
+				
+				Game.spr_Img_Select_Mc_Bg.setVisible(true);
+				
+				for(int i = 0; i < 2; i++)
+				{
+					Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].setVisible(true);
+					Game.spr_Img_Select_Mc_Btn_Type[i].setVisible(true);
+//					Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].attachChild(Game.spr_Img_Select_Mc_Icon_Mc[i]);
+
+					for (int j = 0; j < 2; j++)
+					{
+						Game.spr_Img_Select_Mc_Btn_Arrow_Mc[i][j].setVisible(true);
+						Game.spr_Img_Select_Mc_Btn_Arrow[j].setVisible(true);
+					}
+					
+					Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(true);
+				}
+				
+				updatePosisiSelectMc();
+				
+				Game.spr_Img_Select_Mc_Btn_Add.setVisible(true);
 				
 				break;
 			case STATE_MENU_CREDIT:
@@ -249,6 +376,378 @@ public class State_Menu_Main extends BaseGameActivity
 				
 				break;
 		}
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) 
+	{
+		switch (State_Game_Current) 
+		{
+			case STATE_MENU_START:
+				
+				break;
+				
+			case STATE_MENU_LOADING:
+				
+				break;
+				
+			case STATE_MENU_INMENU:
+				
+				if(keyCode == KeyEvent.KEYCODE_BACK)
+				{
+					finish();
+				}
+				break;
+				
+			case STATE_MENU_SELECT_MAP:
+				
+				if(keyCode == KeyEvent.KEYCODE_BACK)
+				{
+//					switchState(STATE_MENU_INMENU);
+					switchState(STATE_MENU_SELECT_MC);
+
+					Game.spr_Img_Select_Map_Bg.setVisible(false);
+					Game.spr_Img_Select_Map_Bg_Select.setVisible(false);
+					
+					for(int i = 0; i < Data.IMG_INGAME_BACKGROUND_MAP.length; i++)
+						Game.spr_Img_Select_Map_Icon_Map[i].setVisible(false);
+				}
+				break;
+				
+			case STATE_MENU_SELECT_MC:
+				
+				if(keyCode == KeyEvent.KEYCODE_BACK)
+				{
+//					switchState(STATE_MENU_SELECT_MAP);
+					switchState(STATE_MENU_INMENU);
+					Game.spr_Img_Select_Mc_Bg.setVisible(false);
+					
+					for(int i = 0; i < Data.SPR_MC[sData.getSelectMap()].length; i++)
+					{
+						if(i < 4)
+						{
+							Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].setVisible(false);
+							Game.spr_Img_Select_Mc_Btn_Type[i].setVisible(false);
+
+							
+							for (int j = 0; j < 2; j++)
+							{
+								Game.spr_Img_Select_Mc_Btn_Arrow_Mc[i][j].setVisible(false);
+							}
+						}
+						
+						
+//						Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].attachChild(Game.spr_Img_Select_Mc_Icon_Mc[i]);
+			//
+						if(i < 2)
+						{
+							Game.spr_Img_Select_Mc_Btn_Delete[i].setVisible(false);
+							Game.spr_Img_Select_Mc_Btn_Arrow[i].setVisible(false);
+						}
+					}
+					Game.spr_Img_Select_Mc_Btn_Add.setVisible(false);
+				}
+				
+				break;
+			case STATE_MENU_CREDIT:
+				if(keyCode == KeyEvent.KEYCODE_BACK)
+				{	
+					
+					switchState(STATE_MENU_INMENU);
+					Game.spr_Img_Title_Menu.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth()) /2, 50);
+					spr_Img_Btn_Play.setVisible(true);
+					spr_Img_Btn_Option.setVisible(true);
+					spr_Img_Btn_Credit.setVisible(true);
+				}
+				break;
+		}
+		
+		return false;
+	}
+
+	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) 
+	{
+		scrollDetector.onTouchEvent(pSceneTouchEvent);
+		clickDetector.onTouchEvent(pSceneTouchEvent);	
+		
+		switch (State_Game_Current) 
+		{
+			case STATE_MENU_START:
+				
+				break;
+				
+			case STATE_MENU_LOADING:
+				
+				break;
+			
+			case STATE_MENU_INMENU:
+				
+				if(Utils.isOnArea(pSceneTouchEvent, spr_Img_Btn_Play)
+						&& pSceneTouchEvent.isActionUp())
+				{
+//					Game.spr_Img_Back_Menu.setVisible(false);
+//					Game.spr_Img_Title_Menu.setVisible(false);
+//					spr_Img_Btn_Credit.setVisible(false);
+//					spr_Img_Btn_Option.setVisible(false);
+//					spr_Img_Btn_Play.setVisible(false);
+					
+//					if(Game.spr_Img_Select_Map_Bg == null)
+//						switchState(STATE_MENU_SELECT_MAP_LOADING);
+//					else
+//						switchState(STATE_MENU_SELECT_MAP);
+					
+					// sData bawah ni gx perlu d perhatikan
+					// konsep yg ada d pikiran q
+					// ternyata beda sama yg d inginkan game designer
+					sData.setSelectMap(MAP_KLASIK);
+					
+					if(Game.spr_Img_Select_Mc_Bg == null)
+						switchState(STATE_MENU_SELECT_MC_LOADING);
+					else
+						switchState(STATE_MENU_SELECT_MC);
+				}
+				else if(Utils.isOnArea(pSceneTouchEvent, spr_Img_Btn_Credit)
+						&& pSceneTouchEvent.isActionUp())
+					switchState(STATE_MENU_CREDIT);
+				
+				break;
+				
+			case STATE_MENU_SELECT_MAP:
+				
+				if(pSceneTouchEvent.isActionUp())
+				{
+					isActionUp = true;
+				}
+					
+				
+				break;
+				
+			case STATE_MENU_SELECT_MC:
+				
+			if(Utils.isOnArea(
+					pSceneTouchEvent,
+					Game.spr_Img_Select_Mc_Btn_Arrow[0])
+					&& pSceneTouchEvent.isActionUp())
+			{
+				switchState(STATE_MENU_INMENU);
+
+				Game.spr_Img_Select_Mc_Bg.setVisible(false);
+				
+				for(int i = 0; i < Data.SPR_MC[sData.getSelectMap()].length; i++)
+				{
+					if(i < 4)
+					{
+						Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].setVisible(false);
+						Game.spr_Img_Select_Mc_Btn_Type[i].setVisible(false);
+
+						
+						for (int j = 0; j < 2; j++)
+						{
+							Game.spr_Img_Select_Mc_Btn_Arrow_Mc[i][j].setVisible(false);
+						}
+					}
+		
+					if(i < 2)
+					{
+						Game.spr_Img_Select_Mc_Btn_Delete[i].setVisible(false);
+						Game.spr_Img_Select_Mc_Btn_Arrow[i].setVisible(false);
+					}
+				}
+				Game.spr_Img_Select_Mc_Btn_Add.setVisible(false);
+			}
+				
+				break;
+		}
+		return true;
+	}
+
+	public void onScroll(ScrollDetector pScollDetector, TouchEvent pTouchEvent,
+			float pDistanceX, float pDistanceY)
+	{
+		switch (State_Game_Current) 
+		{
+			case STATE_MENU_SELECT_MAP:
+		
+			Game.spr_Img_Select_Map_Bg_Select.setPosition(
+					Game.spr_Img_Select_Map_Bg_Select.getX(),
+					Game.spr_Img_Select_Map_Bg_Select.getY() + pDistanceY);
+			break;
+		}
+	}
+
+	public void onClick(ClickDetector pClickDetector, TouchEvent pTouchEvent) {
+
+		switch (State_Game_Current) 
+		{
+			case STATE_MENU_START:
+				
+				break;
+				
+			case STATE_MENU_LOADING:
+				
+				break;
+			
+			case STATE_MENU_INMENU:
+				
+				break;
+				
+			case STATE_MENU_SELECT_MAP:
+				
+				for(int i = 0; i < Data.IMG_INGAME_BACKGROUND_MAP.length; i++)
+				{
+					// dibatasi 2 map dulu
+					if(i < 2)
+					{
+						if(Utils.isOnArea(
+								pTouchEvent,
+								Game.spr_Img_Select_Map_Bg_Select,
+								Game.spr_Img_Select_Map_Icon_Map[i])
+								&& Game.spr_Img_Select_Map_Icon_Map[i].getScaleX() == 1)
+						{
+							switch (i)
+							{
+								case Define.MAP_MODERN:
+									sData.setSelectMap(Define.MAP_MODERN);
+									break;
+								case Define.MAP_KLASIK:
+									sData.setSelectMap(Define.MAP_KLASIK);
+									break;
+							}
+
+							startActivity(new Intent(State_Menu_Main.this, State_Gameplay.class));
+							finish();
+//							switchState(STATE_MENU_SELECT_MC_LOADING);
+						}
+					}
+				}
+				
+				if(Utils.isOnArea(
+						pTouchEvent,
+						Game.spr_Img_Select_Map_Btn_Back))
+				{
+					Game.spr_Img_Select_Map_Bg.setVisible(false);
+					Game.spr_Img_Select_Map_Bg_Select.setVisible(false);
+					
+					for(int i = 0; i < Data.IMG_INGAME_BACKGROUND_MAP.length; i++)
+						Game.spr_Img_Select_Map_Icon_Map[i].setVisible(false);
+					
+					switchState(STATE_MENU_SELECT_MC);
+				}
+				
+				break;
+				
+			case STATE_MENU_SELECT_MC:
+
+				if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Select_Mc_Btn_Arrow[1]))
+				{
+					sData.setMaxPlayer(max_Player);
+//					startActivity(new Intent(State_Menu_Main.this, State_Gameplay.class));
+//					finish();
+
+					
+					if(Game.spr_Img_Select_Map_Bg == null)
+						switchState(STATE_MENU_SELECT_MAP_LOADING);
+					else
+						switchState(STATE_MENU_SELECT_MAP);
+				}
+				
+				if(Utils.isOnArea(
+						pTouchEvent,
+						Game.spr_Img_Select_Mc_Btn_Add)
+						&& max_Player < 4)
+				{
+					if(max_Player == 2)
+					{
+						max_Player+=1;
+						sData.setCharPlayer(2, CARACTER_1);
+						sData.setTypePlayer(2, TYPE_AI);
+					}
+					else if(max_Player == 3)
+					{
+						max_Player+=1;
+						sData.setCharPlayer(3, CARACTER_1);
+						sData.setTypePlayer(3, TYPE_AI);
+					}
+					
+					updatePosisiSelectMc();
+				}
+				
+				for (int i = 0; i < max_Player; i++)
+				{
+					if(i < 2)
+						if(Utils.isOnArea(
+								pTouchEvent,
+								Game.spr_Img_Select_Mc_Icon_Mc_Bg[i + 2],
+								Game.spr_Img_Select_Mc_Btn_Delete[i]))
+						{
+							if(max_Player > 2)
+								max_Player-=1;
+							
+							if(i == 0)
+							{
+								Game.spr_Img_Select_Mc_Icon_Mc[2][sData.getCharPlayer(2)].setVisible(false);
+								Game.spr_Img_Select_Mc_Icon_Mc[3][sData.getCharPlayer(3)].setVisible(false);
+								sData.setTypePlayer(2, sData.getTypePlayer(3));
+								sData.setCharPlayer(2, sData.getCharPlayer(3));
+							}
+							
+							updatePosisiSelectMc();
+						}
+					
+					if(Utils.isOnArea(
+							pTouchEvent, 
+							Game.spr_Img_Select_Mc_Icon_Mc_Bg[i], 
+							Game.spr_Img_Select_Mc_Btn_Type[i]))
+					{
+						if(sData.getTypePlayer(i) == TYPE_PLAYER)
+							sData.setTypePlayer(i, TYPE_AI);
+						else
+							sData.setTypePlayer(i, TYPE_PLAYER);
+
+						Game.spr_Img_Select_Mc_Btn_Type[i].animate(new long[]{200},
+								new int[]{sData.getTypePlayer(i)},
+								0);
+					}
+					
+					for (int j = 0; j < 2; j++)
+					{
+						if(Utils.isOnArea(
+								pTouchEvent,
+								Game.spr_Img_Select_Mc_Icon_Mc_Bg[i],
+								Game.spr_Img_Select_Mc_Btn_Arrow_Mc[i][j]))
+						{
+							Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(false);
+							
+							if(j == 0)
+							{
+								if(sData.getCharPlayer(i) == CARACTER_1)
+									sData.setCharPlayer(i, CARACTER_4);
+								else
+									sData.setCharPlayer(i, sData.getCharPlayer(i) - 1);
+							}
+							else
+							{
+								if(sData.getCharPlayer(i) == CARACTER_4)
+									sData.setCharPlayer(i, CARACTER_1);
+								else
+									sData.setCharPlayer(i, sData.getCharPlayer(i) + 1);
+							}
+							
+							Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(true);
+						}
+					}
+				}
+				
+				break;
+			case STATE_MENU_CREDIT:
+				
+				break;
+		}
+	}
+	
+	protected Scene getScene()
+	{
+		return scene;
 	}
 	
 	private void attachInMenu()
@@ -288,17 +787,72 @@ public class State_Menu_Main extends BaseGameActivity
 		Game.spr_Img_Back_Menu.attachChild(spr_Img_Btn_Credit);
 		Game.spr_Img_Back_Menu.attachChild(spr_Img_Btn_Option);
 		Game.spr_Img_Back_Menu.attachChild(spr_Img_Btn_Play);
-	
 	}
 	
 	private void attachSelectMap()
 	{
 		scene.attachChild(Game.spr_Img_Select_Map_Bg);
-//		Game.spr_Img_Select_Map_Bg.attachChild(Game.spr_Img_Select_Map_Bg_Select);
-		for(int i = 0; i < Data.IMG_INGAME_BACKGROUND_MAP.length; i++)
-			Game.spr_Img_Select_Map_Bg.attachChild(Game.spr_Img_Select_Map_Icon_Map[i]);
-//			Game.spr_Img_Select_Map_Bg_Select.attachChild(Game.spr_Img_Select_Map_Icon_Map[i]);
+		Game.spr_Img_Select_Map_Bg.attachChild(Game.spr_Img_Select_Map_Bg_Select);
 		Game.spr_Img_Select_Map_Bg.attachChild(Game.spr_Img_Select_Map_Btn_Back);
+		
+		for(int i = 0; i < Data.IMG_INGAME_BACKGROUND_MAP.length; i++)
+			Game.spr_Img_Select_Map_Bg_Select.attachChild(Game.spr_Img_Select_Map_Icon_Map[i]);
+	}
+	
+	private void attachSelectMc()
+	{
+		max_Player = 2;
+
+		sData.setCharPlayer(PLAYER_1, CARACTER_1);
+		sData.setCharPlayer(PLAYER_2, CARACTER_2);
+		sData.setCharPlayer(PLAYER_3, CARACTER_1);
+		sData.setCharPlayer(PLAYER_4, CARACTER_1);
+		
+		sData.setTypePlayer(PLAYER_1, TYPE_PLAYER);
+		sData.setTypePlayer(PLAYER_2, TYPE_AI);
+		sData.setTypePlayer(PLAYER_3, TYPE_AI);
+		sData.setTypePlayer(PLAYER_4, TYPE_AI);
+		
+		scene.attachChild(Game.spr_Img_Select_Mc_Bg);
+		Game.spr_Img_Select_Mc_Bg.setVisible(false);
+		
+		for(int i = 0; i < 4; i++)
+		{
+			Game.spr_Img_Select_Mc_Bg.attachChild(Game.spr_Img_Select_Mc_Icon_Mc_Bg[i]);
+			Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].attachChild(Game.spr_Img_Select_Mc_Btn_Type[i]);
+			Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].setVisible(false);
+			Game.spr_Img_Select_Mc_Btn_Type[i].setVisible(false);
+
+			Game.spr_Img_Select_Mc_Btn_Type[i].animate(new long[]{200},
+					new int[]{sData.getTypePlayer(i)},
+					0);
+			
+			for (int j = 0; j < Data.SPR_MC[sData.getSelectMap()].length; j++)
+			{
+				Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].attachChild(Game.spr_Img_Select_Mc_Icon_Mc[i][j]);
+				Game.spr_Img_Select_Mc_Icon_Mc[i][j].setVisible(false);
+			}
+			
+			for (int j = 0; j < 2; j++)
+			{
+				Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].attachChild(Game.spr_Img_Select_Mc_Btn_Arrow_Mc[i][j]);
+				Game.spr_Img_Select_Mc_Btn_Arrow_Mc[i][j].setVisible(false);
+			}
+			
+			if(i < 2)
+			{
+				Game.spr_Img_Select_Mc_Bg.attachChild(Game.spr_Img_Select_Mc_Btn_Arrow[i]);
+				Game.spr_Img_Select_Mc_Btn_Arrow[i].setVisible(false);
+			}
+			
+			if(i > 1)
+			{
+				Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].attachChild(Game.spr_Img_Select_Mc_Btn_Delete[i - 2]);
+				Game.spr_Img_Select_Mc_Btn_Delete[i - 2].setVisible(false);
+			}
+		}
+		Game.spr_Img_Select_Mc_Bg.attachChild(Game.spr_Img_Select_Mc_Btn_Add);
+		Game.spr_Img_Select_Mc_Btn_Add.setVisible(false);
 	}
 	
 	private void attachCredit(){
@@ -340,130 +894,57 @@ public class State_Menu_Main extends BaseGameActivity
 		return false;
 	}
 	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) 
+	private void updatePosisiSelectMc()
 	{
-		switch (State_Game_Current) 
+		if(max_Player == 2)
 		{
-			case STATE_MENU_START:
-				
-				break;
-				
-			case STATE_MENU_LOADING:
-				
-				break;
-				
-			case STATE_MENU_INMENU:
-				
-				if(keyCode == KeyEvent.KEYCODE_BACK)
-				{
-					finish();
-				}
-				
-				break;
-				
-			case STATE_MENU_SELECT_MAP:
-				
-				if(keyCode == KeyEvent.KEYCODE_BACK)
-				{					
-					switchState(STATE_MENU_INMENU);
-				}
-				
-				break;
-				
-			case STATE_MENU_SELECT_MC:
-				
-				break;
-			case STATE_MENU_CREDIT:
-				if(keyCode == KeyEvent.KEYCODE_BACK)
-				{	
-					
-					switchState(STATE_MENU_INMENU);
-					Game.spr_Img_Title_Menu.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth()) /2, 50);
-					spr_Img_Btn_Play.setVisible(true);
-					spr_Img_Btn_Option.setVisible(true);
-					spr_Img_Btn_Credit.setVisible(true);
-				}
-				break;
+			Game.spr_Img_Select_Mc_Icon_Mc_Bg[2].setVisible(false);
 		}
-		
-		return false;
-	}
-
-	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) 
-	{
-		
-		switch (State_Game_Current) 
+		else if(max_Player == 3)
 		{
-			case STATE_MENU_START:
-				
-				break;
-				
-			case STATE_MENU_LOADING:
-				
-				break;
+			Game.spr_Img_Select_Mc_Icon_Mc_Bg[2].setPosition(
+					(Config.GAME_SCREEN_WIDTH - Game.spr_Img_Select_Mc_Icon_Mc_Bg[2].getWidth()) / 2,
+					Game.spr_Img_Select_Mc_Icon_Mc_Bg[0].getY() + Game.spr_Img_Select_Mc_Icon_Mc_Bg[0].getHeight() + Utils.getRatioH(50));
 			
-			case STATE_MENU_INMENU:
-				
-				if(Utils.isOnArea(pSceneTouchEvent, spr_Img_Btn_Play)
-						&& pSceneTouchEvent.isActionUp()){
-					switchState(STATE_MENU_SELECT_MAP);
-				}else if(Utils.isOnArea(pSceneTouchEvent, spr_Img_Btn_Credit)
-						&& pSceneTouchEvent.isActionUp())
-					switchState(STATE_MENU_CREDIT);
-				break;
-				
-			case STATE_MENU_SELECT_MAP:
-				
-				mScrollDetector.onTouchEvent(pSceneTouchEvent);
-//				Utils.TRACE("scaleCX = " +Game.spr_Img_Select_Map_Icon_Map[0].getScaleCenterX());
-//				Utils.TRACE("scaleCY = " +Game.spr_Img_Select_Map_Icon_Map[0].getScaleCenterY());
-//				Utils.TRACE("scaleX = " +Game.spr_Img_Select_Map_Icon_Map[0].getScaleX());
-//				Utils.TRACE("scaleY = " +Game.spr_Img_Select_Map_Icon_Map[0].getScaleY());
-				
-				if(Utils.isOnArea(pSceneTouchEvent, Game.spr_Img_Select_Map_Btn_Back)
-						&& pSceneTouchEvent.isActionUp())
-					switchState(STATE_MENU_INMENU);
-				
-				for(int i = 0; i < Data.IMG_INGAME_BACKGROUND_MAP.length; i++)
-				{
-					// dibatasi 2 map dulu
-					if(i < 2)
-						if(Utils.isOnArea(pSceneTouchEvent, Game.spr_Img_Select_Map_Icon_Map[i])
-								&& pSceneTouchEvent.isActionUp()
-								&& Game.spr_Img_Select_Map_Icon_Map[i].getScaleX() == 1)
-						{
-							if(i == Define.MAP_MODERN)
-								sData.setSelectMap(Define.MAP_MODERN);
-							else if(i == Define.MAP_KLASIK)
-								sData.setSelectMap(Define.MAP_KLASIK);
-							
-							startActivity(new Intent(State_Menu_Main.this, State_Gameplay.class));
-							finish();
-						}
-				}
-				
-				break;
-				
-			case STATE_MENU_SELECT_MC:
-				
-				break;
-			case STATE_MENU_CREDIT:
-				
-				break;
+			Game.spr_Img_Select_Mc_Icon_Mc_Bg[3].setVisible(false);
 		}
-		return true;
-	}
+		else if(max_Player == 4)
+		{
+			Game.spr_Img_Select_Mc_Icon_Mc_Bg[2].setPosition(
+					(Config.GAME_SCREEN_WIDTH / 2 - Game.spr_Img_Select_Mc_Icon_Mc_Bg[2].getWidth()) / 2,
+					Game.spr_Img_Select_Mc_Icon_Mc_Bg[0].getY() + Game.spr_Img_Select_Mc_Icon_Mc_Bg[0].getHeight() + Utils.getRatioH(50));
+			Game.spr_Img_Select_Mc_Icon_Mc_Bg[3].setPosition(
+					Config.GAME_SCREEN_WIDTH / 2 + (Config.GAME_SCREEN_WIDTH / 2 - Game.spr_Img_Select_Mc_Icon_Mc_Bg[3].getWidth()) / 2,
+					Game.spr_Img_Select_Mc_Icon_Mc_Bg[0].getY() + Game.spr_Img_Select_Mc_Icon_Mc_Bg[0].getHeight() + Utils.getRatioH(50));
+		}
+		
+		if(max_Player > 2)
+			Game.spr_Img_Select_Mc_Btn_Add.setPosition(
+					Game.spr_Img_Select_Mc_Btn_Add.getX(),
+					Game.spr_Img_Select_Mc_Icon_Mc_Bg[2].getY() + Game.spr_Img_Select_Mc_Icon_Mc_Bg[2].getHeight() + Utils.getRatioH(50));
+		else
+			Game.spr_Img_Select_Mc_Btn_Add.setPosition(
+					Game.spr_Img_Select_Mc_Btn_Add.getX(),
+					Game.spr_Img_Select_Mc_Icon_Mc_Bg[0].getY() + Game.spr_Img_Select_Mc_Icon_Mc_Bg[0].getHeight() + Utils.getRatioH(50));
 
-	public void onScroll(ScrollDetector pScollDetector, TouchEvent pTouchEvent,
-			float pDistanceX, float pDistanceY)
-	{
-		for(int i = 0; i < Data.IMG_INGAME_BACKGROUND_MAP.length; i++)
-			Game.spr_Img_Select_Map_Icon_Map[i].setPosition(
-					Game.spr_Img_Select_Map_Icon_Map[i].getX(),
-					Game.spr_Img_Select_Map_Icon_Map[i].getY() + pDistanceY);
-//		Game.spr_Img_Select_Map_Bg_Select.setPosition(
-//				Game.spr_Img_Select_Map_Bg_Select.getX(),
-//				Game.spr_Img_Select_Map_Bg_Select.getY() + pDistanceY);
+
+		for(int i = 0; i < max_Player; i++)
+		{
+			Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].setVisible(true);
+			Game.spr_Img_Select_Mc_Btn_Type[i].setVisible(true);
+			if(i < max_Player - 2)
+				Game.spr_Img_Select_Mc_Btn_Delete[i].setVisible(true);
+
+			Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(true);
+			
+			for (int j = 0; j < 2; j++)
+			{
+				Game.spr_Img_Select_Mc_Btn_Arrow_Mc[i][j].setVisible(true);
+			}
+
+			Game.spr_Img_Select_Mc_Btn_Type[i].animate(new long[]{200},
+					new int[]{sData.getTypePlayer(i)},
+					0);
+		}
 	}
 }
