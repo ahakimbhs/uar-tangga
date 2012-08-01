@@ -8,7 +8,7 @@ import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 
-public class Utils
+public class Utils implements Define
 {
 	public static int getRandomValuie()
 	{
@@ -141,5 +141,23 @@ public class Utils
 				: Config.GAME_RES_USE == Config.GAME_RES_MINI
 						? TextureOptions.DEFAULT
 						:TextureOptions.REPEATING_NEAREST;
+	}
+	public static float getRatio(float nil)
+	{
+		float nil_Ratio = 0;
+		
+		switch(Config.RATIO_USE)
+		{
+			case Config.RATIO_WIDTH:
+				nil_Ratio = nil / GAME_RATIO_SCREEN_WIDTH 
+						* Config.GAME_SCREEN_WIDTH;
+				break;
+			case Config.RATIO_HEIGHT:
+				nil_Ratio = nil / GAME_RATIO_SCREEN_HEIGHT 
+						* Config.GAME_SCREEN_HEIGHT;
+				break;
+		}
+		
+		return nil_Ratio;
 	}
 }

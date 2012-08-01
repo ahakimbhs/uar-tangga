@@ -30,7 +30,7 @@ public class Game implements Data,
 	private static int map = -1;
 	private static int maxPlayer = -1;
 	
-	private static BaseGameActivity activity;
+	public static BaseGameActivity activity;
 
 	private static BitmapTextureAtlas[] tex_Font;
 	public static Font[] font;
@@ -581,7 +581,8 @@ public class Game implements Data,
 		for(int i = 0; i < SELECT_MC_ICON[map].length; i++)
 		{
 			tex_Img_Select_Mc_Icon_Mc[i] = new BitmapTextureAtlas(
-					MENU_SELECT_MC_ICON_TEX_WIDTH, MENU_SELECT_MC_ICON_TEX_HEIGHT, 
+					MENU_SELECT_MC_ICON_TEX_WIDTH,
+					MENU_SELECT_MC_ICON_TEX_HEIGHT, 
 					Utils.getTextureOption());
 		}
 		

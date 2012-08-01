@@ -182,7 +182,7 @@ public interface Data {
 				IMG_INMENU_FOLDER_LOCATION + "KIT.png",
 				IMG_INMENU_FOLDER_LOCATION + "PEA.png",
 				IMG_INMENU_FOLDER_LOCATION + "DEW.png",
-				SPR_INGAME_FOLDER_LOCATION + "row_modern.png"
+				IMG_INMENU_FOLDER_LOCATION + "ROO.png"
 			}
 		};
 
@@ -279,8 +279,8 @@ public interface Data {
 	public static final int MENU_SELECT_MC_ICON_BG_WIDTH		= 90;
 	public static final int MENU_SELECT_MC_ICON_BG_HEIGHT		= 100;
 
-	public static final int MENU_SELECT_MC_ICON_TEX_WIDTH	= 2048;
-	public static final int MENU_SELECT_MC_ICON_TEX_HEIGHT	= 256;
+	public static final int MENU_SELECT_MC_ICON_TEX_WIDTH	= 128;
+	public static final int MENU_SELECT_MC_ICON_TEX_HEIGHT	= 128;
 	public static final int MENU_SELECT_MC_ICON_WIDTH		= 90;
 	public static final int MENU_SELECT_MC_ICON_HEIGHT		= 100;
 

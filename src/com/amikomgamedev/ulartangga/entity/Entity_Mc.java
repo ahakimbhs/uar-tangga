@@ -89,36 +89,39 @@ public class Entity_Mc implements Define
 		return handler.getVelocityY();
 	}
 		
- 	public void cekMove()
+ 	public void onUpdate()
 	{
-		// move right after finish
-		if(Posisi_Mc_Current_Row > ROW_COUNT)						
+ 		switch(curState)
 		{
-			if(Posisi_Mc_Current % COLUMN_COUNT == 0
-					&& mc_Spr.getX() > GAME_MAP_CELL_WIDTH + Utils.getCellCenterX(mc_Spr))
-			{
-				Posisi_Mc_Current--;
-			}
-			
-			if(mc_Spr.getX() 
-					> (COLUMN_COUNT + 1 - Posisi_Mc_Current % COLUMN_COUNT) 
-					* GAME_MAP_CELL_WIDTH + Utils.getCellCenterX(mc_Spr))
-			{
-				Posisi_Mc_Current--;
-			}
-			
-			if(curState != STATE_MOVE_RIGHT)
-			{
-				mc_Spr.stopAnimation();
-				curState = STATE_MOVE_RIGHT;
-			}
-		}
-		// move left or right
-		else if(Posisi_Mc_Current % COLUMN_COUNT != 0 || Posisi_Mc_Current == 0)
-		{
-			// move right
-			if(Posisi_Mc_Current_Row % 2 == 1)  					
-			{
+			case STATE_IDLE:
+		 		
+				if(Posisi_Mc_Current % COLUMN_COUNT != 0 
+						|| Posisi_Mc_Current == 0)
+				{
+					if(Posisi_Mc_Current_Row % 2 == 1)
+						switchState(STATE_MOVE_RIGHT);
+					else
+						switchState(STATE_MOVE_LEFT);
+				}
+				// move up or back
+				else if(Posisi_Mc_Current % COLUMN_COUNT == 0)
+				{
+					// back
+					if(Posisi_Mc_Current_Row == ROW_COUNT)
+					{
+						Posisi_Mc_Current_Row++;
+						Posisi_Mc_Max = ROW_COUNT * COLUMN_COUNT 
+								- Posisi_Mc_Max % ROW_COUNT;
+					}
+					//move up
+					else
+						switchState(STATE_MOVE_UP);
+				}
+				
+				break;
+				
+			case STATE_MOVE_RIGHT:
+				
 				if(mc_Spr.getX() 
 						> Posisi_Mc_Current % COLUMN_COUNT 
 						* GAME_MAP_CELL_WIDTH 
@@ -127,42 +130,17 @@ public class Entity_Mc implements Define
 					Posisi_Mc_Current++;
 				}
 				
-				if(curState != STATE_MOVE_RIGHT)
-				{
-					mc_Spr.stopAnimation();
-					curState = STATE_MOVE_RIGHT;
-				}
-			}
-			// move left
-			else
-			{
-				if(mc_Spr.getX() + mc_Spr.getWidth() 
-						< (COLUMN_COUNT - Posisi_Mc_Current % COLUMN_COUNT)
-						* GAME_MAP_CELL_WIDTH 
-						- Utils.getCellCenterX(mc_Spr))
-				{
-					Posisi_Mc_Current++;
-				}
-				if(curState != STATE_MOVE_LEFT)
-				{
-					mc_Spr.stopAnimation();
-					curState = STATE_MOVE_LEFT;
-				}
-			}
-		}
-		// move up or back
-		else if(Posisi_Mc_Current % COLUMN_COUNT == 0)
-		{
-			// back
-			if(Posisi_Mc_Current_Row == ROW_COUNT)
-			{
-				Posisi_Mc_Current_Row++;
-				Posisi_Mc_Max = ROW_COUNT * COLUMN_COUNT 
-						- Posisi_Mc_Max % ROW_COUNT;
-			}
-			//move up
-			else
-			{
+				if(Posisi_Mc_Current % COLUMN_COUNT == 0
+						&& Posisi_Mc_Current_Row != ROW_COUNT
+						&& Posisi_Mc_Current != 0)
+					switchState(STATE_MOVE_UP);
+				
+				handler.setVelocity(SPEED_MOVE, 0);
+				
+				break;
+				
+			case STATE_MOVE_UP:
+				
 				if(mc_Spr.getY() + mc_Spr.getHeight() 
 						< Game.spr_Img_Map.getHeight() - 
 						Posisi_Mc_Current_Row * GAME_MAP_CELL_HEIGHT)
@@ -170,17 +148,71 @@ public class Entity_Mc implements Define
 					Posisi_Mc_Current++;
 					Posisi_Mc_Current_Row++;
 				}
-				if(curState != STATE_MOVE_UP)
+				
+				if(Posisi_Mc_Current % COLUMN_COUNT != 0)
 				{
-					mc_Spr.stopAnimation();
-					curState = STATE_MOVE_UP;
+					if(Posisi_Mc_Current_Row % 2 == 1)
+						switchState(STATE_MOVE_RIGHT);
+					else
+						switchState(STATE_MOVE_LEFT);
 				}
-			}
+				
+				handler.setVelocity(0, -SPEED_MOVE);
+				
+				break;
+				
+			case STATE_MOVE_LEFT:
+				
+				if(mc_Spr.getX() + mc_Spr.getWidth() 
+						< (COLUMN_COUNT - Posisi_Mc_Current % COLUMN_COUNT)
+						* GAME_MAP_CELL_WIDTH 
+						- Utils.getCellCenterX(mc_Spr))
+				{
+					Posisi_Mc_Current++;
+				}
+				
+				if(Posisi_Mc_Current % COLUMN_COUNT == 0)
+				{
+					if(Posisi_Mc_Current_Row != ROW_COUNT)
+						switchState(STATE_MOVE_UP);
+					else
+					{
+						Posisi_Mc_Current_Row++;
+						Posisi_Mc_Max = ROW_COUNT * COLUMN_COUNT 
+								- Posisi_Mc_Max % ROW_COUNT;
+						
+						switchState(STATE_MOVE_BACK);
+					}
+				}
+				
+				handler.setVelocity(-SPEED_MOVE, 0);
+				
+				break;
+				
+			case STATE_MOVE_BACK:
+
+				if(mc_Spr.getX()
+						> (COLUMN_COUNT + 1 - Posisi_Mc_Current % COLUMN_COUNT) 
+						* GAME_MAP_CELL_WIDTH + Utils.getCellCenterX(mc_Spr))
+				{
+					Posisi_Mc_Current--;
+				}
+				else if(Posisi_Mc_Current % COLUMN_COUNT == 0
+						&& mc_Spr.getX() > GAME_MAP_CELL_WIDTH + Utils.getCellCenterX(mc_Spr))
+				{
+					Posisi_Mc_Current--;
+				}
+				
+				handler.setVelocity(SPEED_MOVE, 0);
+				
+				break;
 		}
+ 		
 	}
 	
-	public void updateMove()
+	public void switchState(int state)
 	{
+		curState = state;
 		switch(curState)
 		{
 			case STATE_IDLE:
@@ -192,33 +224,26 @@ public class Entity_Mc implements Define
 			case STATE_MOVE_RIGHT:
 
 				mc_Spr.getTextureRegion().setFlippedHorizontal(false);
-				
-				if(!mc_Spr.isAnimationRunning())
-					setAnim(STATE_MOVE_RIGHT);
-				
-				handler.setVelocity(SPEED_MOVE, 0);
+				setAnim(STATE_MOVE_RIGHT);
 				
 				break;
 			case STATE_MOVE_UP:
 				
-				handler.setVelocity(0, -SPEED_MOVE);
+				mc_Spr.stopAnimation();
 				
 				break;
 			case STATE_MOVE_LEFT:
 				
 				mc_Spr.getTextureRegion().setFlippedHorizontal(true);
-				
-				if(!mc_Spr.isAnimationRunning())
-					setAnim(STATE_MOVE_RIGHT);
-				
-				handler.setVelocity(-SPEED_MOVE, 0);
+				setAnim(STATE_MOVE_RIGHT);
 				
 				break;
-			case STATE_SNAKE:
-				break;
-			case STATE_LEADDER:
-				break;
-			case STATE_MOVE_TO_START:
+				
+			case STATE_MOVE_BACK:
+
+				mc_Spr.getTextureRegion().setFlippedHorizontal(false);
+				setAnim(STATE_MOVE_RIGHT);
+				
 				break;
 		}
 	}
@@ -233,7 +258,7 @@ public class Entity_Mc implements Define
 	
 	public void stop() 
 	{
-		curState = STATE_IDLE;
+		switchState(STATE_IDLE);
 		
 		handler.setVelocity(0, 0);
 		
@@ -256,7 +281,6 @@ public class Entity_Mc implements Define
 		velocity	= (float) (velocityX / Math.cos(Math.toRadians(45)));
 		velocityY	= (float) (velocity * Math.sin(Math.toRadians(45))) - (gravitasi * second);
 		
-//		Utils.TRACE("velocityX = " +velocityX+ ", velocityY" +velocityY);
 		handler.setVelocity(-velocityX, -velocityY);
 
 		if(second >= time)
@@ -265,7 +289,6 @@ public class Entity_Mc implements Define
 			
 			mc_Spr.setPosition(
 					-mc_Spr.getWidth(), 
-//					MAP_HEIGHT - GAME_MAP_CELL_HEIGHT + Utils.getCellCenterY(mc_Spr));
 					Game.spr_Img_Map.getHeight() - mc_Spr.getHeight());
 			
 			Posisi_Mc_Current		= POSISI_MC_START;
@@ -281,6 +304,11 @@ public class Entity_Mc implements Define
 //		sm / | sd 
 //		  /__|
 //		   sp
+		
+		// pengecekan d bawah ini parah...
+		// padahal ad yg lebih simpel
+		// gara" ada pengecekan yg d atas
+		// jadi panjang pengecekannya
 		
 		if(posisiTanggaAwal % COLUMN_COUNT != 0) 											// bukan ujung dari tiap baris untuk posisi cell tanggal awal
 		{

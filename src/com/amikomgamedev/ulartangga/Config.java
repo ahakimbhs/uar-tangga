@@ -9,6 +9,10 @@ public class Config
 
 	public static int GAME_SCREEN_WIDTH;
 	public static int GAME_SCREEN_HEIGHT;
+	
+	public static final byte RATIO_WIDTH	= 0;
+	public static final byte RATIO_HEIGHT	= 1;
+	public static final byte RATIO_USE = RATIO_HEIGHT;
 
 	public static final boolean DEBUG = !true;
 	public static final boolean USE_AA = !true;

@@ -63,7 +63,7 @@ public interface Define
 				{7,	17,	25,	35,	22,	45,	9,	68,	80}			// posisi Ular Ahir
 			},
 			{// klasik
-				{6,	38,	58},		// posisi Tangga Awal
+				{9,	38,	58},		// posisi Tangga Awal
 				{52,78,	78},		// posisi Tangga Akhir
 				{41,99,	84,	16,	86,	70},		// posisi Ular Awal
 				{20,19,	24,	5,	66, 10}			// posisi Ular Ahir
@@ -86,9 +86,7 @@ public interface Define
 	public static final int STATE_MOVE_RIGHT	= 1;
 	public static final int STATE_MOVE_UP		= 2;
 	public static final int STATE_MOVE_LEFT		= 3;
-	public static final int STATE_SNAKE			= 4;
-	public static final int STATE_LEADDER		= 5;
-	public static final int STATE_MOVE_TO_START	= 6;
+	public static final int STATE_MOVE_BACK		= 4;
 
 	public final int SCENE_GAME_LOADING		= 0;
 	public final int SCENE_GAME_INGAME		= 1;

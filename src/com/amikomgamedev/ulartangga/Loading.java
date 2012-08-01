@@ -224,7 +224,7 @@ public class Loading {
 				Game.loadGameButton();
 				break;
 			case LOADING_SUB_TYPE_SOUND_GAMEPLAY:
-				Game.loadSoundGamePlay();
+				SoundManager.loadSoundGameplay();
 				break;
 			case LOADING_SUB_TYPE_HUD:
 				break;
@@ -254,7 +254,7 @@ public class Loading {
 			case LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER:
 				break;
 			case LOADING_SUB_TYPE_SOUND_MENU:
-				Game.loadSoundMenu();
+				SoundManager.loadSoundMenu();
 				break;
 			case LOADING_SUB_TYPE_GAME_OVER:
 				Game.loadGameOverBackground();
