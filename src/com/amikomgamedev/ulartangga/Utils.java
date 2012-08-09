@@ -30,12 +30,13 @@ public class Utils implements Define
 		return (Define.GAME_MAP_CELL_HEIGHT - sprite.getHeight()) / 2;
 	}
 
+	// ratio posisi untuk hud
 	public static float getRatioW(float def)
 	{
 		return ((def/Define.GAME_RATIO_SCREEN_WIDTH) 
 				* Config.GAME_SCREEN_WIDTH);
 	}
-
+	// ratio posisi untuk hud
 	public static float getRatioH(float def)
 	{
 		return ((def/Define.GAME_RATIO_SCREEN_HEIGHT) 
@@ -142,6 +143,8 @@ public class Utils implements Define
 						? TextureOptions.DEFAULT
 						:TextureOptions.REPEATING_NEAREST;
 	}
+	
+	// ratio posisi untuk scene n ukuran aset
 	public static float getRatio(float nil)
 	{
 		float nil_Ratio = 0;

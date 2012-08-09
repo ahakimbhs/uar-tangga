@@ -3,6 +3,7 @@ package com.amikomgamedev.ulartangga.entity;
 import org.anddev.andengine.engine.camera.Camera;
 
 import com.amikomgamedev.ulartangga.Define;
+import com.amikomgamedev.ulartangga.Utils;
 import com.amikomgamedev.ulartangga.states.State_Gameplay;
 
 public class Entity_Camera implements Define
@@ -200,7 +201,7 @@ public class Entity_Camera implements Define
 		float mcNextX = mcNext.getAnimatedSprite().getX();
 		float mcNextY = mcNext.getAnimatedSprite().getY() + mcNext.getAnimatedSprite().getHeight();
 		
-		int speed = 8;
+		float speed = Utils.getRatio(12);
 		float distance = 0;
 		
 		moveX++;

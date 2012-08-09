@@ -61,24 +61,28 @@ public interface Data {
 	public static final String MENU_SELECT_MC_ICON_BG	= IMG_INMENU_FOLDER_LOCATION + "Select_Mc_Bg_Icon_Mc.jpg";
 	public static final String MENU_SELECT_MC_BTN_ADD	= IMG_INMENU_FOLDER_LOCATION + "btnAdd.jpg";
 	public static final String MENU_SELECT_MC_BTN_DELETE= IMG_INMENU_FOLDER_LOCATION + "btnHapus.png";
-	public static final String MENU_SELECT_MC_BTN_TYPE	= SPR_INMENU_FOLDER_LOCATION + "Select_Mc_Type_Character.jpg";
 	public static final String MENU_SELECT_MC_BTN_ARROW	= IMG_INMENU_FOLDER_LOCATION + "btnArrow.png";
+	public static final String[] MENU_SELECT_MC_BTN_TYPE	= 
+		{
+			IMG_INMENU_FOLDER_LOCATION + "Select_Mc_Type_Player.jpg",
+			IMG_INMENU_FOLDER_LOCATION + "Select_Mc_Type_AI.jpg",
+		};
 	
 	public static final String IMG_INGAME_BACKGROUND_MAP[] =
 		{
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_map1.jpg",
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
-			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_klasik.jpg",
-			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_galaksi.jpg",
-			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_kolosal.jpg"
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg"
 		};
 	public static final String SELECT_MAP_ICON[] =
 		{
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_map1.jpg",
 			IMG_INMENU_FOLDER_LOCATION + "img_bg_gameplay_modern.png",
-			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_klasik.jpg",
-			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_galaksi.jpg",
-			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_kolosal.jpg"
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg"
 		};
 
 	public static final String IMG_INGAME_BUTTON_SLOT_MACHINE = IMG_INGAME_FOLDER_LOCATION + "slot_machine.png";
@@ -220,28 +224,45 @@ public interface Data {
 	
 	public static final String[][] GAMEOVER_MC_WIN = 
 		{
+			{
+				SPR_INGAME_FOLDER_LOCATION + "kucing.png",
+				SPR_INGAME_FOLDER_LOCATION + "anjing.png",
+				SPR_INGAME_FOLDER_LOCATION + "anjing 2.png",
+				SPR_INGAME_FOLDER_LOCATION + "anjing 3.png"
+			},
+			{
+				SPR_INGAME_FOLDER_LOCATION + "KIT WON.png",
+				SPR_INGAME_FOLDER_LOCATION + "PEA WON.png",
+				SPR_INGAME_FOLDER_LOCATION + "DEW WON.png",
+				SPR_INGAME_FOLDER_LOCATION + "ROO WON.png"
+			}
+		};
+		
+	public static final String[][] GAMEOVER_MC_LOSE = 
 		{
-			SPR_INGAME_FOLDER_LOCATION + "kucing.png",
-			SPR_INGAME_FOLDER_LOCATION + "anjing.png",
-			SPR_INGAME_FOLDER_LOCATION + "anjing 2.png",
-			SPR_INGAME_FOLDER_LOCATION + "anjing 3.png"
-		},
-		{
-			SPR_INGAME_FOLDER_LOCATION + "KIT WON.png",
-			SPR_INGAME_FOLDER_LOCATION + "PEA WON.png",
-			SPR_INGAME_FOLDER_LOCATION + "DEW WON.png",
-			SPR_INGAME_FOLDER_LOCATION + "ROO WON.png"
-		}
-	};
+			{
+				SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
+				SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
+				SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
+				SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
+			},
+			{
+				SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
+				SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
+				SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
+				SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
+			}
+		};
+	
 	public static final int [][] GAMEOVER_MC_ANIM_FRAME =
 		{
-			{0,	5},		// WIN
-			{0,	5}		// LOSE
+			{0,	7},		// WIN
+			{0,	7}		// LOSE
 		};
 	public static final long[][] GAMEOVER_MC_ANIM_SPEED =
 		{
-			{150,	150,	150,	150,	150,	150},	// WIN
-			{150,	150,	150,	150,	150,	150}	// LOSE
+			{150,	150,	150,	150,	150,	150,	150,	150},	// WIN
+			{150,	150,	150,	150,	150,	150,	150,	150}	// LOSE
 		};
 	
 	// texture region main caracter
@@ -342,13 +363,13 @@ public interface Data {
 	public static final int GAMEOVER_BG_HEIGHT 		= 200;
 	
 	public static final int GAMEOVER_MC_TEX_WIDTH 	= 1024;
-	public static final int GAMEOVER_MC_TEX_HEIGHT 	= 128;
+	public static final int GAMEOVER_MC_TEX_HEIGHT 	= 256;
 	public static final int GAMEOVER_MC_WIN_WIDTH	= 120;
 	public static final int GAMEOVER_MC_WIN_HEIGHT	= 120;
 	public static final int GAMEOVER_MC_LOSE_WIDTH 	= 35;
 	public static final int GAMEOVER_MC_LOSE_HEIGHT = 35;
-	public static final int GAMEOVER_MC_COLUMN		= 8;
-	public static final int GAMEOVER_MC_ROW			= 1;
+	public static final int GAMEOVER_MC_WIN_COLUMN	= 8;
+	public static final int GAMEOVER_MC_WIN_ROW		= 1;
 
 	public static final int GAMEOVER_BTN_TEX_WIDTH			= 128;
 	public static final int GAMEOVER_BTN_TEX_HEIGHT			= 128;

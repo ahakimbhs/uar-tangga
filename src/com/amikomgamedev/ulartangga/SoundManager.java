@@ -18,6 +18,7 @@ public class SoundManager
 		{
 			"snd/inmenu/msc_menu.ogg", 
 			"snd/ingame/msc_ingame_bg_modern.ogg",
+			"snd/ingame/msc_ingame_bg_modern.ogg",
 		};
 
 	public static final int SFX_LIFT			= 0;
@@ -38,6 +39,7 @@ public class SoundManager
 		};
 	
 	public static boolean isSoundOn = true;
+	public static boolean[] isPlayAgain = new boolean[SFX_TOTAL];
 
 	public static void loadSoundMenu()
 	{
@@ -59,7 +61,7 @@ public class SoundManager
 	{
 		try
 		{
-			int map = serverData.getSelectMap();
+			int map = serverData.getSelectMap() + 1;
 			
 			bgm[BGM_GAMEPLAY] =
 				MusicFactory.createMusicFromAsset(
@@ -133,6 +135,33 @@ public class SoundManager
 		{
 			sfx[index].pause();
 			sfx[index].seekTo(0);
+		}
+	}
+	
+
+	
+	public static void pauseAllSfx()
+	{
+		for (int i = 0; i < SFX_TOTAL; i++)
+		{
+			isPlayAgain[i] = false;
+			
+			if (sfx[i].isPlaying())
+			{
+				isPlayAgain[i] = true;
+				sfx[i].pause();
+			}
+		}
+	}
+	
+	public static void playAgainAllSfx()
+	{
+		for (int i = 0; i < SFX_TOTAL; i++)
+		{
+			if (isPlayAgain[i])
+			{
+				sfx[i].play();
+			}
 		}
 	}
 }

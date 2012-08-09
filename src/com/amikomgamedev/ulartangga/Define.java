@@ -2,9 +2,9 @@ package com.amikomgamedev.ulartangga;
 
 public interface Define 
 {
-	public static final int SPEED_MOVE 				= 70;
-	public static final int SPEED_TO_START 			= 100;
-	public static final int SPEED_SNAKE_N_LADDER 	= 100;
+	public static final float SPEED_MOVE 				= Utils.getRatio(70);
+	public static final float SPEED_TO_START 			= 100;
+	public static final float SPEED_SNAKE_N_LADDER 	= 100;
 
 	public static final int ROW_COUNT		= 10;
 	public static final int COLUMN_COUNT	= 10;
@@ -93,4 +93,7 @@ public interface Define
 	public final int SCENE_GAME_PAUSE		= 2;
 	public final int SCENE_GAME_OVER		= 3;
 	public final int SCENE_GAME_COUNT		= 4;
+
+	public final int MC_WIN		= 0;
+	public final int MC_LOSE	= 1;
 }
