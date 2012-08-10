@@ -620,6 +620,8 @@ public class State_Gameplay extends 	BaseGameActivity
 					Game.curPositionPause[i].setText(curPosition[i].getText());
 					Game.spr_GamePause_Mc_Icon[i].setVisible(true);
 					Game.curPositionPause[i].setVisible(true);
+					
+					curPosition[i].setColor(0, 0, 0);
 				}	
 				break;
 				
@@ -878,6 +880,9 @@ public class State_Gameplay extends 	BaseGameActivity
 		playerName = new ChangeableText(0, 0, Game.font[Data.FONT_SIZE_SMALL], "", 30);
 		valueDice = new ChangeableText(0, 0, Game.font[Data.FONT_SIZE_BIG], "", 1);
 		
+		playerName.setColor(0, 0, 0);
+		valueDice.setColor(0, 0, 0);
+		
 		valueDice.setPosition(
 				Utils.getRatio(50),
 				(spr_Img_Botton_Dice.getHeight() - valueDice.getHeight()) / 2);
@@ -890,6 +895,7 @@ public class State_Gameplay extends 	BaseGameActivity
 					Game.font[Data.FONT_SIZE_SMALL], "0", 3);
 			hud.attachChild(curPosition[i]);
 			posX+=Define.GAME_MAP_CELL_WIDTH;
+			curPosition[i].setColor(0, 0, 0);
 		}
 		
 		spr_Img_Botton_Dice.attachChild(valueDice);
@@ -902,6 +908,8 @@ public class State_Gameplay extends 	BaseGameActivity
 		Game.spr_GamePause_Bg.attachChild(Game.txtPause);
 		Game.spr_GamePause_Bg.attachChild(Game.spr_GamePause_Btn_Resume);
 		Game.spr_GamePause_Bg.attachChild(Game.spr_GamePause_Btn_MainMenu);
+		
+		Game.txtPause.setColor(0, 0, 0);
 		
 		for(int i = 0; i < Player_Max; i++)
 		{

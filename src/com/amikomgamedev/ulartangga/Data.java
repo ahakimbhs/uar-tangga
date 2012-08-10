@@ -9,7 +9,9 @@ public interface Data {
 		{
 			12,
 			24,
-			36
+			36,
+			16,
+			20
 		};
 	
 	public static final String IMG_LOGO_LOCATION = "gfx/appopen/";
@@ -25,6 +27,8 @@ public interface Data {
 	
 	public static final String IMG_MENU_BACK = 
 			MNU_FOLDER_LOCATION + "background.png";
+	public static final String IMG_BG_CREDIT = 
+			MNU_FOLDER_LOCATION + "bg_credit.png";
 	public static final String IMG_MENU_BTN_CREDIT =
 			MNU_FOLDER_LOCATION + "btn_credits.png";
 	public static final String IMG_MENU_BTN_OPTION = 
@@ -382,5 +386,23 @@ public interface Data {
 	public static final int _TEX_HEIGHT 	= 32;
 	public static final int _WIDTH 	= 32;
 	public static final int _HEIGHT 	= 32;
+	
 
+	
+	public static final String _TEX_PM = "Project Manager";
+	public static final String _TEX_PRD = "Produser";
+	public static final String _TEX_GD = "Game Designer";
+	public static final String _TEX_PROG = "Programer";
+	public static final String _TEX_ART = "Artist";
+	public static final String _TEX_SE = "Sound Enginer";
+	
+	public static final String _TEX_AGS = "Agus Tri Hariyanto";
+	public static final String _TEX_AYU = "Ayu";
+	public static final String _TEX_MTY = "Mutia";
+	public static final String _TEX_DWI = "Dwi Ariyanto";
+	public static final String _TEX_ARF = "Arief Maffrudin An Nuur";
+	public static final String _TEX_AMR = "Amirul";
+	public static final String _TEX_VER = "Verdian Andiansyah";
+	public static final String _TEX_FAN = "Moh. Rifandi Lihawa";
+	public static final String _TEX_IRF = "Irfan";
 }

@@ -158,6 +158,10 @@ public class Game implements Data,
 	public static TextureRegion reg_Img_Back_Menu;
 	public static Sprite spr_Img_Back_Menu;
 	
+	private static BitmapTextureAtlas tex_Img_Back_Credit;
+	public static TextureRegion reg_Img_Back_Credit;
+	public static Sprite spr_Img_Back_Credit;
+	
 	private static BitmapTextureAtlas tex_Img_Title;
 	public static TextureRegion reg_Img_Title_Menu;
 	public static Sprite spr_Img_Title_Menu;
@@ -264,7 +268,7 @@ public class Game implements Data,
 					TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 			font[i] = FontFactory.createFromAsset(tex_Font[i], activity, 
 					FONT_FILE_LOCATION,	Utils.getRatioH(FONT_SIZE[i]),
-					true, Color.BLACK);
+					true, Color.WHITE);
 			
 			activity.getEngine().getFontManager().loadFont(font[i]);
 			loadTexture(tex_Font[i]);
@@ -1083,6 +1087,18 @@ public class Game implements Data,
 				createTiledFromAsset(tex_Img_Sprt_Dadu, activity, IMG_SPR_DADU, 0, 0 ,9 , 1);
 		loadTexture(tex_Img_Sprt_Dadu);
 		
+	}
+	
+	public static void load_BG_Credit(){
+		tex_Img_Back_Credit = new BitmapTextureAtlas(512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		reg_Img_Back_Credit = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tex_Img_Back_Credit, activity, IMG_BG_CREDIT, 0, 0);
+		loadTexture(tex_Img_Back_Credit);
+		spr_Img_Back_Credit = new Sprite(
+				0, 0, 
+				Config.GAME_SCREEN_WIDTH,
+				Config.GAME_SCREEN_HEIGHT,
+				reg_Img_Back_Credit);
 	}
 	
 	//

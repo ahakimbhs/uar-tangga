@@ -11,6 +11,9 @@ public class Loading {
 	public static final int LOADING_TYPE_SELECT_MAP			= 6;
 	public static final int LOADING_TYPE_SELECT_MC			= 7;
 	// >>
+	public static final int LOADING_TYPE_CREDIT				= 8;
+	public static final int LOADING_TYPE_OPTION				= 9;
+	
 	public static int Loading_Type_Current				= LOADING_TYPE_APP_OPEN;
 
 	private static final int LOADING_SUB_TYPE_LOGO						= 0;
@@ -38,6 +41,7 @@ public class Loading {
 	//
 	
 	private static final int LOADING_SUB_TYPE_CREDIT_BACKGROUND			= 23; 
+	private static final int LOADING_SUB_TYPE_OPTION_BACKGROUND			= 24;
 	
 	private static int Loading_Max_Progress;
 	private static int Loading_Cur_Progress;
@@ -87,6 +91,19 @@ public class Loading {
 			LOADING_SUB_TYPE_CREDIT_BACKGROUND
 		};
 	//
+	
+	private static final int LOADING_TYPE_CREDIT_LIST_ITEM[] = 
+		{
+			LOADING_SUB_TYPE_CREDIT_BACKGROUND,
+			LOADING_SUB_TYPE_FONT
+		};
+	
+	private static final int LOADING_TYPE_OPTION_LIST_ITEM[]=
+		{
+			LOADING_SUB_TYPE_OPTION_BACKGROUND,
+			LOADING_SUB_TYPE_FONT
+		};
+	
 	private static final int LOADING_TYPE_GAMEPLAY_OPEN_LIST_ITEM[] =
 		{
 			LOADING_SUB_TYPE_LOADING_INTERFACE,
@@ -137,6 +154,12 @@ public class Loading {
 			case LOADING_TYPE_SELECT_MC:
 				Loading_Max_Progress = LOADING_TYPE_SELECT_MC_LIST_ITEM.length;
 				break;
+			case LOADING_TYPE_CREDIT:
+				Loading_Max_Progress = LOADING_TYPE_CREDIT_LIST_ITEM.length;
+				break;
+			case LOADING_TYPE_OPTION:
+				Loading_Max_Progress = LOADING_TYPE_OPTION_LIST_ITEM.length;
+				break;
 		}
 	}
 	
@@ -180,6 +203,13 @@ public class Loading {
 			case LOADING_TYPE_SELECT_MC:
 				loadItem(LOADING_TYPE_SELECT_MC_LIST_ITEM[Loading_Cur_Progress]);
 				break;
+			case LOADING_TYPE_CREDIT :
+				loadItem(LOADING_TYPE_CREDIT_LIST_ITEM[Loading_Cur_Progress]);
+				break;
+			case LOADING_TYPE_OPTION :
+				loadItem(LOADING_TYPE_OPTION_LIST_ITEM[Loading_Cur_Progress]);
+				break;
+			
 		}
 	}
 	
@@ -215,10 +245,12 @@ public class Loading {
 				Game.loadGameMap(map);
 				break;
 			case LOADING_SUB_TYPE_CREDIT_BACKGROUND:
-//				Game.loadBackgroundMenu();
+				Game.load_BG_Credit();	
+				Game.loadTitle();
 				Game.loadLogo();
-//				Game.loadTitle();
-				Game.loadFont();	
+				break;
+			case LOADING_SUB_TYPE_OPTION_BACKGROUND:
+				Game.load_BG_Credit();
 				break;
 			case LOADING_SUB_TYPE_GAME_BUTTON:
 				Game.loadGameButton();
