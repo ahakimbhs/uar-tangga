@@ -2,6 +2,7 @@ package com.amikomgamedev.ulartangga.states;
 
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
+import org.anddev.andengine.engine.camera.hud.HUD;
 import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
@@ -39,7 +40,8 @@ public class State_Menu_Main extends BaseGameActivity
 					 					IScrollDetectorListener,
 							 			IOnSceneTouchListener,
 							 			IClickDetectorListener,
-							 			Define
+							 			Define,
+							 			Data
 {
 	private float CurrentSecond = 0;
 	private float Second;
@@ -53,16 +55,18 @@ public class State_Menu_Main extends BaseGameActivity
 	protected ClickDetector			clickDetector = new ClickDetector(this);
 //	private State_Menu_Select_Map	select_Map;
 	
-	private final int STATE_MENU_START		= 0;
-	private final int STATE_MENU_LOADING	= 1;
-	private final int STATE_MENU_INMENU		= 2;
+	private final int STATE_MENU_START				= 0;
+	private final int STATE_MENU_LOADING			= 1;
+	private final int STATE_MENU_INMENU				= 2;
 	private final int STATE_MENU_SELECT_MAP_LOADING	= 3;
-	private final int STATE_MENU_SELECT_MAP	= 4;
+	private final int STATE_MENU_SELECT_MAP			= 4;
 	private final int STATE_MENU_SELECT_MC_LOADING	= 5;
-	private final int STATE_MENU_SELECT_MC	= 6;
-	private final int STATE_MENU_SELECT_PLAYER = 7;
-	private final int STATE_MENU_CREDIT 	= 8;
-	private final int STATE_MENU_OPTION 	= 9;
+	private final int STATE_MENU_SELECT_MC			= 6;
+	private final int STATE_MENU_SELECT_PLAYER 		= 7;
+	private final int STATE_MENU_CREDIT_LOADING 	= 8;
+	private final int STATE_MENU_CREDIT 			= 9;
+	private final int STATE_MENU_OPTION_LOADING 	= 10;
+	private final int STATE_MENU_OPTION 			= 11;
 
 	private int State_Game_Current	= -1;
 	
@@ -85,10 +89,14 @@ public class State_Menu_Main extends BaseGameActivity
 	
 	private Sprite spr_Img_Logo;
 	private Sprite spr_Img_Title;
+	private  Text txt_PM, txt_PRD, txt_GD, txt_PROG, txt_ART, txt_SE;
+	private Text txt_AGUS,txt_AYU,txt_MUTIA,txt_DWI,txt_ARIEF,txt_AAN,txt_AMIRUL, txt_FANDI, txt_IRFAN, txt10; 
 	
+	private HUD hud;
 	serverData sData = serverData.getInstance();
 	
 	private float y = 0;
+	private boolean touch = false;
 
 	public Engine onLoadEngine() 
 	{
@@ -250,17 +258,24 @@ public class State_Menu_Main extends BaseGameActivity
 			case STATE_MENU_SELECT_MC:
 				
 				break;
+			case STATE_MENU_CREDIT_LOADING:
+				if(Loading.isLoading())
+					Loading.updateLoading();
+				else
+				{
+					attachCredit();
+					switchState(STATE_MENU_CREDIT);
+				}
+				break;
 			case STATE_MENU_CREDIT:
-			
 				
-				Game.spr_Img_Title_Menu.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth()) /2, y);
+				Game.spr_Img_Logo.setScale(0.5f);
+				y-=2;
 				Debug.d("Y = "+y);
-				y-=3;
-				
-//				y = y -pSecondsElapsed;
-				if(y < 0)
-				Game.spr_Img_Title_Menu.setPosition(Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth() /2,y);
-				
+				if(y + Game.spr_Img_Logo.getY() + Game.spr_Img_Logo.getHeight() < 0)
+				y = Config.GAME_SCREEN_HEIGHT;
+				hud.setPosition(hud.getScaleCenterX()/2, y);
+							
 				break;
 								
 		}
@@ -329,15 +344,16 @@ public class State_Menu_Main extends BaseGameActivity
 				Game.spr_Img_Select_Mc_Bg.setVisible(true);
 				
 				break;
+			case STATE_MENU_CREDIT_LOADING:
+				Loading.setLoading(Loading.LOADING_TYPE_CREDIT);
+				break;
 			case STATE_MENU_CREDIT:
 				
-				spr_Img_Btn_Play.setVisible(false);
-				spr_Img_Btn_Option.setVisible(false);
-				spr_Img_Btn_Credit.setVisible(false);
 				y = Config.GAME_SCREEN_HEIGHT;
-				Game.spr_Img_Title_Menu.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth()) /2, y);
+				hud.setPosition(hud.getScaleCenterX() / 2, y);
 				
-				
+//				Game.spr_Img_Logo.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Logo.getWidth()) / 2, Game.spr_Img_Title_Menu.getY() + Game.spr_Img_Title_Menu.getHeight() + 10);
+//				Game.spr_Img_Logo.setScale(0.5f);
 				break;
 		}
 	}
@@ -384,12 +400,13 @@ public class State_Menu_Main extends BaseGameActivity
 			case STATE_MENU_CREDIT:
 				if(keyCode == KeyEvent.KEYCODE_BACK)
 				{	
-					
+					Game.spr_Img_Back_Credit.setVisible(false);
 					switchState(STATE_MENU_INMENU);
-					Game.spr_Img_Title_Menu.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth()) /2, 50);
-					spr_Img_Btn_Play.setVisible(true);
-					spr_Img_Btn_Option.setVisible(true);
-					spr_Img_Btn_Credit.setVisible(true);
+					hud.setVisible(false);
+//					Game.spr_Img_Title_Menu.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth()) /2, 50);
+//					spr_Img_Btn_Play.setVisible(true);
+//					spr_Img_Btn_Option.setVisible(true);
+//					spr_Img_Btn_Credit.setVisible(true);
 				}
 				break;
 		}
@@ -420,7 +437,7 @@ public class State_Menu_Main extends BaseGameActivity
 					// sData bawah ni gx perlu d perhatikan
 					// konsep yg ada d pikiran q
 					// ternyata beda sama yg d inginkan game designer
-					sData.setSelectMap(MAP_KLASIK);
+					sData.setSelectMap(MAP_MODERN);
 					
 					if(Game.spr_Img_Select_Mc_Bg == null)
 						switchState(STATE_MENU_SELECT_MC_LOADING);
@@ -429,7 +446,7 @@ public class State_Menu_Main extends BaseGameActivity
 				}
 				else if(Utils.isOnArea(pSceneTouchEvent, spr_Img_Btn_Credit)
 						&& pSceneTouchEvent.isActionUp())
-					switchState(STATE_MENU_CREDIT);
+					switchState(STATE_MENU_CREDIT_LOADING);
 				
 				break;
 				
@@ -465,8 +482,8 @@ public class State_Menu_Main extends BaseGameActivity
 		return true;
 	}
 
-	public void onScroll(ScrollDetector pScollDetector, TouchEvent pTouchEvent,
-			float pDistanceX, float pDistanceY)
+	public void onScroll(ScrollDetector pScollDetector, final TouchEvent pTouchEvent,
+			float pDistanceX, final float pDistanceY)
 	{
 		switch (State_Game_Current) 
 		{
@@ -475,6 +492,34 @@ public class State_Menu_Main extends BaseGameActivity
 				Game.spr_Img_Select_Map_Bg_Select.setPosition(
 						Game.spr_Img_Select_Map_Bg_Select.getX(),
 						Game.spr_Img_Select_Map_Bg_Select.getY() + pDistanceY);
+				
+				break;
+			case STATE_MENU_CREDIT:
+				this.runOnUpdateThread(new Runnable() {
+					
+					public void run() {
+						if (pTouchEvent.getAction() == TouchEvent.ACTION_DOWN){
+//							touch = false;
+							mEngine.clearUpdateHandlers();
+							y =  hud.getY() + pDistanceY;
+							hud.setPosition(hud.getX(), y);
+							Debug.d("STOOPPPPPPPPPP");
+							
+						}
+						if (pTouchEvent.getAction() == TouchEvent.ACTION_UP){
+//							touch = true;
+							Debug.d("LANJUTTTTTTTTTTTTTT");
+							mEngine.registerUpdateHandler(State_Menu_Main.this);	
+						}
+						
+//							if(touch == true){
+//							hud.setPosition(hud.getX(), hud.getY() + pDistanceY);
+//							mEngine.clearUpdateHandlers();
+//							}
+							
+					
+					}
+				});
 				
 				break;
 		}
@@ -766,30 +811,97 @@ public class State_Menu_Main extends BaseGameActivity
 		Game.spr_Img_Select_Mc_Btn_Add.setVisible(true);
 	}
 	
-	private void attachCredit(){
-		int Margin = 20;
-		spr_Img_Logo = new Sprite(
-				0, 0, 
-				Utils.getRatioW(100),
-				Utils.getRatioH(50),
-				Game.reg_Img_Logo);
-		spr_Img_Title = new Sprite(
-				0, 0,
-				Utils.getRatioW(100),
-				Utils.getRatioW(50),
-				Game.reg_Img_Title_Menu);
+private void attachCredit(){
+		
+		int MARGIN = 15;
+		
+		scene.attachChild(Game.spr_Img_Back_Credit);
+		hud = new HUD();
+		camera.setHUD(hud);
+		
+		hud.attachChild(Game.spr_Img_Title_Menu);
+		Game.spr_Img_Title_Menu.setPosition(Game.spr_Img_Title_Menu.getX(), 0);
+
 			
-		spr_Img_Logo.setPosition(
-				Config.GAME_SCREEN_WIDTH - Game.reg_Img_Logo.getWidth() / 2,
-				Margin
-				);
-		spr_Img_Title.setPosition(
-				Config.GAME_SCREEN_WIDTH - Game.reg_Img_Title_Menu.getWidth() / 2,
-				Margin
-				);
-//		scene.attachChild(Game.spr_Img_Back_Menu);
-		scene.attachChild(spr_Img_Title);
-		scene.attachChild(spr_Img_Logo);
+		txt_PM = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[3].getStringWidth(_TEX_PM)) / 2,
+				Game.spr_Img_Title_Menu.getY()+Game.spr_Img_Title_Menu.getHeight() + MARGIN , Game.font[3], _TEX_PM);
+		
+		txt_AGUS = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[4].getStringWidth(_TEX_AGS)) / 2,
+				txt_PM.getY() + MARGIN, Game.font[4], _TEX_AGS);
+		
+		txt_PRD = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[3].getStringWidth(_TEX_PRD)) / 2,
+				txt_AGUS.getY()+ txt_AGUS.getHeight() + MARGIN , Game.font[3], _TEX_PRD);
+		
+		txt_AYU = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[4].getStringWidth(_TEX_AYU)) / 2,
+				txt_PRD.getY() + MARGIN, Game.font[4], _TEX_AYU);
+		
+		txt_GD = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[3].getStringWidth(_TEX_GD)) / 2,
+				txt_AYU.getY()+ txt_AYU.getHeight() + MARGIN , Game.font[3], _TEX_GD);
+		
+		txt_MUTIA = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[4].getStringWidth(_TEX_MTY)) / 2,
+				txt_GD.getY() + MARGIN, Game.font[4], _TEX_MTY);
+		
+		txt_PROG = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[3].getStringWidth(_TEX_PROG)) / 2,
+				txt_MUTIA.getY()+ txt_MUTIA.getHeight()+ MARGIN , Game.font[3], _TEX_PROG);
+		
+		txt_DWI = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[4].getStringWidth(_TEX_DWI)) / 2,
+				txt_PROG.getY() + MARGIN, Game.font[4], _TEX_DWI);
+		
+		txt_ARIEF = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[4].getStringWidth(_TEX_ARF)) / 2,
+				txt_DWI.getY() + MARGIN + 5 , Game.font[4], _TEX_ARF);
+		
+		txt_ART = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[3].getStringWidth(_TEX_ART)) / 2,
+				txt_ARIEF.getY()+ txt_ARIEF.getHeight()+ MARGIN , Game.font[3], _TEX_ART);
+		
+		txt_AMIRUL = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[4].getStringWidth(_TEX_AMR)) / 2,
+				txt_ART.getY() + MARGIN, Game.font[4], _TEX_AMR);
+		
+		txt_AAN = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[4].getStringWidth(_TEX_VER)) / 2,
+				txt_AMIRUL.getY() + MARGIN + 5, Game.font[4], _TEX_VER);
+		
+		txt_SE = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[3].getStringWidth(_TEX_SE)) / 2,
+				txt_AAN.getY()+ txt_AAN.getHeight()+ MARGIN , Game.font[3], _TEX_SE);
+		
+		txt_FANDI = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[4].getStringWidth(_TEX_FAN)) / 2,
+				txt_SE.getY() + MARGIN, Game.font[4], _TEX_FAN);
+		
+		txt_IRFAN = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[4].getStringWidth(_TEX_IRF)) / 2,
+				txt_FANDI.getY()+MARGIN + 5 , Game.font[4], _TEX_IRF);
+
+		
+		txt_AGUS.setColor(1,0, 0);
+		txt_AYU.setColor(1, 0, 0);
+		txt_MUTIA.setColor(1, 0, 0);
+		txt_ARIEF.setColor(1, 0, 0);
+		txt_DWI.setColor(1, 0, 0);
+		txt_AAN.setColor(1, 0, 0);
+		txt_AMIRUL.setColor(1, 0, 0);
+		txt_FANDI.setColor(1, 0, 0);
+		txt_IRFAN.setColor(1, 0, 0);
+		
+		hud.attachChild(txt_PM);
+		hud.attachChild(txt_PRD);
+		hud.attachChild(txt_PROG);
+		hud.attachChild(txt_GD);
+		hud.attachChild(txt_ART);
+		hud.attachChild(txt_SE);
+		
+		hud.attachChild(txt_AGUS);
+		hud.attachChild(txt_AYU);
+		hud.attachChild(txt_MUTIA);
+		hud.attachChild(txt_DWI);
+		hud.attachChild(txt_ARIEF);
+		hud.attachChild(txt_AMIRUL);
+		hud.attachChild(txt_AAN);
+		hud.attachChild(txt_FANDI);
+		hud.attachChild(txt_IRFAN);
+	
+		hud.attachChild(Game.spr_Img_Logo);
+		Game.spr_Img_Logo.setPosition(Game.spr_Img_Logo.getX(), 
+				txt_IRFAN.getY() +txt_IRFAN.getHeight() + MARGIN);
+	
+		
+		
 		
 	}
 	

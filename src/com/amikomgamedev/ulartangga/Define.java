@@ -33,8 +33,8 @@ public interface Define
 	public static final int TYPE_PLAYER	= 0;
 	public static final int TYPE_AI		= 1;
 
-	public static final int MAP_MODERN	= 0;
-	public static final int MAP_KLASIK	= 1;
+	public static final int MAP_KLASIK	= 0;
+	public static final int MAP_MODERN 	= 1;
 	public static final int MAP_GALAKSI	= 2;
 	public static final int MAP_KOLOSAL	= 3;
 	
@@ -56,13 +56,13 @@ public interface Define
 	
 	public static final int[][][] SNAKE_N_LADDER =
 		{
-			{// modern
-				{2, 5,	8,	11,	21,	38,	50,	55,	60},		// posisi Tangga Awal
-				{24,48,	28,	52,	41,	65,	71,	93, 78},		// posisi Tangga Akhir
-				{33,54,	58,	63,	76,	84,	89,	95,	98},		// posisi Ular Awal
-				{7,	17,	25,	35,	22,	45,	9,	68,	80}			// posisi Ular Ahir
-			},
 			{// klasik
+				{5, 11,	20,	49,	52,	64,	81},		// posisi Tangga Awal
+				{27,55,	41,	70,	96,	97,	99},		// posisi Tangga Akhir
+				{19,36,	58,	60,	74,	92,	98},		// posisi Ular Awal
+				{2,	17,	18,	42,	44,	71,	32}			// posisi Ular Ahir
+			},
+			{// modern
 				{9,	38,	58},		// posisi Tangga Awal
 				{52,78,	78},		// posisi Tangga Akhir
 				{41,99,	84,	16,	86,	70},		// posisi Ular Awal

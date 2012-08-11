@@ -74,17 +74,15 @@ public interface Data {
 	
 	public static final String IMG_INGAME_BACKGROUND_MAP[] =
 		{
-			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_map1.jpg",
-			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_klasik.png",
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg"
 		};
 	public static final String SELECT_MAP_ICON[] =
 		{
-			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_map1.jpg",
+			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_klasik.png",
 			IMG_INMENU_FOLDER_LOCATION + "img_bg_gameplay_modern.png",
-			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg",
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg"
 		};
@@ -112,12 +110,18 @@ public interface Data {
 	
 	public static final String SPR_MC[][] =
 		{
-			{
-				SPR_INGAME_FOLDER_LOCATION + "kucing.png",
-				SPR_INGAME_FOLDER_LOCATION + "anjing.png",
-				SPR_INGAME_FOLDER_LOCATION + "anjing 2.png",
-				SPR_INGAME_FOLDER_LOCATION + "anjing 3.png"
-			},
+//			{
+//				SPR_INGAME_FOLDER_LOCATION + "kucing.png",
+//				SPR_INGAME_FOLDER_LOCATION + "anjing.png",
+//				SPR_INGAME_FOLDER_LOCATION + "anjing 2.png",
+//				SPR_INGAME_FOLDER_LOCATION + "anjing 3.png"
+//			},
+//			{
+//				SPR_INGAME_FOLDER_LOCATION + "kit_klasik.png",
+//				SPR_INGAME_FOLDER_LOCATION + "pea_klasik.png",
+//				SPR_INGAME_FOLDER_LOCATION + "dew_klasik.png",
+//				SPR_INGAME_FOLDER_LOCATION + "row_klasik.png"
+//			},
 			{
 				SPR_INGAME_FOLDER_LOCATION + "kit_modern.png",
 				SPR_INGAME_FOLDER_LOCATION + "pea_modern.png",
@@ -125,10 +129,10 @@ public interface Data {
 				SPR_INGAME_FOLDER_LOCATION + "row_modern.png"
 			},
 			{
-				SPR_INGAME_FOLDER_LOCATION + "kit_klasik.png",
-				SPR_INGAME_FOLDER_LOCATION + "pea_klasik.png",
-				SPR_INGAME_FOLDER_LOCATION + "dew_klasik.png",
-				SPR_INGAME_FOLDER_LOCATION + "row_klasik.png"
+				SPR_INGAME_FOLDER_LOCATION + "kit_modern.png",
+				SPR_INGAME_FOLDER_LOCATION + "pea_modern.png",
+				SPR_INGAME_FOLDER_LOCATION + "dew_modern.png",
+				SPR_INGAME_FOLDER_LOCATION + "row_modern.png"
 			},
 			{
 				SPR_INGAME_FOLDER_LOCATION + "kit_galaksi.png",
