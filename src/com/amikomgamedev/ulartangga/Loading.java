@@ -236,6 +236,7 @@ public class Loading {
 				break;
 			case LOADING_SUB_TYPE_LOADING_INTERFACE:
 				Game.loadLoadingBg();
+				Game.load_Close_Notif();
 				break;
 			case LOADING_SUB_TYPE_MC:
 				Game.loadMC();

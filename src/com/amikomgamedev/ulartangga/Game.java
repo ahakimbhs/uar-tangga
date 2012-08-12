@@ -179,6 +179,14 @@ public class Game implements Data,
 	public static TiledTextureRegion reg_Img_Dadu;
 	public static AnimatedSprite spr_Img_Dadu;
 
+	private static BitmapTextureAtlas tex_Img_Close_Notif;
+	public static TextureRegion reg_Img_Bg_Notif
+								,reg_btn_no
+								,reg_btn_yes;	
+	public static Sprite spr_Img_Bg_Notif,
+						spr_btn_no,
+						spr_btn_yes;
+	
 	public static float dicePosX;
 	public static float dicePosY;
 	
@@ -1100,6 +1108,34 @@ public class Game implements Data,
 				Config.GAME_SCREEN_HEIGHT,
 				reg_Img_Back_Credit);
 	}
+	
+	public static void load_Close_Notif() {
+		tex_Img_Close_Notif = new BitmapTextureAtlas(512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		reg_Img_Bg_Notif = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tex_Img_Close_Notif, activity, IMG_BG_NOTIF, 0, 0);
+		
+		reg_btn_no = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tex_Img_Close_Notif, activity, IMG_BTN_NO, NOTIF_BG_WIDTH, NOTIF_BG_HEIGHT);
+		reg_btn_yes = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tex_Img_Close_Notif, activity, IMG_BTN_YES, NOTIF_BG_WIDTH + NOTIF_BTN_WIDTH, NOTIF_BG_HEIGHT + NOTIF_BTN_HEIGHT);
+
+		loadTexture(tex_Img_Close_Notif);
+		
+		spr_Img_Bg_Notif = new Sprite(
+				(Config.GAME_SCREEN_WIDTH - NOTIF_BG_WIDTH ) /2,
+				(Config.GAME_SCREEN_HEIGHT - NOTIF_BG_HEIGHT ) /2 ,
+				reg_Img_Bg_Notif);
+		
+		spr_btn_no = new Sprite(
+				0, 0, 
+				reg_btn_no);
+		
+		spr_btn_yes = new Sprite(
+				0, 0 ,
+				reg_btn_yes);
+		
+	}
+	
 	
 	//
 	

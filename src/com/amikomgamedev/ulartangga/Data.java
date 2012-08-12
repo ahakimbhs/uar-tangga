@@ -41,6 +41,13 @@ public interface Data {
 			SPR_INGAME_FOLDER_LOCATION + "sprite_dadu.png" ;
 	//
 	
+	public static final String IMG_BG_NOTIF =
+			MNU_FOLDER_LOCATION + "bg_notif.png";
+	public static final String IMG_BTN_NO =
+			MNU_FOLDER_LOCATION + "btn_no.png";
+	public static final String IMG_BTN_YES =
+			MNU_FOLDER_LOCATION + "btn_yes.png";
+	
 	public static final String BGM_INMENU = SND_INMENU_FOLDER_LOCATION + "msc_menu.ogg";
 	
 	public static final String[] BGM_INGAME_GAMEPLAY = 
@@ -391,7 +398,11 @@ public interface Data {
 	public static final int _WIDTH 	= 32;
 	public static final int _HEIGHT 	= 32;
 	
-
+	public static final int NOTIF_BG_HEIGHT		= 140;
+	public static final int NOTIF_BG_WIDTH		= 300;
+	
+	public static final int NOTIF_BTN_WIDTH		= 64;
+	public static final int NOTIF_BTN_HEIGHT	= 64;
 	
 	public static final String _TEX_PM = "Project Manager";
 	public static final String _TEX_PRD = "Produser";
