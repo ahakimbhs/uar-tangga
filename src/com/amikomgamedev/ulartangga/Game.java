@@ -57,16 +57,22 @@ public class Game implements Data,
 	private static BitmapTextureAtlas	tex_Smoke;
 	public static TiledTextureRegion 	reg_Smoke;
 	public static AnimatedSprite		spr_Smoke;
+	
+	private static BitmapTextureAtlas[]	tex_Dice;
+	public static TiledTextureRegion[] 	reg_Dice;
+	public static AnimatedSprite[]		spr_Dice;
 
 	private static BitmapTextureAtlas[] tex_Icon_MC;
 	public static TextureRegion[]		reg_Icon_MC;
 	public static Sprite[]				spr_Icon_MC;
 	
-	private static BitmapTextureAtlas 	tex_Img_Button_Dice;
-	public static TiledTextureRegion 	reg_Img_Button_Dice;
-	public static TextureRegion			reg_Img_Button_Pause;
-	public static AnimatedSprite 		spr_Img_Button_Dice;
-	public static Sprite				spr_Img_Button_Pause;
+	private static BitmapTextureAtlas 	tex_Img_Button_Slide;
+	public static TextureRegion 		reg_Img_Button_Slide_Bg,
+										reg_Img_Button_Slide,
+										reg_Img_Button_Pause;
+	public static Sprite 				spr_Img_Button_Slide_Bg,
+										spr_Img_Button_Slide,
+										spr_Img_Button_Pause;
 	
 	private static BitmapTextureAtlas 	tex_Img_Informasi;
 	public static TextureRegion 		reg_Img_Informasi_Footer,
@@ -353,6 +359,34 @@ public class Game implements Data,
 					reg_Smoke);
 	}
 	
+	public static void loadGamePlayDice()
+	{
+		tex_Dice = new BitmapTextureAtlas[6];
+		reg_Dice = new TiledTextureRegion[6];
+		spr_Dice = new AnimatedSprite[6];
+		
+		for(int i = 0; i < 6; i++)
+		{
+			tex_Dice[i] = new BitmapTextureAtlas(
+					SPR_DICE_TEX_WIDTH,
+					SPR_DICE_TEX_HEIGHT, 
+					Utils.getTextureOption());
+			
+			reg_Dice[i] = BitmapTextureAtlasTextureRegionFactory.
+					createTiledFromAsset(tex_Dice[i], activity,
+					SPR_GAMEPLAY_DICE[i], 0, 0,
+					Data.SPR_DICE_COLUMN, Data.SPR_DICE_ROW);
+			
+			loadTexture(tex_Dice[i]);
+			
+			spr_Dice[i] = new AnimatedSprite(
+					0, 0, 
+					Utils.getRatio(SPR_DICE_WIDTH), 
+					Utils.getRatio(SPR_DICE_HEIGHT), 
+					reg_Dice[i]);
+		}
+	}
+	
 	public static void loadIconMC()
 	{
 		tex_Icon_MC = new BitmapTextureAtlas[maxPlayer];
@@ -390,23 +424,48 @@ public class Game implements Data,
 	
 	public static void loadGameButton()
 	{
-		tex_Img_Button_Dice = new BitmapTextureAtlas(
+		tex_Img_Button_Slide = new BitmapTextureAtlas(
 				512, 256, 
 				Utils.getTextureOption());
-		reg_Img_Button_Dice = BitmapTextureAtlasTextureRegionFactory.
-				createTiledFromAsset(tex_Img_Button_Dice, activity, 
-				IMG_INGAME_BUTTON_SLOT_MACHINE, 0, 0,
-				SPR_BOTTON_DICE_COLUMN,SPR_BOTTON_DICE_ROW);
+		reg_Img_Button_Slide_Bg = BitmapTextureAtlasTextureRegionFactory.
+				createFromAsset(tex_Img_Button_Slide, activity, 
+				IMG_INGAME_BUTTON_DICE[0], 0, 0);
+		reg_Img_Button_Slide = BitmapTextureAtlasTextureRegionFactory.
+				createFromAsset(tex_Img_Button_Slide, activity, 
+				IMG_INGAME_BUTTON_DICE[1], 0, 100);
 		reg_Img_Button_Pause = BitmapTextureAtlasTextureRegionFactory.
-				createFromAsset(tex_Img_Button_Dice, activity, 
-				IMG_INGAME_BUTTON_PAUSE, 334, 0);
+				createFromAsset(tex_Img_Button_Slide, activity, 
+				IMG_INGAME_BUTTON_PAUSE, 200, 0);
 		
-		loadTexture(tex_Img_Button_Dice);
+		loadTexture(tex_Img_Button_Slide);
+		
+		spr_Img_Button_Slide_Bg = new Sprite(0, 0,
+				Utils.getRatio(270),
+				Utils.getRatio(75),
+				Game.reg_Img_Button_Slide_Bg);
+		spr_Img_Button_Slide = new Sprite(0, 0,
+				Utils.getRatio(75),
+				Utils.getRatio(50),
+				Game.reg_Img_Button_Slide);
+		spr_Img_Button_Pause =  new Sprite(
+				0, 0, 
+				Utils.getRatio(20), 
+				Utils.getRatio(20), 
+				Game.reg_Img_Button_Pause);
+		
+		spr_Img_Button_Slide_Bg.setPosition(
+				(Config.GAME_SCREEN_WIDTH - spr_Img_Button_Slide_Bg.getWidth()) / 2,
+				(Config.GAME_SCREEN_HEIGHT - spr_Img_Button_Slide_Bg.getHeight()) / 2);
+		
+		spr_Img_Button_Slide.setPosition(
+				(spr_Img_Button_Slide_Bg.getHeight() - spr_Img_Button_Slide.getHeight()) / 2,
+				(spr_Img_Button_Slide_Bg.getHeight() - spr_Img_Button_Slide.getHeight()) / 2);
 
-		dicePosX = Config.GAME_SCREEN_WIDTH - Utils.getRatioW(20) - reg_Img_Button_Dice.getWidth();
-		dicePosY = spr_Img_Informasi_Footer.getY() - Utils.getRatioH(20) - 
-				reg_Img_Button_Dice.getHeight();
+		spr_Img_Button_Pause.setPosition(
+				Config.GAME_SCREEN_WIDTH - spr_Img_Button_Pause.getWidth() - Utils.getRatioW(10),
+				Config.GAME_SCREEN_HEIGHT - spr_Img_Button_Pause.getHeight() - Utils.getRatioW(10));
 		
+		spr_Img_Button_Slide_Bg.attachChild(spr_Img_Button_Slide);		
 	}
 	
 	public static void loadGameInformasi()

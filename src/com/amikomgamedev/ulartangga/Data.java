@@ -94,6 +94,11 @@ public interface Data {
 			IMG_INGAME_FOLDER_LOCATION + "img_bg_gameplay_modern.jpg"
 		};
 
+	public static final String[] IMG_INGAME_BUTTON_DICE = 
+			{
+				IMG_INGAME_FOLDER_LOCATION + "slide bg.jpg",
+				IMG_INGAME_FOLDER_LOCATION + "slide.jpg",
+			};
 	public static final String IMG_INGAME_BUTTON_SLOT_MACHINE = IMG_INGAME_FOLDER_LOCATION + "slot_machine.png";
 	public static final String IMG_INGAME_BUTTON_PAUSE = IMG_INGAME_FOLDER_LOCATION + "pause.png";
 	public static final String IMG_INGAME_BOTTON_SLOT_MACHINE_NUMBER = IMG_INGAME_FOLDER_LOCATION + "NUMBER OF SLOT MACHINE.png";
@@ -113,6 +118,15 @@ public interface Data {
 		{
 			{100,	100},			// IDLE
 			{100,	100,	100,	100,	100,	100}	// MOVE
+		};
+	
+	public static final int [] SPR_DICE_FRAME =
+		{
+			0,	10
+		};
+	public static final long[] SPR_DICE_SPEED =
+		{
+			100,	100,	100,	100,	100,	100,	100,	100,	100,	100,	100
 		};
 	
 	public static final String SPR_MC[][] =
@@ -205,6 +219,16 @@ public interface Data {
 			}
 		};
 
+	public static final String SPR_GAMEPLAY_DICE[] =
+		{
+			SPR_INGAME_FOLDER_LOCATION + "DICE 01.png",
+			SPR_INGAME_FOLDER_LOCATION + "DICE 02.png",
+			SPR_INGAME_FOLDER_LOCATION + "DICE 03.png",
+			SPR_INGAME_FOLDER_LOCATION + "DICE 04.png",
+			SPR_INGAME_FOLDER_LOCATION + "DICE 05.png",
+			SPR_INGAME_FOLDER_LOCATION + "DICE 06.png",
+		};
+	
 	public static final String GAMEPLAY_SMOKE = SPR_INGAME_FOLDER_LOCATION + "BERANTEM.png";
 	
 	public static final int[] GAMEPLAY_SMOKE_ANIM_FRAME = {0, 3};
@@ -296,6 +320,13 @@ public interface Data {
 	
 	public static final int SPR_MC_COLUMN	= 6;
 	public static final int SPR_MC_ROW		= 1;
+
+	public static final int SPR_DICE_TEX_WIDTH	= 1024;
+	public static final int SPR_DICE_TEX_HEIGHT	= 128;
+	public static final int SPR_DICE_WIDTH 		= 90;
+	public static final int SPR_DICE_HEIGHT 	= 90;
+	public static final int SPR_DICE_COLUMN		= 11;
+	public static final int SPR_DICE_ROW		= 1;
 	
 	public static final int MAP_TEX_WIDTH 	= 1024;
 	public static final int MAP_TEX_HEIGHT 	= 1024;

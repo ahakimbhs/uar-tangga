@@ -163,6 +163,7 @@ public class State_Menu_Main extends BaseGameActivity
 				{
 					Game.spr_Img_Loading.detachSelf();
 					attachInMenu();
+					attachNotif();
 					switchState(STATE_MENU_INMENU);
 				}
 				
@@ -309,6 +310,7 @@ public class State_Menu_Main extends BaseGameActivity
 
 				SoundManager.playMusic(SoundManager.BGM_MENU_MAIN);
 				Game.spr_Img_Logo.setVisible(false);
+				Game.spr_Img_Bg_Notif.setVisible(false);
 				
 				break;
 
@@ -349,6 +351,9 @@ public class State_Menu_Main extends BaseGameActivity
 				break;
 			case STATE_MENU_CREDIT:
 				
+				Game.spr_Img_Back_Menu.setVisible(false);
+				Game.spr_Img_Bg_Notif.setVisible(false);
+				
 				y = Config.GAME_SCREEN_HEIGHT;
 				hud.setPosition(hud.getScaleCenterX() / 2, y);
 				
@@ -375,7 +380,9 @@ public class State_Menu_Main extends BaseGameActivity
 				
 				if(keyCode == KeyEvent.KEYCODE_BACK)
 				{
-					finish();
+//					finish();
+					Game.spr_Img_Bg_Notif.setVisible(true);
+					Game.spr_Img_Back_Menu.setVisible(false);
 				}
 				break;
 				
@@ -401,6 +408,7 @@ public class State_Menu_Main extends BaseGameActivity
 				if(keyCode == KeyEvent.KEYCODE_BACK)
 				{	
 					Game.spr_Img_Back_Credit.setVisible(false);
+					Game.spr_Img_Back_Menu.setVisible(true);
 					switchState(STATE_MENU_INMENU);
 					hud.setVisible(false);
 //					Game.spr_Img_Title_Menu.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Title_Menu.getWidth()) /2, 50);
@@ -498,27 +506,15 @@ public class State_Menu_Main extends BaseGameActivity
 				this.runOnUpdateThread(new Runnable() {
 					
 					public void run() {
-						if (pTouchEvent.getAction() == TouchEvent.ACTION_DOWN){
-//							touch = false;
+
 							mEngine.clearUpdateHandlers();
 							y =  hud.getY() + pDistanceY;
 							hud.setPosition(hud.getX(), y);
-							Debug.d("STOOPPPPPPPPPP");
-							
-						}
-						if (pTouchEvent.getAction() == TouchEvent.ACTION_UP){
-//							touch = true;
-							Debug.d("LANJUTTTTTTTTTTTTTT");
+
 							mEngine.registerUpdateHandler(State_Menu_Main.this);	
 						}
-						
-//							if(touch == true){
-//							hud.setPosition(hud.getX(), hud.getY() + pDistanceY);
-//							mEngine.clearUpdateHandlers();
-//							}
-							
-					
-					}
+			
+	
 				});
 				
 				break;
@@ -538,6 +534,14 @@ public class State_Menu_Main extends BaseGameActivity
 				break;
 			
 			case STATE_MENU_INMENU:
+				
+				if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Bg_Notif, Game.spr_btn_yes)){
+					finish();
+				}
+				else if (Utils.isOnArea(pTouchEvent,  Game.spr_Img_Bg_Notif, Game.spr_btn_no)){
+					Game.spr_Img_Bg_Notif.setVisible(false);
+					Game.spr_Img_Back_Menu.setVisible(true);
+				}
 				
 				break;
 				
@@ -811,7 +815,24 @@ public class State_Menu_Main extends BaseGameActivity
 		Game.spr_Img_Select_Mc_Btn_Add.setVisible(true);
 	}
 	
-private void attachCredit(){
+	private void attachNotif(){
+		scene.attachChild(Game.spr_Img_Bg_Notif);
+		Game.spr_Img_Bg_Notif.attachChild(Game.spr_btn_yes);
+		Game.spr_Img_Bg_Notif.attachChild(Game.spr_btn_no);
+		
+		Game.spr_btn_yes.setPosition(
+				Game.spr_Img_Bg_Notif.getX() + 10,
+				Game.spr_Img_Bg_Notif.getY() - 50
+				);
+		
+		Game.spr_btn_no.setPosition(
+				Game.spr_Img_Bg_Notif.getWidth() - 80,
+				Game.spr_Img_Bg_Notif.getY() - 50
+				);
+		
+	}
+	
+	private void attachCredit(){
 		
 		int MARGIN = 15;
 		

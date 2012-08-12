@@ -254,6 +254,7 @@ public class Loading {
 				Game.load_BG_Credit();
 				break;
 			case LOADING_SUB_TYPE_GAME_BUTTON:
+				Game.loadGamePlayDice();
 				Game.loadGameButton();
 				break;
 			case LOADING_SUB_TYPE_SOUND_GAMEPLAY:

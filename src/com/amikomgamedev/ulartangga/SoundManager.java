@@ -22,7 +22,7 @@ public class SoundManager
 		};
 
 	public static final int SFX_LIFT			= 0;
-	public static final int SFX_SLOT_MACHINE	= 1;
+	public static final int SFX_DICE	= 1;
 	public static final int SFX_BERANTEM		= 2;
 	public static final int SFX_JALAN			= 3;
 	public static final int SFX_TERLEMPAR		= 4;
@@ -32,7 +32,7 @@ public class SoundManager
 	public static final String[] SFX_LOCATION =
 		{
 			"snd/ingame/lift.mp3",
-			"snd/ingame/Slot Machine.mp3",
+			"snd/ingame/dadu.mp3",
 			"snd/ingame/Berantem sfx.ogg",
 			"snd/ingame/sound jalan.ogg",
 			"snd/ingame/terlempar.ogg"

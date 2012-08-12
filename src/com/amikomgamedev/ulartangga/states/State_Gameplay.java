@@ -7,6 +7,8 @@ import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.anddev.andengine.entity.modifier.MoveByModifier;
+import org.anddev.andengine.entity.modifier.MoveModifier;
 import org.anddev.andengine.entity.primitive.Rectangle;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
@@ -79,21 +81,23 @@ public class State_Gameplay extends 	BaseGameActivity
 	private ClickDetector			clickDetector	= new ClickDetector(this);
 	private Entity_Camera cam;
 	
-	public static AnimatedSprite spr_Img_Botton_Dice;
-	private Sprite spr_Img_Button_Pause;
-	private Rectangle rect_slot_machine;
-	private static ChangeableText valueDice;
+//	public static Sprite spr_Img_Botton_Slide;
+//	private Sprite spr_Img_Button_Pause;
+//	private Rectangle rect_slot_machine;
+//	private static ChangeableText valueDice;
 	private static ChangeableText playerName;
 	public static ChangeableText[] curPosition;
 	public static Text txtWin; 
-	
+
 	public static boolean moveCamera = true;
+	public static boolean moveSlide = true;
 	public static boolean diceEnable = true;
 	private boolean moveAgain_1 = true;
 	private boolean moveAgain_2 = true;
 	private boolean moveAgain_3 = true;
 	private boolean move = true;
 	private boolean autoMoveNextPlayer = true;
+	private boolean autoMove = true;
 	private boolean throwStart = true;
 	
 	serverData sData = serverData.getInstance();
@@ -195,11 +199,13 @@ public class State_Gameplay extends 	BaseGameActivity
 						cam.autoMoveCamera(
 								mc[Player_Cur],
 								Define.GAME_MAP_CELL_WIDTH);
+
+						autoMove = true;
 					}
-					else if(timer(1))
+					else if(timer(2.5f))
 					{
 						move = true;
-						spr_Img_Botton_Dice.setVisible(false);
+						Game.spr_Dice[randomValue-1].setVisible(false);
 						
 						playerName.setText(PLAYER_NAME[Player_Cur] + " Is Moving");
 						playerName.setPosition(
@@ -276,23 +282,34 @@ public class State_Gameplay extends 	BaseGameActivity
 							
 						case CEK_IDLE:
 							
-							moveCamera = true;
+							playerName.setText(PLAYER_NAME[nextPlayer()] + " Move");
+							playerName.setPosition(
+									Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
+									Utils.getRatioH(2));
+							
 							mc[Player_Cur].stop();
 							move = false;
 							SoundManager.stopSfx(SoundManager.SFX_JALAN);
 							
-							valueDice.setText(""+Utils.getRandomValuie());
+//							valueDice.setText(""+Utils.getRandomValuie());
 							if(!autoMoveNextPlayer || Game.spr_Smoke.isVisible())
 							{
 								
-								spr_Img_Botton_Dice.setVisible(false);
+								Game.spr_Img_Button_Slide_Bg.setVisible(false);
 								diceEnable = false;
+								autoMove = false;
 							}
 							else
 							{
-								cam.autoMoveCameraToNextPlayer(
-										mc[nextPlayer()],
-										(int) Define.GAME_MAP_CELL_WIDTH);
+								if(autoMove)
+									cam.autoMoveCameraToNextPlayer(
+											mc[nextPlayer()],
+											(int) Define.GAME_MAP_CELL_WIDTH);
+								else
+								{
+									Game.spr_Img_Button_Slide_Bg.setVisible(true);
+									diceEnable = true;
+								}
 							}
 							
 							// cek 2 pemain 1 cell
@@ -349,33 +366,87 @@ public class State_Gameplay extends 	BaseGameActivity
 								Player_Cur = previousPlayer();
 							}
 							
-							if(spr_Img_Botton_Dice.isVisible())
+							if(Game.spr_Img_Button_Slide_Bg.isVisible() && !Game.spr_Smoke.isVisible())
 							{
-								SoundManager.playSfx(SoundManager.SFX_SLOT_MACHINE);
 								
-								if(sData.getTypePlayer(nextPlayer()) == TYPE_AI && !Game.spr_Smoke.isVisible())
+								if(sData.getTypePlayer(nextPlayer()) == TYPE_AI)
 								{
 //										if(timer(0.5f))
 									{
-										spr_Img_Botton_Dice.animate(
-												new long[] {200, 200, 200}, 
-												new int[] {0, 1, 0}, 
-												0);
+
+										diceEnable = false;
+										
+										SoundManager.playSfx(SoundManager.SFX_DICE);
+//										spr_Img_Botton_Dice.animate(
+//												new long[] {200, 200, 200}, 
+//												new int[] {0, 1, 0}, 
+//												0);
+
+										Game.spr_Img_Button_Slide_Bg.setVisible(false);
 										
 										switchPlayer();
 										
 										randomValue = Utils.getRandomValuie();
 										
 										mc[Player_Cur].setMove(randomValue);
-										valueDice.setText(""+randomValue);
+//										valueDice.setText(""+randomValue);
+										Game.spr_Dice[randomValue - 1].animate(
+												SPR_DICE_SPEED,
+												SPR_DICE_FRAME[0], SPR_DICE_FRAME[1],
+												false);
 
-										SoundManager.stopSfx(SoundManager.SFX_SLOT_MACHINE);	
+										MoveModifier moveModifier = new MoveModifier(
+												1, 
+												-Game.spr_Dice[randomValue - 1].getWidth(), 
+												(Config.GAME_SCREEN_WIDTH - Game.spr_Dice[randomValue - 1].getWidth()) / 2,
+												(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice[randomValue - 1].getHeight()) / 2,
+												(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice[randomValue - 1].getHeight()) / 2);
+										Game.spr_Dice[randomValue - 1].registerEntityModifier(moveModifier);
+										Game.spr_Dice[randomValue - 1].setVisible(true);	
 									}
 								}
-							}
-							else 
-							{
-								SoundManager.stopSfx(SoundManager.SFX_SLOT_MACHINE);								
+								else
+								{
+									if(Game.spr_Img_Button_Slide.getX() + Game.spr_Img_Button_Slide.getWidth() 
+											>= Game.spr_Img_Button_Slide_Bg.getWidth() - Game.spr_Img_Button_Slide.getY())
+									{
+										if(diceEnable)
+											{
+												diceEnable = false;
+												
+												SoundManager.playSfx(SoundManager.SFX_DICE);
+												
+//												spr_Img_Botton_Dice.animate(
+//														new long[] {200, 200, 200}, 
+//														new int[] {0, 1, 0}, 
+//														0);
+												Game.spr_Img_Button_Slide_Bg.setVisible(false);
+												
+												switchPlayer();
+												
+												randomValue = Utils.getRandomValuie();
+												
+												mc[Player_Cur].setMove(randomValue);
+//												valueDice.setText(""+randomValue);
+												
+												MoveModifier moveModifier = new MoveModifier(
+														1, 
+														-Game.spr_Dice[randomValue - 1].getWidth(), 
+														(Config.GAME_SCREEN_WIDTH - Game.spr_Dice[randomValue - 1].getWidth()) / 2,
+														(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice[randomValue - 1].getHeight()) / 2,
+														(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice[randomValue - 1].getHeight()) / 2);
+												Game.spr_Dice[randomValue - 1].registerEntityModifier(moveModifier);
+												
+												Game.spr_Dice[randomValue - 1].setVisible(true);
+												Game.spr_Dice[randomValue - 1].animate(
+														SPR_DICE_SPEED,
+														SPR_DICE_FRAME[0], SPR_DICE_FRAME[1],
+														false);
+												
+//												SoundManager.stopSfx(SoundManager.SFX_DICE);	
+											}
+									}
+								}
 							}
 							
 							break;
@@ -402,39 +473,81 @@ public class State_Gameplay extends 	BaseGameActivity
 				break;
 			case STATE_GAME_INGAME:
 				
-				mScrollDetector.onTouchEvent(pSceneTouchEvent);
 				
-				if(pSceneTouchEvent.isActionDown())
+				if((pSceneTouchEvent.isActionDown() || pSceneTouchEvent.isActionMove())
+						&& (!Utils.isOnArea(pSceneTouchEvent, camera, Game.spr_Img_Button_Slide_Bg)) 
+						|| !Game.spr_Img_Button_Slide_Bg.isVisible()
+						&& !moveSlide)
+				{
+					mScrollDetector.onTouchEvent(pSceneTouchEvent);
 					autoMoveNextPlayer = false;
+					moveCamera = true;
+				}
+				
+				if((pSceneTouchEvent.isActionDown() || pSceneTouchEvent.isActionMove())
+						&& (Utils.isOnArea(
+								pSceneTouchEvent,
+								camera,
+								Game.spr_Img_Button_Slide_Bg)
+						&& Game.spr_Img_Button_Slide_Bg.isVisible()))
+				{
+					mScrollDetector.onTouchEvent(pSceneTouchEvent);
+					moveCamera = false;
+					moveSlide = true;
+				}
 				
 				if(pSceneTouchEvent.isActionUp())
-					autoMoveNextPlayer = true;
-				
-				if(Utils.isOnArea(
-						pSceneTouchEvent,
-						camera.getMinX() + spr_Img_Botton_Dice.getX()+ rect_slot_machine.getX(),
-						camera.getMinX() + spr_Img_Botton_Dice.getX()+ rect_slot_machine.getX() + rect_slot_machine.getWidth(),
-						camera.getMinY() + spr_Img_Botton_Dice.getY()+ rect_slot_machine.getY(),
-						camera.getMinY() + spr_Img_Botton_Dice.getY()+ rect_slot_machine.getY() + rect_slot_machine.getHeight())
-						&& pSceneTouchEvent.isActionDown())
 				{
-					if(moveCamera && diceEnable)
-					{
-						spr_Img_Botton_Dice.animate(
-								new long[] {200, 200, 200}, 
-								new int[] {0, 1, 0}, 
-								0);
-						
-						switchPlayer();
-						
-						randomValue = Utils.getRandomValuie();
-						
-						mc[Player_Cur].setMove(randomValue);
-						valueDice.setText(""+randomValue);
-						
-						SoundManager.stopSfx(SoundManager.SFX_SLOT_MACHINE);	
-					}
+					autoMoveNextPlayer = true;
+					moveSlide = false;
+					
+					MoveByModifier modifier = new MoveByModifier(
+							0.5f,
+							Game.spr_Img_Button_Slide.getY() - Game.spr_Img_Button_Slide.getX(),
+							0);
+					Game.spr_Img_Button_Slide.registerEntityModifier(modifier);
 				}
+//				if(Utils.isOnArea(
+//						pSceneTouchEvent,
+//						camera, Game.spr_Img_Button_Slide_Bg)
+//						&& pSceneTouchEvent.isActionMove())
+//				{
+//					if(moveCamera && diceEnable)
+//					{
+//						diceEnable = false;
+//						
+//						SoundManager.playSfx(SoundManager.SFX_DICE);
+//						
+////						spr_Img_Botton_Dice.animate(
+////								new long[] {200, 200, 200}, 
+////								new int[] {0, 1, 0}, 
+////								0);
+//						Game.spr_Img_Button_Slide_Bg.setVisible(false);
+//						
+//						switchPlayer();
+//						
+//						randomValue = Utils.getRandomValuie();
+//						
+//						mc[Player_Cur].setMove(randomValue);
+////						valueDice.setText(""+randomValue);
+//						
+//						MoveModifier moveModifier = new MoveModifier(
+//								1, 
+//								-Game.spr_Dice[randomValue - 1].getWidth(), 
+//								(Config.GAME_SCREEN_WIDTH - Game.spr_Dice[randomValue - 1].getWidth()) / 2,
+//								(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice[randomValue - 1].getHeight()) / 2,
+//								(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice[randomValue - 1].getHeight()) / 2);
+//						Game.spr_Dice[randomValue - 1].registerEntityModifier(moveModifier);
+//						
+//						Game.spr_Dice[randomValue - 1].setVisible(true);
+//						Game.spr_Dice[randomValue - 1].animate(
+//								SPR_DICE_SPEED,
+//								SPR_DICE_FRAME[0], SPR_DICE_FRAME[1],
+//								false);
+//						
+////						SoundManager.stopSfx(SoundManager.SFX_DICE);	
+//					}
+//				}
 				
 				break;
 	
@@ -494,7 +607,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				if(Utils.isOnArea(
 						pTouchEvent,
 						camera,
-						spr_Img_Button_Pause))
+						Game.spr_Img_Button_Pause))
 				{
 					switchState(STATE_GAME_PAUSE);
 				}
@@ -542,6 +655,16 @@ public class State_Gameplay extends 	BaseGameActivity
 	{
 		if(moveCamera)
 			cam.moveCamera(-pDistanceX, -pDistanceY);
+		if(moveSlide)
+		{
+			if((Game.spr_Img_Button_Slide.getX() > Game.spr_Img_Button_Slide.getY() && pDistanceX < 0)
+					|| (Game.spr_Img_Button_Slide.getX() + Game.spr_Img_Button_Slide.getWidth() < Game.spr_Img_Button_Slide_Bg.getWidth() - Game.spr_Img_Button_Slide.getY()) && pDistanceX > 0)
+			{
+				Game.spr_Img_Button_Slide.setPosition(
+						Game.spr_Img_Button_Slide.getX() + pDistanceX,
+						Game.spr_Img_Button_Slide.getY());
+			}
+		}
 	}
 	
 	private void switchState(int curState)
@@ -569,7 +692,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				autoMoveNextPlayer = true;
 				
-				spr_Img_Button_Pause.setVisible(true);
+				Game.spr_Img_Button_Pause.setVisible(true);
 				
 				Game.spr_GamePause_Bg.setVisible(false);
 				Game.txtPause.setVisible(false);
@@ -586,10 +709,10 @@ public class State_Gameplay extends 	BaseGameActivity
 				Game.spr_GameOver_Btn_MainMenu.setVisible(false);
 				Game.spr_GameOver_Btn_Restart.setVisible(false);
 				
-//				for(int i = 0; i < Player_Max; i++) 
-//				{
-//					Game.spr_GameOver_Mc[i].setVisible(false);
-//				}
+				for(int i = 0; i < 6; i++) 
+				{
+					Game.spr_Dice[i].setVisible(false);
+				}
 				
 				break;
 				
@@ -597,8 +720,8 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				SoundManager.pauseAllSfx();
 				
-				spr_Img_Button_Pause.setVisible(false);
-				spr_Img_Botton_Dice.setVisible(false);
+				Game.spr_Img_Button_Pause.setVisible(false);
+				Game.spr_Img_Button_Slide_Bg.setVisible(false);
 				
 				mc[Player_Cur].stop();
 				for (int i = 0; i < Player_Max; i++)
@@ -627,8 +750,8 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 			case STATE_GAME_OVER:
 
-				spr_Img_Button_Pause.setVisible(false);
-				spr_Img_Botton_Dice.setVisible(false);
+				Game.spr_Img_Button_Pause.setVisible(false);
+				Game.spr_Img_Button_Slide_Bg.setVisible(false);
 				
 				Game.spr_GameOver_Bg.setVisible(true);
 				txtWin.setVisible(true);
@@ -673,7 +796,7 @@ public class State_Gameplay extends 	BaseGameActivity
 						Utils.getRatioH(2));
 				
 				moveAgain_3 = false;
-				spr_Img_Botton_Dice.setVisible(false);
+				Game.spr_Img_Button_Slide_Bg.setVisible(false);
 				
 				break;
 				
@@ -687,7 +810,7 @@ public class State_Gameplay extends 	BaseGameActivity
 						Utils.getRatioH(2));
 				
 				moveAgain_2 = false;
-				spr_Img_Botton_Dice.setVisible(false);
+				Game.spr_Img_Button_Slide_Bg.setVisible(false);
 				
 				break;
 				
@@ -701,7 +824,7 @@ public class State_Gameplay extends 	BaseGameActivity
 						Utils.getRatioH(2));
 				
 				moveAgain_1 = false;
-				spr_Img_Botton_Dice.setVisible(false);
+				Game.spr_Img_Button_Slide_Bg.setVisible(false);
 				
 				Game.spr_Smoke.setPosition(
 						mc[Player_Cur].getAnimatedSprite().getX() - 
@@ -718,6 +841,8 @@ public class State_Gameplay extends 	BaseGameActivity
 				break;
 				
 			case CEK_IDLE:
+				
+				autoMove = true;
 				
 				playerName.setText(PLAYER_NAME[nextPlayer()] + " Move");
 				playerName.setPosition(
@@ -840,52 +965,26 @@ public class State_Gameplay extends 	BaseGameActivity
 		scene.attachChild(Game.spr_Smoke);
 		Game.spr_Smoke.setVisible(false);
 		
-		spr_Img_Botton_Dice = new AnimatedSprite(0, 0,
-				Utils.getRatio(167),
-				Utils.getRatio(200),
-				Game.reg_Img_Button_Dice);
-		spr_Img_Button_Pause =  new Sprite(
-				0, 0, 
-				Utils.getRatio(20), 
-				Utils.getRatio(20), 
-				Game.reg_Img_Button_Pause);
-		rect_slot_machine = new Rectangle(
-				0, 0,
-				Utils.getRatio(35),
-				Utils.getRatio(60));
-		
-		spr_Img_Botton_Dice.setPosition(
-				(camera.getWidth() - spr_Img_Botton_Dice.getWidth()) / 2,
-				(camera.getHeight() - spr_Img_Botton_Dice.getHeight()) / 2);
-		
-		rect_slot_machine.setVisible(false);
-		
-		spr_Img_Botton_Dice.attachChild(rect_slot_machine);
-		rect_slot_machine.setPosition(
-				spr_Img_Botton_Dice.getWidth() - Utils.getRatio(25),
-				Utils.getRatio(60));
-		rect_slot_machine.setColor(0, 0, 0);
-		spr_Img_Button_Pause.setPosition(
-				camera.getWidth() - spr_Img_Button_Pause.getWidth() - Utils.getRatioW(10),
-				camera.getHeight() - spr_Img_Button_Pause.getHeight() - Utils.getRatioW(10));
-		
 		hud.attachChild(Game.spr_Img_Informasi_Footer);
 		hud.attachChild(Game.spr_Img_Informasi_Header);
-		hud.attachChild(spr_Img_Botton_Dice);
-		hud.attachChild(spr_Img_Button_Pause);
+		hud.attachChild(Game.spr_Img_Button_Slide_Bg);
+		hud.attachChild(Game.spr_Img_Button_Pause);
+		
+		for (int i = 0; i < 6; i++)
+			hud.attachChild(Game.spr_Dice[i]);	
 		
 		
 		float posX = Utils.getRatioW(40);
 		curPosition = new ChangeableText[Player_Max];
 		playerName = new ChangeableText(0, 0, Game.font[Data.FONT_SIZE_SMALL], "", 30);
-		valueDice = new ChangeableText(0, 0, Game.font[Data.FONT_SIZE_BIG], "", 1);
+//		valueDice = new ChangeableText(0, 0, Game.font[Data.FONT_SIZE_BIG], "", 1);
 		
 		playerName.setColor(0, 0, 0);
-		valueDice.setColor(0, 0, 0);
+//		valueDice.setColor(0, 0, 0);
 		
-		valueDice.setPosition(
-				Utils.getRatio(50),
-				(spr_Img_Botton_Dice.getHeight() - valueDice.getHeight()) / 2);
+//		valueDice.setPosition(
+//				Utils.getRatio(50),
+//				(spr_Img_Botton_Slide.getHeight() - valueDice.getHeight()) / 2);
 		
 		for(int i = 0; i < Player_Max; i++)
 		{
@@ -898,7 +997,7 @@ public class State_Gameplay extends 	BaseGameActivity
 			curPosition[i].setColor(0, 0, 0);
 		}
 		
-		spr_Img_Botton_Dice.attachChild(valueDice);
+//		spr_Img_Botton_Slide.attachChild(valueDice);
 		hud.attachChild(playerName);
 	}
 

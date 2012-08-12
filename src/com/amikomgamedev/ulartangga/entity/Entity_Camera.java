@@ -3,6 +3,7 @@ package com.amikomgamedev.ulartangga.entity;
 import org.anddev.andengine.engine.camera.Camera;
 
 import com.amikomgamedev.ulartangga.Define;
+import com.amikomgamedev.ulartangga.Game;
 import com.amikomgamedev.ulartangga.Utils;
 import com.amikomgamedev.ulartangga.states.State_Gameplay;
 
@@ -269,12 +270,12 @@ public class Entity_Camera implements Define
 		
 		if(visX && visY)
 		{
-			State_Gameplay.spr_Img_Botton_Dice.setVisible(true);
+			Game.spr_Img_Button_Slide_Bg.setVisible(true);
 			State_Gameplay.diceEnable = true;
 		}
 		else
 		{
-			State_Gameplay.spr_Img_Botton_Dice.setVisible(false);
+			Game.spr_Img_Button_Slide_Bg.setVisible(false);
 			State_Gameplay.diceEnable = false;
 		}
 	}
