@@ -145,19 +145,19 @@ public class Utils implements Define
 	}
 	
 	// ratio posisi untuk scene n ukuran aset
-	public static float getRatio(float nil)
+	public static int getRatio(float nil)
 	{
-		float nil_Ratio = 0;
+		int nil_Ratio = 0;
 		
 		switch(Config.RATIO_USE)
 		{
 			case Config.RATIO_WIDTH:
-				nil_Ratio = nil / GAME_RATIO_SCREEN_WIDTH 
-						* Config.GAME_SCREEN_WIDTH;
+				nil_Ratio = (int) (nil / GAME_RATIO_SCREEN_WIDTH 
+						* Config.GAME_SCREEN_WIDTH);
 				break;
 			case Config.RATIO_HEIGHT:
-				nil_Ratio = nil / GAME_RATIO_SCREEN_HEIGHT 
-						* Config.GAME_SCREEN_HEIGHT;
+				nil_Ratio = (int) (nil / GAME_RATIO_SCREEN_HEIGHT 
+						* Config.GAME_SCREEN_HEIGHT);
 				break;
 		}
 		

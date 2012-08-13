@@ -87,7 +87,7 @@ public class State_Gameplay extends 	BaseGameActivity
 //	private static ChangeableText valueDice;
 	private static ChangeableText playerName;
 	public static ChangeableText[] curPosition;
-	public static Text txtWin; 
+	public static ChangeableText txtWin; 
 
 	public static boolean moveCamera = true;
 	public static boolean moveSlide = true;
@@ -135,6 +135,7 @@ public class State_Gameplay extends 	BaseGameActivity
 		
 		scene = new Scene();
 		scene.setOnSceneTouchListener(this);
+		scene.setOnSceneTouchListenerBindingEnabled(true);
 		
 		switchState(STATE_GAME_START);
 		
@@ -145,6 +146,7 @@ public class State_Gameplay extends 	BaseGameActivity
 		
 	public void onUpdate(float pSecondsElapsed)
 	{
+		
 		Second = pSecondsElapsed;
 //		long max	= Runtime.getRuntime().maxMemory();
 //		long total	= Runtime.getRuntime().totalMemory();
@@ -273,16 +275,21 @@ public class State_Gameplay extends 	BaseGameActivity
 							}
 							else if(timer(1))
 							{
+								
 								SoundManager.stopSfx(SoundManager.SFX_BERANTEM);
 								SoundManager.playSfx(SoundManager.SFX_TERLEMPAR);
 								throwStart = true;
 							}
-							
+
+							playerName.setText(PLAYER_NAME[cek] + " Back To Start");
+							playerName.setPosition(
+									Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
+									Utils.getRatioH(2));
 							break;
 							
 						case CEK_IDLE:
 							
-							playerName.setText(PLAYER_NAME[nextPlayer()] + " Move");
+							playerName.setText(PLAYER_NAME[nextPlayer()] + " Turn");
 							playerName.setPosition(
 									Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
 									Utils.getRatioH(2));
@@ -320,6 +327,7 @@ public class State_Gameplay extends 	BaseGameActivity
 									if(mc[Player_Cur].Posisi_Mc_Current == mc[i].Posisi_Mc_Current && Player_Cur != i)
 									{
 										cek = i;
+										Utils.TRACE("1 = "+cek);
 										switchCek(CEK_COLLISION);
 										break;
 									}
@@ -337,6 +345,7 @@ public class State_Gameplay extends 	BaseGameActivity
 								if(mc[Player_Cur].Posisi_Mc_Current == SNAKE_N_LADDER[Map][CELL_LADDER_START][i])
 								{
 									cek = i;
+									Utils.TRACE("2 = "+cek);
 									switchCek(CEK_LADDER);
 									break;
 								}
@@ -349,6 +358,7 @@ public class State_Gameplay extends 	BaseGameActivity
 								if(mc[Player_Cur].Posisi_Mc_Current == SNAKE_N_LADDER[Map][CELL_SNAKE_START][i])
 								{
 									cek = i;
+									Utils.TRACE("3 = "+cek);
 									switchCek(CEK_SNAKE);
 									break;
 								}
@@ -704,11 +714,6 @@ public class State_Gameplay extends 	BaseGameActivity
 					Game.curPositionPause[i].setVisible(false);
 				}
 				
-				Game.spr_GameOver_Bg.setVisible(false);
-				txtWin.setVisible(false);
-				Game.spr_GameOver_Btn_MainMenu.setVisible(false);
-				Game.spr_GameOver_Btn_Restart.setVisible(false);
-				
 				for(int i = 0; i < 6; i++) 
 				{
 					Game.spr_Dice[i].setVisible(false);
@@ -744,7 +749,7 @@ public class State_Gameplay extends 	BaseGameActivity
 					Game.spr_GamePause_Mc_Icon[i].setVisible(true);
 					Game.curPositionPause[i].setVisible(true);
 					
-					curPosition[i].setColor(0, 0, 0);
+					Game.curPositionPause[i].setColor(0, 0, 0);
 				}	
 				break;
 				
@@ -752,22 +757,87 @@ public class State_Gameplay extends 	BaseGameActivity
 
 				Game.spr_Img_Button_Pause.setVisible(false);
 				Game.spr_Img_Button_Slide_Bg.setVisible(false);
+
+				
+				txtWin.setText(PLAYER_NAME[Player_Cur] +" Wins!");
+				txtWin.setPosition(
+						(Game.spr_GameOver_Bg.getWidth() - txtWin.getWidth()) / 2,
+						Utils.getRatio(10));
+				
+				float[] pX = new float[4];
+				float[] pY = new float[4];
+				
+				int playerWin	= 0;
+				int playerLose	= 1;
+				
+				if(Player_Max == 2)
+				{
+					pX[1] = (Game.spr_GameOver_Bg.getWidth() / 2 - Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH)) / 2;
+					pY[1] = txtWin.getY() + txtWin.getHeight() + Utils.getRatio(10);
+				}
+				else
+				{
+					pX[1] = (Game.spr_GameOver_Bg.getWidth() / 2 - Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH) * 2) / 3;
+					pY[1] = txtWin.getY() + txtWin.getHeight() + Utils.getRatio(10);
+					
+					pX[2] = pX[1] * 2 + Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH);
+					pY[2] = pY[1];
+				
+					pX[3] = (Game.spr_GameOver_Bg.getWidth() / 2 - Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH)) / 2;
+					pY[3] = pY[1] + Utils.getRatio(Data.GAMEOVER_MC_LOSE_HEIGHT) + Utils.getRatio(10);
+				}
+				
+				for(int i = 0; i < Player_Max; i++) 
+				{
+					if(i == Player_Cur)
+					{	
+						Game.spr_GameOver_Mc[i][MC_WIN].setPosition(
+								(Game.spr_GameOver_Bg.getWidth() / 2 - Game.spr_GameOver_Mc[i][MC_WIN].getWidth()) / 2,
+								txtWin.getY() + txtWin.getHeight() + Utils.getRatioH(10));
+						Game.spr_GameOver_Mc[i][MC_WIN].animate(
+								Data.GAMEOVER_MC_ANIM_SPEED[playerWin],
+								Game.GAMEOVER_MC_ANIM_FRAME[playerWin][Game.ANI_FRAME_START],
+								Game.GAMEOVER_MC_ANIM_FRAME[playerWin][Game.ANI_FRAME_END],
+								true);
+						
+						Game.spr_GameOver_Mc[i][MC_WIN].setVisible(true);
+					}
+					else
+					{
+						Game.spr_GameOver_Mc[i][MC_LOSE].setPosition(
+								Game.spr_GameOver_Bg.getWidth() / 2 + pX[playerLose],
+								pY[playerLose]);
+						Game.spr_GameOver_Mc[i][MC_LOSE].animate(
+								Data.GAMEOVER_MC_ANIM_SPEED[1],
+								Game.GAMEOVER_MC_ANIM_FRAME[1][Game.ANI_FRAME_START],
+								Game.GAMEOVER_MC_ANIM_FRAME[1][Game.ANI_FRAME_END],
+								true);
+						Game.spr_GameOver_Mc[i][MC_LOSE].setVisible(true);
+						
+						playerLose++;
+					}
+				}
+				
+				playerName.setText(PLAYER_NAME[Player_Cur] + " Wins!");
+				playerName.setPosition(
+						Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
+						Utils.getRatioH(2));
 				
 				Game.spr_GameOver_Bg.setVisible(true);
-				txtWin.setVisible(true);
-				Game.spr_GameOver_Btn_MainMenu.setVisible(true);
-				Game.spr_GameOver_Btn_Restart.setVisible(true);
-//				for(int i = 0; i < Player_Max; i++) 
-//				{
-//					Game.spr_GameOver_Mc[i].setVisible(true);
-//				}
 				
 				break;
 				
 			case STATE_GAME_RESTART:
 				for (int i = 0; i < Player_Max; i++) {
 					mc[i].reset();
+					Player_Cur = Player_Max - 1;
 				}
+				for(int i = 0; i < Player_Max; i++)
+				{
+					Game.spr_GameOver_Mc[i][MC_WIN].setVisible(false);
+					Game.spr_GameOver_Mc[i][MC_LOSE].setVisible(false);
+				}
+				Game.spr_GameOver_Bg.setVisible(false);
 //				cam.restart();
 				
 				switchState(STATE_GAME_INGAME);
@@ -818,10 +888,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				SoundManager.playSfx(SoundManager.SFX_BERANTEM);
 				
-				playerName.setText(PLAYER_NAME[cek] + " Back To Start");
-				playerName.setPosition(
-						Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
-						Utils.getRatioH(2));
+				
 				
 				moveAgain_1 = false;
 				Game.spr_Img_Button_Slide_Bg.setVisible(false);
@@ -844,7 +911,6 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				autoMove = true;
 				
-				playerName.setText(PLAYER_NAME[nextPlayer()] + " Move");
 				playerName.setPosition(
 						Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
 						Utils.getRatioH(2));
@@ -1020,75 +1086,14 @@ public class State_Gameplay extends 	BaseGameActivity
 	
 	private void attachGameOver()
 	{
-		txtWin = new Text(
+		txtWin = new ChangeableText(
 				0, 0,
 				Game.font[Data.FONT_SIZE_MEDIUM],
 				PLAYER_NAME[Player_Cur] +" Wins!");
-		txtWin.setPosition(
-				(Game.spr_GameOver_Bg.getWidth() - txtWin.getWidth()) / 2,
-				Utils.getRatio(10));
 		
-		float[] pX = new float[4];
-		float[] pY = new float[4];
-		
-		int playerWin	= 0;
-		int playerLose	= 1;
-		
-		if(Player_Max == 2)
-		{
-			pX[1] = (Game.spr_GameOver_Bg.getWidth() / 2 - Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH)) / 2;
-			pY[1] = txtWin.getY() + txtWin.getHeight() + Utils.getRatio(10);
-		}
-		else
-		{
-			pX[1] = (Game.spr_GameOver_Bg.getWidth() / 2 - Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH) * 2) / 3;
-			pY[1] = txtWin.getY() + txtWin.getHeight() + Utils.getRatio(10);
-			
-			pX[2] = pX[1] * 2 + Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH);
-			pY[2] = pY[1];
-		
-			pX[3] = (Game.spr_GameOver_Bg.getWidth() / 2 - Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH)) / 2;
-			pY[3] = pY[1] + Utils.getRatio(Data.GAMEOVER_MC_LOSE_HEIGHT) + Utils.getRatio(10);
-		}
 		hud.attachChild(Game.spr_GameOver_Bg);
-		
-		for(int i = 0; i < Player_Max; i++) 
-		{
-			if(i == Player_Cur)
-			{	
-				Game.spr_GameOver_Mc[i][MC_WIN].setPosition(
-						(Game.spr_GameOver_Bg.getWidth() / 2 - Game.spr_GameOver_Mc[i][MC_WIN].getWidth()) / 2,
-						txtWin.getY() + txtWin.getHeight() + Utils.getRatioH(10));
-				Game.spr_GameOver_Mc[i][MC_WIN].animate(
-						Data.GAMEOVER_MC_ANIM_SPEED[playerWin],
-						Game.GAMEOVER_MC_ANIM_FRAME[playerWin][Game.ANI_FRAME_START],
-						Game.GAMEOVER_MC_ANIM_FRAME[playerWin][Game.ANI_FRAME_END],
-						true);
-				Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Mc[i][MC_WIN]);
-			}
-			else
-			{
-				Game.spr_GameOver_Mc[i][MC_LOSE].setPosition(
-						Game.spr_GameOver_Bg.getWidth() / 2 + pX[playerLose],
-						pY[playerLose]);
-				Game.spr_GameOver_Mc[i][MC_LOSE].animate(
-						Data.GAMEOVER_MC_ANIM_SPEED[1],
-						Game.GAMEOVER_MC_ANIM_FRAME[1][Game.ANI_FRAME_START],
-						Game.GAMEOVER_MC_ANIM_FRAME[1][Game.ANI_FRAME_END],
-						true);
-				Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Mc[i][MC_LOSE]);
-				
-				playerLose++;
-			}
-		}
-
 		Game.spr_GameOver_Bg.attachChild(txtWin);
-		Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Btn_MainMenu);
-		Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Btn_Restart);
-		
-		playerName.setText(PLAYER_NAME[Player_Cur] + " Wins!");
-		playerName.setPosition(
-				Config.GAME_SCREEN_WIDTH - playerName.getWidth() - Utils.getRatioW(10),
-				Utils.getRatioH(2));
+
+		Game.spr_GameOver_Bg.setVisible(false);
 	}
 }

@@ -269,6 +269,13 @@ public class Game implements Data,
 				Config.GAME_SCREEN_WIDTH,
 				Config.GAME_SCREEN_HEIGHT,
 				reg_Img_Loading);
+		
+		Text txt_Loading = new Text(0, 0, font[1], "Loading...");
+		txt_Loading.setPosition(
+				Config.GAME_SCREEN_WIDTH - Utils.getRatioW(20) - txt_Loading.getWidth(),
+				Config.GAME_SCREEN_HEIGHT - Utils.getRatioW(20) - txt_Loading.getHeight());
+		txt_Loading.setColor(0, 0, 0);
+		spr_Img_Loading.attachChild(txt_Loading);
 	}
 	
 	public static void loadFont()
@@ -465,7 +472,9 @@ public class Game implements Data,
 				Config.GAME_SCREEN_WIDTH - spr_Img_Button_Pause.getWidth() - Utils.getRatioW(10),
 				Config.GAME_SCREEN_HEIGHT - spr_Img_Button_Pause.getHeight() - Utils.getRatioW(10));
 		
-		spr_Img_Button_Slide_Bg.attachChild(spr_Img_Button_Slide);		
+		spr_Img_Button_Slide_Bg.attachChild(spr_Img_Button_Slide);
+		spr_Img_Button_Slide_Bg.setAlpha(0.6f);
+		spr_Img_Button_Slide.setAlpha(0.6f);
 	}
 	
 	public static void loadGameInformasi()
@@ -1054,6 +1063,13 @@ public class Game implements Data,
 					Utils.getRatio(GAMEOVER_MC_LOSE_WIDTH), 
 					Utils.getRatio(GAMEOVER_MC_LOSE_HEIGHT), 
 					reg_GameOver_Mc[i][MC_LOSE]);
+			
+
+			Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Mc[i][MC_WIN]);
+			Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Mc[i][MC_LOSE]);
+
+			Game.spr_GameOver_Mc[i][MC_WIN].setVisible(false);
+			Game.spr_GameOver_Mc[i][MC_LOSE].setVisible(false);
 		}
 	}
 	
@@ -1092,6 +1108,9 @@ public class Game implements Data,
 		spr_GameOver_Btn_MainMenu.setPosition(
 				spr_GameOver_Bg.getWidth() / 2 + disX * 2 + spr_GameOver_Btn_Restart.getWidth(),
 				spr_GameOver_Btn_Restart.getY());
+		
+		Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Btn_MainMenu);
+		Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Btn_Restart);
 	}
 	
 	//arief

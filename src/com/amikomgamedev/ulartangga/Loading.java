@@ -56,6 +56,7 @@ public class Loading {
 		};
 	private static final int LOADING_TYPE_MAIN_MENU_OPEN_LIST_ITEM[] =
 		{
+			LOADING_SUB_TYPE_FONT,
 			LOADING_SUB_TYPE_LOADING_INTERFACE,
 		};
 	private static final int LOADING_TYPE_MAIN_MENU_LIST_ITEM[] =
@@ -106,6 +107,7 @@ public class Loading {
 	
 	private static final int LOADING_TYPE_GAMEPLAY_OPEN_LIST_ITEM[] =
 		{
+			LOADING_SUB_TYPE_FONT,
 			LOADING_SUB_TYPE_LOADING_INTERFACE,
 		};
 	private static final int LOADING_TYPE_GAMEPLAY_LIST_ITEM[] =

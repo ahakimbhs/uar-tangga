@@ -171,11 +171,17 @@ public interface Data {
 	
 	public static final String SPR_ICON_MC[][] =
 		{
+//			{
+//				IMG_INGAME_FOLDER_LOCATION + "kucing.png",
+//				IMG_INGAME_FOLDER_LOCATION + "anjing.png",
+//				IMG_INGAME_FOLDER_LOCATION + "kucing.png",
+//				IMG_INGAME_FOLDER_LOCATION + "kucing.png"
+//			},
 			{
-				IMG_INGAME_FOLDER_LOCATION + "kucing.png",
-				IMG_INGAME_FOLDER_LOCATION + "anjing.png",
-				IMG_INGAME_FOLDER_LOCATION + "kucing.png",
-				IMG_INGAME_FOLDER_LOCATION + "kucing.png"
+				IMG_INGAME_FOLDER_LOCATION + "kit_modern.png",
+				IMG_INGAME_FOLDER_LOCATION + "pea_modern.png",
+				IMG_INGAME_FOLDER_LOCATION + "dew_modern.png",
+				IMG_INGAME_FOLDER_LOCATION + "row_modern.png"
 			},
 			{
 				IMG_INGAME_FOLDER_LOCATION + "kit_modern.png",
@@ -263,11 +269,17 @@ public interface Data {
 	
 	public static final String[][] GAMEOVER_MC_WIN = 
 		{
+//			{
+//				SPR_INGAME_FOLDER_LOCATION + "kucing.png",
+//				SPR_INGAME_FOLDER_LOCATION + "anjing.png",
+//				SPR_INGAME_FOLDER_LOCATION + "anjing 2.png",
+//				SPR_INGAME_FOLDER_LOCATION + "anjing 3.png"
+//			},
 			{
-				SPR_INGAME_FOLDER_LOCATION + "kucing.png",
-				SPR_INGAME_FOLDER_LOCATION + "anjing.png",
-				SPR_INGAME_FOLDER_LOCATION + "anjing 2.png",
-				SPR_INGAME_FOLDER_LOCATION + "anjing 3.png"
+				SPR_INGAME_FOLDER_LOCATION + "KIT WON.png",
+				SPR_INGAME_FOLDER_LOCATION + "PEA WON.png",
+				SPR_INGAME_FOLDER_LOCATION + "DEW WON.png",
+				SPR_INGAME_FOLDER_LOCATION + "ROO WON.png"
 			},
 			{
 				SPR_INGAME_FOLDER_LOCATION + "KIT WON.png",

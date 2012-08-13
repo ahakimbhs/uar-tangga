@@ -543,6 +543,21 @@ public class State_Menu_Main extends BaseGameActivity
 					Game.spr_Img_Back_Menu.setVisible(true);
 				}
 				
+				if(Utils.isOnArea(pTouchEvent, spr_Img_Btn_Option))
+				{
+					if(SoundManager.isSoundOn)
+					{
+						SoundManager.isSoundOn = false;
+						SoundManager.stopMusic(SoundManager.BGM_MENU_MAIN);
+					}
+					else
+					{
+						SoundManager.isSoundOn = true;
+						SoundManager.playMusic(SoundManager.BGM_MENU_MAIN);
+					}
+				}
+					
+				
 				break;
 				
 			case STATE_MENU_SELECT_MAP:
