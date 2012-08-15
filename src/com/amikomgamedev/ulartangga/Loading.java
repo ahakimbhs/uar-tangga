@@ -253,7 +253,7 @@ public class Loading {
 				Game.loadLogo();
 				break;
 			case LOADING_SUB_TYPE_OPTION_BACKGROUND:
-				Game.load_BG_Credit();
+				Game.load_Option();
 				break;
 			case LOADING_SUB_TYPE_GAME_BUTTON:
 				Game.loadGamePlayDice();

@@ -15,6 +15,7 @@ import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
+import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 import org.anddev.andengine.util.Debug;
@@ -192,6 +193,19 @@ public class Game implements Data,
 	public static Sprite spr_Img_Bg_Notif,
 						spr_btn_no,
 						spr_btn_yes;
+	
+	private static BitmapTextureAtlas tex_Img_Option;
+	private static BitmapTextureAtlas tex_Btn_Option;
+	public static TextureRegion reg_Img_Bg_Option,
+								reg_btn_sound_on,
+								reg_btn_sound_off,
+								reg_btn_music_on,
+								reg_btn_music_off;
+	public static Sprite spr_Img_Bg_Option,
+						spr_btn_sound_on,
+						spr_btn_sound_off,
+						spr_btn_music_on,
+						spr_btn_music_off;
 	
 	public static float dicePosX;
 	public static float dicePosY;
@@ -1212,6 +1226,52 @@ public class Game implements Data,
 				0, 0 ,
 				reg_btn_yes);
 		
+	}
+	
+	public static void load_Option (){
+		tex_Img_Option = new BitmapTextureAtlas(512, 512, Utils.getTextureOption());
+		reg_Img_Bg_Option = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tex_Img_Option, activity, IMG_BG_OPTION, 0, 0);
+		
+		spr_Img_Bg_Option = new Sprite(
+				(Config.GAME_SCREEN_WIDTH - OPTION_BG_WIDTH) /2, (Config.GAME_SCREEN_HEIGHT - OPTION_BG_HEIGHT )/ 2,
+				reg_Img_Bg_Option);
+		
+		tex_Btn_Option = new BitmapTextureAtlas(512, 512, Utils.getTextureOption());
+		
+		reg_btn_sound_on = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tex_Btn_Option, activity, IMG_BTN_SOUND_ON, 0, 0);
+		reg_btn_sound_off =  BitmapTextureAtlasTextureRegionFactory
+		.createFromAsset(tex_Btn_Option, activity, IMG_BTN_SOUND_OFF, OPTION_BTN_WIDTH, OPTION_BTN_HEIGHT);
+		reg_btn_music_on = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tex_Btn_Option, activity, IMG_BTN_MUSIC_ON, 2 * OPTION_BTN_WIDTH, 2 * OPTION_BTN_HEIGHT);
+		reg_btn_music_off =  BitmapTextureAtlasTextureRegionFactory
+		.createFromAsset(tex_Btn_Option, activity, IMG_BTN_MUSIC_OFF, 3 * OPTION_BTN_WIDTH, 3 * OPTION_BTN_HEIGHT);
+		
+		
+		spr_btn_music_on = new Sprite(
+				Utils.getRatioW(180),
+				Utils.getRatioH(20), 
+				reg_btn_music_on);
+		spr_btn_music_off = new Sprite(
+				Utils.getRatioW(110), 
+				Utils.getRatioH(20),
+				reg_btn_music_off);
+		
+		spr_btn_sound_on = new Sprite(
+				Utils.getRatioW(180),
+				Utils.getRatioW(110),
+				reg_btn_sound_on);
+		
+		spr_btn_sound_off = new Sprite(
+				Utils.getRatioW(110),
+				Utils.getRatioH(110),
+				reg_btn_sound_off);
+		
+		
+		loadTexture(tex_Img_Option);
+		loadTexture(tex_Btn_Option);
+
 	}
 	
 	

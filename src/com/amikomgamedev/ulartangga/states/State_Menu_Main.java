@@ -22,6 +22,7 @@ import org.anddev.andengine.input.touch.detector.ScrollDetector.IScrollDetectorL
 import org.anddev.andengine.input.touch.detector.SurfaceScrollDetector;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 import org.anddev.andengine.util.Debug;
+import org.anddev.andengine.util.HorizontalAlign;
 
 import android.content.Intent;
 import android.view.KeyEvent;
@@ -67,6 +68,7 @@ public class State_Menu_Main extends BaseGameActivity
 	private final int STATE_MENU_CREDIT 			= 9;
 	private final int STATE_MENU_OPTION_LOADING 	= 10;
 	private final int STATE_MENU_OPTION 			= 11;
+	private final int STATE_MENU_CLOSE_NOTIF		= 12;
 
 	private int State_Game_Current	= -1;
 	
@@ -90,7 +92,9 @@ public class State_Menu_Main extends BaseGameActivity
 	private Sprite spr_Img_Logo;
 	private Sprite spr_Img_Title;
 	private  Text txt_PM, txt_PRD, txt_GD, txt_PROG, txt_ART, txt_SE;
-	private Text txt_AGUS,txt_AYU,txt_MUTIA,txt_DWI,txt_ARIEF,txt_AAN,txt_AMIRUL, txt_FANDI, txt_IRFAN, txt10; 
+	private Text txt_AGUS,txt_AYU,txt_MUTIA,txt_DWI,txt_ARIEF,txt_AAN,txt_AMIRUL, txt_FANDI, txt_IRFAN, txt_CR; 
+	
+	private Text txt_Musik, txt_Sfx;
 	
 	private HUD hud;
 	serverData sData = serverData.getInstance();
@@ -279,6 +283,18 @@ public class State_Menu_Main extends BaseGameActivity
 							
 				break;
 								
+			case STATE_MENU_OPTION_LOADING:
+				if(Loading.isLoading())
+					Loading.updateLoading();
+				else
+				{
+					attachOption();
+					switchState(STATE_MENU_OPTION);
+				}
+				break;				
+		
+			case STATE_MENU_OPTION:
+				break;
 		}
 		
 		
@@ -356,10 +372,21 @@ public class State_Menu_Main extends BaseGameActivity
 				
 				y = Config.GAME_SCREEN_HEIGHT;
 				hud.setPosition(hud.getScaleCenterX() / 2, y);
+			break;
 				
-//				Game.spr_Img_Logo.setPosition((Config.GAME_SCREEN_WIDTH - Game.spr_Img_Logo.getWidth()) / 2, Game.spr_Img_Title_Menu.getY() + Game.spr_Img_Title_Menu.getHeight() + 10);
-//				Game.spr_Img_Logo.setScale(0.5f);
+			case STATE_MENU_OPTION_LOADING:
+				Loading.setLoading(Loading.LOADING_TYPE_OPTION);
 				break;
+			case STATE_MENU_OPTION:
+//				Game.spr_Img_Back_Menu.setAlpha(200);
+	
+				break;
+			case STATE_MENU_CLOSE_NOTIF:
+				Game.spr_Img_Bg_Notif.setVisible(true);
+				break;
+				
+
+			
 		}
 	}
 	
@@ -381,8 +408,9 @@ public class State_Menu_Main extends BaseGameActivity
 				if(keyCode == KeyEvent.KEYCODE_BACK)
 				{
 //					finish();
-					Game.spr_Img_Bg_Notif.setVisible(true);
-					Game.spr_Img_Back_Menu.setVisible(false);
+//					Game.spr_Img_Bg_Notif.setVisible(true);
+//					Game.spr_Img_Back_Menu.setVisible(false);
+				switchState(STATE_MENU_CLOSE_NOTIF);
 				}
 				break;
 				
@@ -391,6 +419,7 @@ public class State_Menu_Main extends BaseGameActivity
 				if(keyCode == KeyEvent.KEYCODE_BACK)
 				{
 					Game.spr_Img_Select_Map_Bg.setVisible(false);
+					Game.spr_Img_Back_Menu.setVisible(true);
 					switchState(STATE_MENU_SELECT_MC);
 				}
 				break;
@@ -417,7 +446,24 @@ public class State_Menu_Main extends BaseGameActivity
 //					spr_Img_Btn_Credit.setVisible(true);
 				}
 				break;
+case STATE_MENU_OPTION:
+				if(keyCode == KeyEvent.KEYCODE_BACK)
+				{
+					Game.spr_Img_Bg_Option.setVisible(false);
+					Game.spr_Img_Back_Menu.setVisible(true);
+					switchState(STATE_MENU_INMENU);
+				}
+				break;
+			case STATE_MENU_CLOSE_NOTIF:
+		
+				if(keyCode == KeyEvent.KEYCODE_BACK)
+				{
+					switchState(STATE_MENU_INMENU);
+				}
+				break;
 		}
+		
+		
 		
 		return false;
 	}
@@ -453,9 +499,14 @@ public class State_Menu_Main extends BaseGameActivity
 						switchState(STATE_MENU_SELECT_MC);
 				}
 				else if(Utils.isOnArea(pSceneTouchEvent, spr_Img_Btn_Credit)
-						&& pSceneTouchEvent.isActionUp())
+					&& pSceneTouchEvent.isActionUp()){
 					switchState(STATE_MENU_CREDIT_LOADING);
-				
+				}
+				else if(Utils.isOnArea(pSceneTouchEvent, spr_Img_Btn_Option)
+						&& pSceneTouchEvent.isActionUp()){
+					switchState(STATE_MENU_OPTION_LOADING);
+				}
+					
 				break;
 				
 			case STATE_MENU_SELECT_MAP:
@@ -723,8 +774,51 @@ public class State_Menu_Main extends BaseGameActivity
 				}
 				
 				break;
-			case STATE_MENU_CREDIT:
+		case STATE_MENU_OPTION:
+				if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Bg_Option, Game.spr_btn_music_on)){
+					
+					Game.spr_btn_music_on.setVisible(false);
+					Game.spr_btn_music_on.setPosition(110 , 20);
+										
+					if(SoundManager.isSoundOn){
+					SoundManager.stopAllMusic();
+					}
+					Game.spr_btn_music_off.setVisible(true);
+					Game.spr_btn_music_off.setPosition(180, 20);
+														
+				}
+				else if (Utils.isOnArea(pTouchEvent,Game.spr_Img_Bg_Option, Game.spr_btn_sound_on)){
 				
+					Game.spr_btn_sound_on.setVisible(false);
+					Game.spr_btn_sound_on.setPosition(110, 110);
+													
+					Game.spr_btn_sound_off.setVisible(true);
+					Game.spr_btn_sound_off.setPosition(180, 110);
+				}
+				else if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Bg_Option,  Game.spr_btn_music_off)){
+
+					Game.spr_btn_music_off.setVisible(false);	
+					Game.spr_btn_music_off.setPosition(110,20);
+															
+					Game.spr_btn_music_on.setVisible(true);
+					Game.spr_btn_music_on.setPosition(180, 20);
+				}
+				else if (Utils.isOnArea(pTouchEvent, Game.spr_Img_Bg_Option,  Game.spr_btn_sound_off)){
+
+					Game.spr_btn_sound_off.setVisible(false);
+					Game.spr_btn_sound_off.setPosition(110,110);
+					Game.spr_btn_sound_on.setVisible(true);
+					Game.spr_btn_sound_on.setPosition(180, 110);
+				}
+				break;
+			case STATE_MENU_CLOSE_NOTIF:
+				if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Bg_Notif, Game.spr_btn_yes)){
+					finish();
+				}
+				else if (Utils.isOnArea(pTouchEvent,  Game.spr_Img_Bg_Notif, Game.spr_btn_no)){
+					Game.spr_Img_Bg_Notif.setVisible(false);
+					switchState(STATE_MENU_INMENU);
+				}
 				break;
 		}
 	}
@@ -830,21 +924,21 @@ public class State_Menu_Main extends BaseGameActivity
 		Game.spr_Img_Select_Mc_Btn_Add.setVisible(true);
 	}
 	
-	private void attachNotif(){
-		scene.attachChild(Game.spr_Img_Bg_Notif);
-		Game.spr_Img_Bg_Notif.attachChild(Game.spr_btn_yes);
-		Game.spr_Img_Bg_Notif.attachChild(Game.spr_btn_no);
-		
-		Game.spr_btn_yes.setPosition(
-				Game.spr_Img_Bg_Notif.getX() + 10,
-				Game.spr_Img_Bg_Notif.getY() - 50
-				);
-		
-		Game.spr_btn_no.setPosition(
-				Game.spr_Img_Bg_Notif.getWidth() - 80,
-				Game.spr_Img_Bg_Notif.getY() - 50
-				);
-		
+private void attachNotif(){
+	scene.attachChild(Game.spr_Img_Bg_Notif);
+	Game.spr_Img_Bg_Notif.attachChild(Game.spr_btn_yes);
+	Game.spr_Img_Bg_Notif.attachChild(Game.spr_btn_no);
+	
+	Game.spr_btn_yes.setPosition(
+			Game.spr_Img_Bg_Notif.getX() + 10,
+			Game.spr_Img_Bg_Notif.getY() - 50
+			);
+	
+	Game.spr_btn_no.setPosition(
+			Game.spr_Img_Bg_Notif.getWidth() - 80,
+			Game.spr_Img_Bg_Notif.getY() - 50
+			);
+	
 	}
 	
 	private void attachCredit(){
@@ -904,6 +998,9 @@ public class State_Menu_Main extends BaseGameActivity
 		txt_IRFAN = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[4].getStringWidth(_TEX_IRF)) / 2,
 				txt_FANDI.getY()+MARGIN + 5 , Game.font[4], _TEX_IRF);
 
+	txt_CR = new Text((Config.GAME_SCREEN_WIDTH - Game.font[FONT_SIZE_SMALL].getStringWidth("copyright (c)")) / 2,
+				txt_IRFAN.getY() + txt_IRFAN.getHeight() + MARGIN  , Game.font[FONT_SIZE_SMALL], "copyright (c)\n 2012", HorizontalAlign.CENTER);
+		
 		
 		txt_AGUS.setColor(1,0, 0);
 		txt_AYU.setColor(1, 0, 0);
@@ -931,14 +1028,37 @@ public class State_Menu_Main extends BaseGameActivity
 		hud.attachChild(txt_AAN);
 		hud.attachChild(txt_FANDI);
 		hud.attachChild(txt_IRFAN);
+		hud.attachChild(txt_CR);
+	
 	
 		hud.attachChild(Game.spr_Img_Logo);
 		Game.spr_Img_Logo.setPosition(Game.spr_Img_Logo.getX(), 
-				txt_IRFAN.getY() +txt_IRFAN.getHeight() + MARGIN);
+				txt_CR.getY() + MARGIN);
 	
+	}
+	
+	private void attachOption(){
+		
+		scene.attachChild(Game.spr_Img_Bg_Option);
+		
+		txt_Musik = new Text(60, 40, Game.font[FONT_SIZE_MEDIUM], "Musik");
+		txt_Sfx = new Text(60, 130, Game.font[FONT_SIZE_MEDIUM], "Sfx");
 		
 		
+		Game.spr_Img_Bg_Option.attachChild(txt_Musik);
+		Game.spr_Img_Bg_Option.attachChild(txt_Sfx);
 		
+		
+		Game.spr_Img_Bg_Option.attachChild(Game.spr_btn_sound_off);
+		Game.spr_Img_Bg_Option.attachChild(Game.spr_btn_music_off);
+		Game.spr_Img_Bg_Option.attachChild(Game.spr_btn_sound_on);
+		Game.spr_Img_Bg_Option.attachChild(Game.spr_btn_music_on);
+
+		
+		Game.spr_btn_sound_off.setVisible(false);
+		Game.spr_btn_music_off.setVisible(false);		
+
+
 	}
 	
 	private boolean timer(float maxSecond)

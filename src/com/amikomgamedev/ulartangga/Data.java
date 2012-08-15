@@ -48,6 +48,19 @@ public interface Data {
 	public static final String IMG_BTN_YES =
 			MNU_FOLDER_LOCATION + "btn_yes.png";
 	
+	public static final String IMG_BG_OPTION =
+			MNU_FOLDER_LOCATION +"bg_option.png";
+	public static final String IMG_BTN_SOUND_ON =
+			MNU_FOLDER_LOCATION +"btn_sound_on.png";
+	public static final String IMG_BTN_SOUND_OFF =
+			MNU_FOLDER_LOCATION +"btn_sound_off.png";
+	public static final String IMG_BTN_MUSIC_ON =
+			MNU_FOLDER_LOCATION +"btn_music_on.png";
+	public static final String IMG_BTN_MUSIC_OFF =
+			MNU_FOLDER_LOCATION +"btn_music_off.png";
+	public static final String IMG_BG_BLACK = 
+			MNU_FOLDER_LOCATION +"bg_black.png";
+	
 	public static final String BGM_INMENU = SND_INMENU_FOLDER_LOCATION + "msc_menu.ogg";
 	
 	public static final String[] BGM_INGAME_GAMEPLAY = 
@@ -446,6 +459,12 @@ public interface Data {
 	
 	public static final int NOTIF_BTN_WIDTH		= 64;
 	public static final int NOTIF_BTN_HEIGHT	= 64;
+	
+	public static final int OPTION_BG_WIDTH		= 300;
+	public static final int OPTION_BG_HEIGHT	= 200;
+	
+	public static final int OPTION_BTN_WIDTH	= 64;
+	public static final int OPTION_BTN_HEIGHT	= 64;
 	
 	public static final String _TEX_PM = "Project Manager";
 	public static final String _TEX_PRD = "Produser";
