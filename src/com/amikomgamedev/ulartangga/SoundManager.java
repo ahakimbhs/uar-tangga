@@ -17,25 +17,55 @@ public class SoundManager
 	public static final String[] BGM_LOCATION =
 		{
 			"snd/inmenu/msc_menu.ogg", 
+			"snd/ingame/classic theme UT.ogg",
 			"snd/ingame/msc_ingame_bg_modern.ogg",
-			"snd/ingame/msc_ingame_bg_modern.ogg",
+			"snd/ingame/galaxy theme UT(press).ogg",
+			"snd/ingame/collosal theme UT.ogg",
 		};
 
-	public static final int SFX_LIFT			= 0;
-	public static final int SFX_DICE	= 1;
-	public static final int SFX_BERANTEM		= 2;
-	public static final int SFX_JALAN			= 3;
-	public static final int SFX_TERLEMPAR		= 4;
+	public static final int SFX_NAIK			= 0;
+	public static final int SFX_TURUN			= 1;
+	public static final int SFX_DICE			= 2;
+	public static final int SFX_BERANTEM		= 3;
+	public static final int SFX_JALAN			= 4;
+	public static final int SFX_TERLEMPAR		= 5;
 	
-	public static final int SFX_TOTAL = 5;
+	public static final int SFX_TOTAL = 6;
 
-	public static final String[] SFX_LOCATION =
+	public static final String[][] SFX_LOCATION =
 		{
-			"snd/ingame/lift.mp3",
-			"snd/ingame/dadu.mp3",
-			"snd/ingame/Berantem sfx.ogg",
-			"snd/ingame/sound jalan.ogg",
-			"snd/ingame/terlempar.ogg"
+			{
+				"snd/ingame/classic/tangga.mp3",
+				"snd/ingame/classic/ular.wav",
+				"snd/ingame/classic/dadu.mp3",
+				"snd/ingame/Berantem sfx.ogg",
+				"snd/ingame/sound jalan.ogg",
+				"snd/ingame/terlempar.ogg"
+			},
+			{
+				"snd/ingame/modern/lift.mp3",
+				"snd/ingame/modern/lift.mp3",
+				"snd/ingame/classic/dadu.mp3",
+				"snd/ingame/Berantem sfx.ogg",
+				"snd/ingame/sound jalan.ogg",
+				"snd/ingame/terlempar.ogg"
+			},
+			{
+				"snd/ingame/galaxy/roket2.ogg",
+				"snd/ingame/galaxy/blackhole.ogg",
+				"snd/ingame/galaxy/dadu.mp3",
+				"snd/ingame/Berantem sfx.ogg",
+				"snd/ingame/sound jalan.ogg",
+				"snd/ingame/terlempar.ogg"
+			},
+			{
+				"snd/ingame/collosal/tangga.mp3",
+				"snd/ingame/collosal/kayu.mp3",
+				"snd/ingame/collosal/dadu.mp3",
+				"snd/ingame/Berantem sfx.ogg",
+				"snd/ingame/sound jalan.ogg",
+				"snd/ingame/terlempar.ogg"
+			},
 		};
 	
 	public static boolean isSoundOn = true;
@@ -61,12 +91,12 @@ public class SoundManager
 	{
 		try
 		{
-			int map = serverData.getSelectMap() + 1;
+			int map = serverData.getSelectMap();
 			
 			bgm[BGM_GAMEPLAY] =
 				MusicFactory.createMusicFromAsset(
 						Game.activity.getMusicManager(),
-						Game.activity, BGM_LOCATION[map]);
+						Game.activity, BGM_LOCATION[map + 1]);
 			
 			bgm[BGM_GAMEPLAY].setLooping(true);
 
@@ -77,7 +107,7 @@ public class SoundManager
 				sfx[i] =
 					MusicFactory.createMusicFromAsset(
 							Game.activity.getMusicManager(),
-							Game.activity, SFX_LOCATION[i]);
+							Game.activity, SFX_LOCATION[map][i]);
 			}
 		}
 		catch (Exception e)

@@ -83,7 +83,8 @@ public class Game implements Data,
 	
 	private static BitmapTextureAtlas 	tex_Img_Select_Map_Bg;
 	private static TextureRegion		reg_Img_Select_Map_Bg;
-	public static Sprite				spr_Img_Select_Map_Bg;
+	public static Sprite				spr_Img_Select_Map_Bg,
+										spr_Img_Select_Map;
 	
 	private static BitmapTextureAtlas 	tex_Img_Select_Map_Btn_Back;
 	private static TextureRegion		reg_Img_Select_Map_Btn_Back;
@@ -116,6 +117,8 @@ public class Game implements Data,
 	private static BitmapTextureAtlas	tex_Img_Select_Mc_Btn_Arrow;
 	private static TextureRegion		reg_Img_Select_Mc_Btn_Arrow_Left;
 	private static TextureRegion		reg_Img_Select_Mc_Btn_Arrow_Right;
+	private static TextureRegion		reg_Img_Select_Mc_Btn_Arrow_Mc_Left;
+	private static TextureRegion		reg_Img_Select_Mc_Btn_Arrow_Mc_Right;
 	public static Sprite[][]			spr_Img_Select_Mc_Btn_Arrow_Mc;
 	public static Sprite[]				spr_Img_Select_Mc_Btn_Arrow;
 	
@@ -260,8 +263,8 @@ public class Game implements Data,
 		
 		spr_Img_Logo = new Sprite(
 				0, 0, 
-				Utils.getRatioW(300),
-				Utils.getRatioH(147), 
+				Utils.getRatio(300),
+				Utils.getRatio(147), 
 				reg_Img_Logo);
 		
 		spr_Img_Logo.setPosition(
@@ -345,7 +348,7 @@ public class Game implements Data,
 					Utils.getTextureOption());
 			reg_MC[i] = BitmapTextureAtlasTextureRegionFactory.
 					createTiledFromAsset(tex_MC[i], activity,
-					SPR_MC[map][serverData.getCharPlayer(i)], 
+					SPR_MC[serverData.getCharPlayer(i)], 
 					0, 0, Data.SPR_MC_COLUMN, Data.SPR_MC_ROW);
 			
 			loadTexture(tex_MC[i]);
@@ -424,7 +427,7 @@ public class Game implements Data,
 					Utils.getTextureOption());
 			reg_Icon_MC[i] = BitmapTextureAtlasTextureRegionFactory.
 					createFromAsset(tex_Icon_MC[i], activity, 
-					SPR_ICON_MC[map][serverData.getCharPlayer(i)], 0, 0);
+					SPR_ICON_MC[serverData.getCharPlayer(i)], 0, 0);
 			
 			loadTexture(tex_Icon_MC[i]);
 			
@@ -470,8 +473,8 @@ public class Game implements Data,
 				Game.reg_Img_Button_Slide);
 		spr_Img_Button_Pause =  new Sprite(
 				0, 0, 
-				Utils.getRatio(20), 
-				Utils.getRatio(20), 
+				Utils.getRatio(30), 
+				Utils.getRatio(30), 
 				Game.reg_Img_Button_Pause);
 		
 		spr_Img_Button_Slide_Bg.setPosition(
@@ -484,7 +487,7 @@ public class Game implements Data,
 
 		spr_Img_Button_Pause.setPosition(
 				Config.GAME_SCREEN_WIDTH - spr_Img_Button_Pause.getWidth() - Utils.getRatioW(10),
-				Config.GAME_SCREEN_HEIGHT - spr_Img_Button_Pause.getHeight() - Utils.getRatioW(10));
+				Config.GAME_SCREEN_HEIGHT - spr_Img_Button_Pause.getHeight() - (spr_Img_Informasi_Footer.getHeight() - spr_Img_Button_Pause.getHeight()) / 2);
 		
 		spr_Img_Button_Slide_Bg.attachChild(spr_Img_Button_Slide);
 		spr_Img_Button_Slide_Bg.setAlpha(0.6f);
@@ -499,7 +502,7 @@ public class Game implements Data,
 		reg_Img_Informasi_Footer = BitmapTextureAtlasTextureRegionFactory.
 				createFromAsset(tex_Img_Informasi, activity, IMG_INGAME_FOOTER, 0, 0);
 		reg_Img_Informasi_Header = BitmapTextureAtlasTextureRegionFactory.
-				createFromAsset(tex_Img_Informasi, activity, IMG_INGAME_HEADER, 0, 20);
+				createFromAsset(tex_Img_Informasi, activity, IMG_INGAME_HEADER, 0, 40);
 		loadTexture(tex_Img_Informasi);
 		
 		spr_Img_Informasi_Footer = new Sprite(
@@ -558,6 +561,19 @@ public class Game implements Data,
 				Config.GAME_SCREEN_WIDTH,
 				Config.GAME_SCREEN_HEIGHT,
 				reg_Img_Select_Map_Bg);
+		
+		BitmapTextureAtlas atlas = new BitmapTextureAtlas(
+				512, 64,
+				Utils.getTextureOption());
+		TextureRegion region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(atlas, activity,
+				IMG_INMENU_FOLDER_LOCATION + "map select.png", 0, 0);
+		
+		loadTexture(atlas);
+		
+		spr_Img_Select_Map = new Sprite(0, 0,
+				Config.GAME_SCREEN_WIDTH,
+				Utils.getRatioW(40), region);
 	}
 
 	public static void loadSelectMapBtn()
@@ -646,6 +662,21 @@ public class Game implements Data,
 				Config.GAME_SCREEN_WIDTH,
 				Config.GAME_SCREEN_HEIGHT,
 				reg_Img_Select_Mc_Bg);
+		
+		BitmapTextureAtlas atlas = new BitmapTextureAtlas(
+				512, 64,
+				Utils.getTextureOption());
+		TextureRegion region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(atlas, activity,
+				IMG_INMENU_FOLDER_LOCATION + "CHOOSE CHARACTER.png", 0, 0);
+		
+		loadTexture(atlas);
+		
+		Sprite sprite = new Sprite(0, 0,
+				Config.GAME_SCREEN_WIDTH,
+				Utils.getRatioW(40), region);
+		
+		spr_Img_Select_Mc_Bg.attachChild(sprite);
 	}
 	
 	public static void loadSelectMcIconBg()
@@ -672,7 +703,7 @@ public class Game implements Data,
 		}
 		
 		float pX = (Config.GAME_SCREEN_WIDTH / 2 - spr_Img_Select_Mc_Icon_Mc_Bg[0].getWidth()) / 2;
-		float pY = pX;
+		float pY = Utils.getRatioH(50);
 
 		spr_Img_Select_Mc_Icon_Mc_Bg[0].setPosition(pX, pY);
 		spr_Img_Select_Mc_Icon_Mc_Bg[1].setPosition(
@@ -681,11 +712,11 @@ public class Game implements Data,
 	
 	public static void loadSelectMcIcon()
 	{
-		tex_Img_Select_Mc_Icon_Mc = new BitmapTextureAtlas[SELECT_MC_ICON[map].length];
-		reg_Img_Select_Mc_Icon_Mc = new TextureRegion[4][SELECT_MC_ICON[map].length];
-		spr_Img_Select_Mc_Icon_Mc = new Sprite[4][SELECT_MC_ICON[map].length];
+		tex_Img_Select_Mc_Icon_Mc = new BitmapTextureAtlas[SELECT_MC_ICON.length];
+		reg_Img_Select_Mc_Icon_Mc = new TextureRegion[4][SELECT_MC_ICON.length];
+		spr_Img_Select_Mc_Icon_Mc = new Sprite[4][SELECT_MC_ICON.length];
 		
-		for(int i = 0; i < SELECT_MC_ICON[map].length; i++)
+		for(int i = 0; i < SELECT_MC_ICON.length; i++)
 		{
 			tex_Img_Select_Mc_Icon_Mc[i] = new BitmapTextureAtlas(
 					MENU_SELECT_MC_ICON_TEX_WIDTH,
@@ -695,11 +726,11 @@ public class Game implements Data,
 		
 		for (int i = 0; i < 4; i++)
 		{
-			for(int j = 0; j < SELECT_MC_ICON[map].length; j++)
+			for(int j = 0; j < SELECT_MC_ICON.length; j++)
 			{
 				reg_Img_Select_Mc_Icon_Mc[i][j] = BitmapTextureAtlasTextureRegionFactory.
 						createFromAsset(tex_Img_Select_Mc_Icon_Mc[j], activity,
-						SELECT_MC_ICON[map][j], 0, 0);
+						SELECT_MC_ICON[j], 0, 0);
 				
 				loadTexture(tex_Img_Select_Mc_Icon_Mc[j]);
 				
@@ -794,6 +825,14 @@ public class Game implements Data,
 				MENU_SELECT_MC_BTN_ARROW_TEX_WIDTH,
 				MENU_SELECT_MC_BTN_ARROW_TEX_HEIGHT, 
 				Utils.getTextureOption());
+		reg_Img_Select_Mc_Btn_Arrow_Mc_Left = BitmapTextureAtlasTextureRegionFactory.
+				createFromAsset(tex_Img_Select_Mc_Btn_Arrow, activity,
+				MENU_SELECT_MC_BTN_ARROW_MC, 75, 0);
+		reg_Img_Select_Mc_Btn_Arrow_Mc_Right = BitmapTextureAtlasTextureRegionFactory.
+				createFromAsset(tex_Img_Select_Mc_Btn_Arrow, activity,
+				MENU_SELECT_MC_BTN_ARROW_MC, 75, 0);
+		reg_Img_Select_Mc_Btn_Arrow_Mc_Right.setFlippedHorizontal(true);
+
 		reg_Img_Select_Mc_Btn_Arrow_Left = BitmapTextureAtlasTextureRegionFactory.
 				createFromAsset(tex_Img_Select_Mc_Btn_Arrow, activity,
 				MENU_SELECT_MC_BTN_ARROW, 0, 0);
@@ -813,13 +852,13 @@ public class Game implements Data,
 					new Sprite(0, 0,
 					Utils.getRatio(MENU_SELECT_MC_BTN_ARROW_MC_WIDTH),
 					Utils.getRatio(MENU_SELECT_MC_BTN_ARROW_MC_HEIGHT),
-					reg_Img_Select_Mc_Btn_Arrow_Left);
+					reg_Img_Select_Mc_Btn_Arrow_Mc_Left);
 			
 			spr_Img_Select_Mc_Btn_Arrow_Mc[i][1] = 
 					new Sprite(0, 0,
 					Utils.getRatio(MENU_SELECT_MC_BTN_ARROW_MC_WIDTH),
 					Utils.getRatio(MENU_SELECT_MC_BTN_ARROW_MC_HEIGHT),
-					reg_Img_Select_Mc_Btn_Arrow_Right);
+					reg_Img_Select_Mc_Btn_Arrow_Mc_Right);
 		}
 		
 		spr_Img_Select_Mc_Btn_Arrow[0] = 
@@ -874,7 +913,7 @@ public class Game implements Data,
 		
 		float pX = (Config.GAME_SCREEN_WIDTH - spr_Img_Select_Mc_Btn_Add.getWidth()) / 2;
 		float pY = spr_Img_Select_Mc_Icon_Mc_Bg[0].getY() + spr_Img_Select_Mc_Icon_Mc_Bg[0].getHeight()
-				+  + Utils.getRatioH(50);
+				+ Utils.getRatioH(40);
 		
 		spr_Img_Select_Mc_Btn_Add.setPosition(pX, pY);
 	}
@@ -932,13 +971,13 @@ public class Game implements Data,
 			
 			reg_GamePause_Mc_Idle[i] = BitmapTextureAtlasTextureRegionFactory
 					.createTiledFromAsset(tex_GamePause_Mc[i], activity,
-					GAMEPAUSE_MC_IDLE[map][serverData.getCharPlayer(i)], 0, 0,
+					GAMEPAUSE_MC_IDLE[serverData.getCharPlayer(i)], 0, 0,
 					GAMEPAUSE_MC_IDLE_COLUMN, GAMEPAUSE_MC_IDLE_ROW);
 			
 			reg_GamePause_Mc_Icon[i] = BitmapTextureAtlasTextureRegionFactory
 					.createFromAsset(tex_GamePause_Mc[i], activity,
-					SPR_ICON_MC[map][serverData.getCharPlayer(i)],
-					0, GAMEPAUSE_MC_IDLE_HEIGHT);
+					SPR_ICON_MC[serverData.getCharPlayer(i)],
+					0, 95);
 			
 			loadTexture(tex_GamePause_Mc[i]);
 			
@@ -1055,12 +1094,12 @@ public class Game implements Data,
 			
 			reg_GameOver_Mc[i][MC_WIN] = BitmapTextureAtlasTextureRegionFactory.
 					createTiledFromAsset(tex_GameOver_Mc[i], activity,
-					GAMEOVER_MC_WIN[map][serverData.getCharPlayer(i)], 0, 0,
+					GAMEOVER_MC_WIN[serverData.getCharPlayer(i)], 0, 0,
 					GAMEOVER_MC_WIN_COLUMN, GAMEOVER_MC_WIN_ROW);
 			
 			reg_GameOver_Mc[i][MC_LOSE] = BitmapTextureAtlasTextureRegionFactory.
 					createTiledFromAsset(tex_GameOver_Mc[i], activity,
-					GAMEOVER_MC_LOSE[map][serverData.getCharPlayer(i)],
+					GAMEOVER_MC_LOSE[serverData.getCharPlayer(i)],
 					0, GAMEOVER_MC_WIN_HEIGHT,
 					GAMEOVER_MC_WIN_COLUMN, GAMEOVER_MC_WIN_ROW);
 			

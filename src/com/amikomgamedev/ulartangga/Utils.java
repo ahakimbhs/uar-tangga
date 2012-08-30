@@ -31,15 +31,15 @@ public class Utils implements Define
 	}
 
 	// ratio posisi untuk hud
-	public static float getRatioW(float def)
+	public static int getRatioW(float def)
 	{
-		return ((def/Define.GAME_RATIO_SCREEN_WIDTH) 
+		return (int) ((def/Define.GAME_RATIO_SCREEN_WIDTH) 
 				* Config.GAME_SCREEN_WIDTH);
 	}
 	// ratio posisi untuk hud
-	public static float getRatioH(float def)
+	public static int getRatioH(float def)
 	{
-		return ((def/Define.GAME_RATIO_SCREEN_HEIGHT) 
+		return (int) ((def/Define.GAME_RATIO_SCREEN_HEIGHT) 
 				* Config.GAME_SCREEN_HEIGHT);
 	}
 

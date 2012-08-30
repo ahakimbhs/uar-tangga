@@ -63,22 +63,22 @@ public interface Define
 				{2,	17,	18,	42,	44,	71,	32}			// posisi Ular Ahir
 			},
 			{// modern
-				{9,	38,	58},		// posisi Tangga Awal
-				{52,78,	78},		// posisi Tangga Akhir
-				{41,99,	84,	16,	86,	70},		// posisi Ular Awal
-				{20,19,	24,	5,	66, 10}			// posisi Ular Ahir
+				{9,	28,	36,	38,	69,	85},		// posisi Tangga Awal
+				{27,52,	90,	60,	88,	96},		// posisi Tangga Akhir
+				{16,41,	70,	65,	86,	84, 99},		// posisi Ular Awal
+				{5,	20,	10,	55,	66, 24, 19}			// posisi Ular Ahir
 			},
 			{// galaksi
-				{2, 5,	8,	11,	21,	38,	50,	55,	60},		// posisi Tangga Awal
-				{24,48,	28,	52,	41,	65,	71,	93, 78},		// posisi Tangga Akhir
-				{33,54,	58,	63,	76,	84,	89,	95,	98},		// posisi Ular Awal
-				{7,	17,	25,	35,	22,	45,	9,	68,	80}			// posisi Ular Ahir
+				{2, 7,	13,	26,	42,	50,	74},		// posisi Tangga Awal
+				{45,34,	32,	66,	78,	98,	96},		// posisi Tangga Akhir
+				{25,41,	61,	75,	88,	92,	99},		// posisi Ular Awal
+				{5,	22,	39,	31,	53,	89,	65}			// posisi Ular Ahir
 			},
 			{// kolosal
-				{2, 5,	8,	11,	21,	38,	50,	55,	60},		// posisi Tangga Awal
-				{24,48,	28,	52,	41,	65,	71,	93, 78},		// posisi Tangga Akhir
-				{33,54,	58,	63,	76,	84,	89,	95,	98},		// posisi Ular Awal
-				{7,	17,	25,	35,	22,	45,	9,	68,	80}			// posisi Ular Ahir
+				{4, 8,	26,	38,	50,	53,	56},		// posisi Tangga Awal
+				{44,27,	52,	81,	90,	72,	96},		// posisi Tangga Akhir
+				{35,60,	69,	74,	85,	92,	94},		// posisi Ular Awal
+				{6,	19,	12,	47,	42,	58,	88}			// posisi Ular Ahir
 			}
 		};
 

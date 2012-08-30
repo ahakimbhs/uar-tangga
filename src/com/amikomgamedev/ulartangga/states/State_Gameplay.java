@@ -231,7 +231,7 @@ public class State_Gameplay extends 	BaseGameActivity
 							
 							if(mc[Player_Cur].Posisi_Mc_Current != SNAKE_N_LADDER[Map][CELL_SNAKE_START][cek])
 							{
-								SoundManager.stopSfx(SoundManager.SFX_LIFT);
+								SoundManager.stopSfx(SoundManager.SFX_TURUN);
 								switchCek(CEK_IDLE);
 							}
 							
@@ -249,7 +249,7 @@ public class State_Gameplay extends 	BaseGameActivity
 
 							if(mc[Player_Cur].Posisi_Mc_Current != SNAKE_N_LADDER[Map][CELL_LADDER_START][cek])
 							{
-								SoundManager.stopSfx(SoundManager.SFX_LIFT);
+								SoundManager.stopSfx(SoundManager.SFX_NAIK);
 								switchCek(CEK_IDLE);
 							}
 							break;
@@ -858,7 +858,7 @@ public class State_Gameplay extends 	BaseGameActivity
 		{
 			case CEK_SNAKE:
 
-				SoundManager.playSfx(SoundManager.SFX_LIFT);
+				SoundManager.playSfx(SoundManager.SFX_TURUN);
 				
 				playerName.setText(PLAYER_NAME[Player_Cur] + " Get Snake");
 				playerName.setPosition(
@@ -872,7 +872,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 			case CEK_LADDER:
 
-				SoundManager.playSfx(SoundManager.SFX_LIFT);
+				SoundManager.playSfx(SoundManager.SFX_NAIK);
 				
 				playerName.setText(PLAYER_NAME[Player_Cur] + " Get Ladder");
 				playerName.setPosition(
