@@ -131,7 +131,7 @@ public class Utils implements Define
 	{
 //		if(Game_Config.DEBUG)
 		{
-			System.out.println(arg);
+//			System.out.println(arg);
 		}
 	}
 	
