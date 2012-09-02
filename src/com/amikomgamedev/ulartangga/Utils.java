@@ -129,7 +129,7 @@ public class Utils implements Define
 	
 	public static void TRACE(String arg)
 	{
-//		if(Game_Config.DEBUG)
+		if(Config.DEBUG)
 		{
 //			System.out.println(arg);
 		}

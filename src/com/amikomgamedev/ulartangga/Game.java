@@ -1138,7 +1138,7 @@ public class Game implements Data,
 					0, 0, 
 					Utils.getRatio(GAMEOVER_TEXT_WIDTH), 
 					Utils.getRatio(GAMEOVER_TEXT_HEIGHT), 
-					reg_GameOver_Text[0]);
+					reg_GameOver_Text[i]);
 			
 			spr_GameOver_Text[i].setPosition(
 					(int) (spr_GameOver_Bg.getWidth() / 2 + (spr_GameOver_Bg.getWidth() / 2 - spr_GameOver_Text[i].getWidth()) / 2),

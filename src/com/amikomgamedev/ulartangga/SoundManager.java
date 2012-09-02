@@ -37,7 +37,7 @@ public class SoundManager
 			{
 				"snd/ingame/classic/tangga.mp3",
 				"snd/ingame/classic/ular.wav",
-				"snd/ingame/classic/dadu.mp3",
+				"snd/ingame/classic/dadu.ogg",
 				"snd/ingame/Berantem sfx.ogg",
 				"snd/ingame/sound jalan.ogg",
 				"snd/ingame/terlempar.ogg"
@@ -45,7 +45,7 @@ public class SoundManager
 			{
 				"snd/ingame/modern/lift.mp3",
 				"snd/ingame/modern/lift.mp3",
-				"snd/ingame/classic/dadu.mp3",
+				"snd/ingame/modern/dadu.ogg",
 				"snd/ingame/Berantem sfx.ogg",
 				"snd/ingame/sound jalan.ogg",
 				"snd/ingame/terlempar.ogg"
@@ -53,7 +53,7 @@ public class SoundManager
 			{
 				"snd/ingame/galaxy/roket2.ogg",
 				"snd/ingame/galaxy/blackhole.ogg",
-				"snd/ingame/galaxy/dadu.mp3",
+				"snd/ingame/galaxy/dadu.ogg",
 				"snd/ingame/Berantem sfx.ogg",
 				"snd/ingame/sound jalan.ogg",
 				"snd/ingame/terlempar.ogg"
