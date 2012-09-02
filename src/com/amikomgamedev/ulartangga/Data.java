@@ -437,12 +437,12 @@ public interface Data {
 	public static final String _TEX_SE = "Sound Enginer";
 	
 	public static final String _TEX_AGS = "Agoes Tri Hariyanto";
-	public static final String _TEX_AYU = "Ayu";
-	public static final String _TEX_MTY = "Mutia";
+	public static final String _TEX_AYU = "Ayu Aprilia";
+	public static final String _TEX_MTY = "Mutia Rachmawati";
 	public static final String _TEX_DWI = "Dwi Ariyanto";
 	public static final String _TEX_ARF = "Arief Maffrudin An Nuur";
-	public static final String _TEX_AMR = "Amirul";
+	public static final String _TEX_AMR = "Mochammad Amirul H";
 	public static final String _TEX_VER = "Verdian Andiansyah";
 	public static final String _TEX_FAN = "Moh. Rifandi Lihawa";
-	public static final String _TEX_IRF = "Irfan";
+	public static final String _TEX_IRF = "Irvan D. Efendi";
 }
