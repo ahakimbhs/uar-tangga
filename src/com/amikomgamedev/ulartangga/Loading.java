@@ -71,10 +71,10 @@ public class Loading {
 		{
 			LOADING_SUB_TYPE_MAIN_MENU_INTERFACE,
 			LOADING_SUB_TYPE_MAIN_MENU_BUTTON,
-//			LOADING_SUB_TYPE_SELECT_MAP_BACKGROUND,
-//			LOADING_SUB_TYPE_SELECT_MAP_ICON_MAP,
-//			LOADING_SUB_TYPE_SELECT_MC_BACKGROUND,
-//			LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER,
+			LOADING_SUB_TYPE_SELECT_MAP_BACKGROUND,
+			LOADING_SUB_TYPE_SELECT_MAP_ICON_MAP,
+			LOADING_SUB_TYPE_SELECT_MC_BACKGROUND,
+			LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER,
 			LOADING_SUB_TYPE_FONT,
 			LOADING_SUB_TYPE_SOUND_MENU
 		};
@@ -123,6 +123,7 @@ public class Loading {
 			LOADING_SUB_TYPE_GAME_PAUSE,
 			LOADING_SUB_TYPE_GAME_OVER,
 			LOADING_SUB_TYPE_GAME_OVER_MC,
+			LOADING_SUB_TYPE_OPTION_BACKGROUND
 		};
 	
 	public static void setLoading(int loadingType)
@@ -229,6 +230,8 @@ public class Loading {
 				Game.loadTitle();
 				Game.loadBackgroundMenu();
 				Game.loadDadu();
+				Game.loadMenuSetting();
+				Game.load_Close_Notif();
 				break;
 			case LOADING_SUB_TYPE_MAIN_MENU_BUTTON:
 				Game.loadButtonMenu();
@@ -238,7 +241,6 @@ public class Loading {
 				break;
 			case LOADING_SUB_TYPE_LOADING_INTERFACE:
 				Game.loadLoadingBg();
-				Game.load_Close_Notif();
 				break;
 			case LOADING_SUB_TYPE_MC:
 				Game.loadMC();
@@ -248,12 +250,12 @@ public class Loading {
 				Game.loadGameMap(map);
 				break;
 			case LOADING_SUB_TYPE_CREDIT_BACKGROUND:
-				Game.load_BG_Credit();	
+				Game.load_BG_Credit();
 				Game.loadTitle();
 				Game.loadLogo();
 				break;
 			case LOADING_SUB_TYPE_OPTION_BACKGROUND:
-				Game.load_Option();
+				Game.loadMenuSetting();
 				break;
 			case LOADING_SUB_TYPE_GAME_BUTTON:
 				Game.loadGamePlayDice();

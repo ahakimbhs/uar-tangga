@@ -173,7 +173,10 @@ public class State_Menu_Main extends BaseGameActivity
 				{
 					Game.spr_Img_Loading.detachSelf();
 					attachInMenu();
+					attachOption();
 					attachNotif();
+					attachSelectMc();
+					attachSelectMap();
 					switchState(STATE_MENU_INMENU);
 				}
 				
@@ -294,7 +297,7 @@ public class State_Menu_Main extends BaseGameActivity
 					Loading.updateLoading();
 				else
 				{
-					attachOption();
+//					attachOption();
 					switchState(STATE_MENU_OPTION);
 				}
 				break;				
@@ -332,7 +335,7 @@ public class State_Menu_Main extends BaseGameActivity
 
 				SoundManager.playMusic(SoundManager.BGM_MENU_MAIN);
 				Game.spr_Img_Logo.setVisible(false);
-				Game.spr_Img_Bg_Notif.setVisible(false);
+				Game.spr_Img_Close_Notif_Bg.setVisible(false);
 				
 				break;
 
@@ -373,21 +376,33 @@ public class State_Menu_Main extends BaseGameActivity
 			case STATE_MENU_CREDIT:
 				
 				Game.spr_Img_Back_Menu.setVisible(false);
-				Game.spr_Img_Bg_Notif.setVisible(false);
+				Game.spr_Img_Close_Notif_Bg.setVisible(false);
 				
 				y = Config.GAME_SCREEN_HEIGHT;
 				hud.setPosition(hud.getScaleCenterX() / 2, y);
 			break;
 				
 			case STATE_MENU_OPTION_LOADING:
-				Loading.setLoading(Loading.LOADING_TYPE_OPTION);
+//				Loading.setLoading(Loading.LOADING_TYPE_OPTION);
 				break;
 			case STATE_MENU_OPTION:
+				
+				Game.spr_Img_Option_Bg.setVisible(true);
+				
+				if(SoundManager.sfxEnable)
+					Game.spr_Menu_Setting_On_Off[0][0].setVisible(true);
+				else
+					Game.spr_Menu_Setting_On_Off[1][0].setVisible(true);
+				
+				if(SoundManager.bgmEnable)
+					Game.spr_Menu_Setting_On_Off[0][1].setVisible(true);
+				else
+					Game.spr_Menu_Setting_On_Off[1][1].setVisible(true);
 //				Game.spr_Img_Back_Menu.setAlpha(200);
 	
 				break;
 			case STATE_MENU_CLOSE_NOTIF:
-				Game.spr_Img_Bg_Notif.setVisible(true);
+				Game.spr_Img_Close_Notif_Bg.setVisible(true);
 				break;
 				
 
@@ -415,7 +430,7 @@ public class State_Menu_Main extends BaseGameActivity
 //					finish();
 //					Game.spr_Img_Bg_Notif.setVisible(true);
 //					Game.spr_Img_Back_Menu.setVisible(false);
-				switchState(STATE_MENU_CLOSE_NOTIF);
+					switchState(STATE_MENU_CLOSE_NOTIF);
 				}
 				break;
 				
@@ -451,10 +466,10 @@ public class State_Menu_Main extends BaseGameActivity
 //					spr_Img_Btn_Credit.setVisible(true);
 				}
 				break;
-case STATE_MENU_OPTION:
+			case STATE_MENU_OPTION:
 				if(keyCode == KeyEvent.KEYCODE_BACK)
 				{
-					Game.spr_Img_Bg_Option.setVisible(false);
+					Game.spr_Img_Option_Bg.setVisible(false);
 					Game.spr_Img_Back_Menu.setVisible(true);
 					switchState(STATE_MENU_INMENU);
 				}
@@ -595,22 +610,8 @@ case STATE_MENU_OPTION:
 					finish();
 				}
 				else if (Utils.isOnArea(pTouchEvent,  Game.spr_Img_Bg_Notif, Game.spr_btn_no)){
-					Game.spr_Img_Bg_Notif.setVisible(false);
+					Game.spr_Img_Close_Notif_Bg.setVisible(false);
 					Game.spr_Img_Back_Menu.setVisible(true);
-				}
-				
-				if(Utils.isOnArea(pTouchEvent, spr_Img_Btn_Option))
-				{
-					if(SoundManager.isSoundOn)
-					{
-						SoundManager.isSoundOn = false;
-						SoundManager.stopMusic(SoundManager.BGM_MENU_MAIN);
-					}
-					else
-					{
-						SoundManager.isSoundOn = true;
-						SoundManager.playMusic(SoundManager.BGM_MENU_MAIN);
-					}
 				}
 					
 				
@@ -688,6 +689,8 @@ case STATE_MENU_OPTION:
 
 						Game.spr_Img_Select_Mc_Icon_Mc_Bg[2].setVisible(true);
 						Game.spr_Img_Select_Mc_Icon_Mc_Bg[3].setVisible(true);
+						
+						Game.spr_Img_Select_Mc_Btn_Add.setVisible(false);
 					}
 				}
 				
@@ -736,6 +739,8 @@ case STATE_MENU_OPTION:
 										Game.spr_Img_Select_Mc_Btn_Add.getX(),
 										Game.spr_Img_Select_Mc_Icon_Mc_Bg[0].getY() + Game.spr_Img_Select_Mc_Icon_Mc_Bg[0].getHeight() + Utils.getRatioH(40));
 							}
+							
+							Game.spr_Img_Select_Mc_Btn_Add.setVisible(true);
 						}
 					
 					if(Utils.isOnArea(
@@ -779,49 +784,58 @@ case STATE_MENU_OPTION:
 				}
 				
 				break;
-		case STATE_MENU_OPTION:
-				if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Bg_Option, Game.spr_btn_music_on)){
-					
-					Game.spr_btn_music_on.setVisible(false);
-					Game.spr_btn_music_on.setPosition(110 , 20);
-										
-					if(SoundManager.isSoundOn){
-					SoundManager.stopAllMusic();
+			case STATE_MENU_OPTION:
+
+				for (int i = 0; i < 2; i++)
+				{
+					if(Utils.isOnArea(
+							pTouchEvent,
+							Game.spr_Menu_Setting_Bg_Text,
+							Game.spr_Menu_Setting_Bg_Sound_Icon[i]))
+					{
+						if(i == 0)
+						{
+							if(SoundManager.sfxEnable)
+							{
+								SoundManager.sfxEnable = false;
+								Game.spr_Menu_Setting_On_Off[0][i].setVisible(false);
+								Game.spr_Menu_Setting_On_Off[1][i].setVisible(true);
+							}
+							else
+							{
+								SoundManager.sfxEnable = true;
+								Game.spr_Menu_Setting_On_Off[0][i].setVisible(true);
+								Game.spr_Menu_Setting_On_Off[1][i].setVisible(false);
+							}
+						}
+						else
+						{
+							if(SoundManager.bgmEnable)
+							{
+								SoundManager.bgmEnable = false;
+								Game.spr_Menu_Setting_On_Off[0][i].setVisible(false);
+								Game.spr_Menu_Setting_On_Off[1][i].setVisible(true);
+								SoundManager.stopMusic(SoundManager.BGM_MENU_MAIN);
+							}
+							else
+							{
+								SoundManager.bgmEnable = true;
+								Game.spr_Menu_Setting_On_Off[0][i].setVisible(true);
+								Game.spr_Menu_Setting_On_Off[1][i].setVisible(false);
+								SoundManager.playMusic(SoundManager.BGM_MENU_MAIN);
+							}
+						}
 					}
-					Game.spr_btn_music_off.setVisible(true);
-					Game.spr_btn_music_off.setPosition(180, 20);
-														
+					
 				}
-				else if (Utils.isOnArea(pTouchEvent,Game.spr_Img_Bg_Option, Game.spr_btn_sound_on)){
 				
-					Game.spr_btn_sound_on.setVisible(false);
-					Game.spr_btn_sound_on.setPosition(110, 110);
-													
-					Game.spr_btn_sound_off.setVisible(true);
-					Game.spr_btn_sound_off.setPosition(180, 110);
-				}
-				else if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Bg_Option,  Game.spr_btn_music_off)){
-
-					Game.spr_btn_music_off.setVisible(false);	
-					Game.spr_btn_music_off.setPosition(110,20);
-															
-					Game.spr_btn_music_on.setVisible(true);
-					Game.spr_btn_music_on.setPosition(180, 20);
-				}
-				else if (Utils.isOnArea(pTouchEvent, Game.spr_Img_Bg_Option,  Game.spr_btn_sound_off)){
-
-					Game.spr_btn_sound_off.setVisible(false);
-					Game.spr_btn_sound_off.setPosition(110,110);
-					Game.spr_btn_sound_on.setVisible(true);
-					Game.spr_btn_sound_on.setPosition(180, 110);
-				}
 				break;
 			case STATE_MENU_CLOSE_NOTIF:
 				if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Bg_Notif, Game.spr_btn_yes)){
 					finish();
 				}
 				else if (Utils.isOnArea(pTouchEvent,  Game.spr_Img_Bg_Notif, Game.spr_btn_no)){
-					Game.spr_Img_Bg_Notif.setVisible(false);
+					Game.spr_Img_Close_Notif_Bg.setVisible(false);
 					switchState(STATE_MENU_INMENU);
 				}
 				break;
@@ -880,6 +894,8 @@ case STATE_MENU_OPTION:
 		
 		for(int i = 0; i < Data.IMG_INGAME_BACKGROUND_MAP.length; i++)
 			Game.spr_Img_Select_Map_Bg_Select.attachChild(Game.spr_Img_Select_Map_Icon_Map[i]);
+		
+		Game.spr_Img_Select_Map_Bg.setVisible(false);
 	}
 	
 	private void attachSelectMc()
@@ -931,19 +947,25 @@ case STATE_MENU_OPTION:
 	}
 	
 private void attachNotif(){
-	scene.attachChild(Game.spr_Img_Bg_Notif);
+	scene.attachChild(Game.spr_Img_Close_Notif_Bg);
+	Game.spr_Img_Close_Notif_Bg.attachChild(Game.spr_Img_Bg_Notif);
 	Game.spr_Img_Bg_Notif.attachChild(Game.spr_btn_yes);
 	Game.spr_Img_Bg_Notif.attachChild(Game.spr_btn_no);
+	Game.spr_Img_Bg_Notif.attachChild(Game.spr_Img_Bg_Text);
 	
 	Game.spr_btn_yes.setPosition(
-			Game.spr_Img_Bg_Notif.getX() + 10,
-			Game.spr_Img_Bg_Notif.getY() - 50
+			(Game.spr_Img_Bg_Notif.getWidth() / 2 - Game.spr_btn_yes.getWidth()) / 2,
+			(Game.spr_Img_Bg_Notif.getHeight() - Game.spr_btn_yes.getHeight()) / 2
 			);
 	
 	Game.spr_btn_no.setPosition(
-			Game.spr_Img_Bg_Notif.getWidth() - 80,
-			Game.spr_Img_Bg_Notif.getY() - 50
+			Game.spr_Img_Bg_Notif.getWidth() / 2 + (Game.spr_Img_Bg_Notif.getWidth() / 2 - Game.spr_btn_no.getWidth()) / 2,
+			(Game.spr_Img_Bg_Notif.getHeight() - Game.spr_btn_no.getHeight()) / 2
 			);
+	
+	Game.spr_Img_Bg_Text.setPosition(
+			(Game.spr_Img_Bg_Notif.getWidth() - Game.spr_Img_Bg_Text.getWidth()) / 2,
+			- Utils.getRatio(30) - Game.spr_Img_Bg_Text.getHeight());
 	
 	}
 	
@@ -1045,25 +1067,8 @@ private void attachNotif(){
 	
 	private void attachOption(){
 		
-		scene.attachChild(Game.spr_Img_Bg_Option);
-		
-		txt_Musik = new Text(60, 40, Game.font[FONT_SIZE_MEDIUM], "Musik");
-		txt_Sfx = new Text(60, 130, Game.font[FONT_SIZE_MEDIUM], "Sfx");
-		
-		
-		Game.spr_Img_Bg_Option.attachChild(txt_Musik);
-		Game.spr_Img_Bg_Option.attachChild(txt_Sfx);
-		
-		
-		Game.spr_Img_Bg_Option.attachChild(Game.spr_btn_sound_off);
-		Game.spr_Img_Bg_Option.attachChild(Game.spr_btn_music_off);
-		Game.spr_Img_Bg_Option.attachChild(Game.spr_btn_sound_on);
-		Game.spr_Img_Bg_Option.attachChild(Game.spr_btn_music_on);
-
-		
-		Game.spr_btn_sound_off.setVisible(false);
-		Game.spr_btn_music_off.setVisible(false);		
-
+		scene.attachChild(Game.spr_Img_Option_Bg);
+		Game.spr_Img_Option_Bg.setVisible(false);
 
 	}
 	

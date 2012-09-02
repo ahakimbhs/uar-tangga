@@ -1,7 +1,7 @@
 package com.amikomgamedev.ulartangga;
 
 public interface Data {
-	public static final String FONT_FILE_LOCATION = "fnt/Droid.ttf";
+	public static final String FONT_FILE_LOCATION = "fnt/cinnamon cake.ttf";
 	public static final int FONT_SIZE_SMALL		= 0;
 	public static final int FONT_SIZE_MEDIUM	= 1;
 	public static final int FONT_SIZE_BIG		= 2;
@@ -42,11 +42,13 @@ public interface Data {
 	//
 	
 	public static final String IMG_BG_NOTIF =
-			MNU_FOLDER_LOCATION + "bg_notif.png";
+			MNU_FOLDER_LOCATION + "BACKGROUD SYMBOL.png";
 	public static final String IMG_BTN_NO =
-			MNU_FOLDER_LOCATION + "btn_no.png";
+			MNU_FOLDER_LOCATION + "NO BUTTON.png";
 	public static final String IMG_BTN_YES =
-			MNU_FOLDER_LOCATION + "btn_yes.png";
+			MNU_FOLDER_LOCATION + "YES BUTTON.png";
+	public static final String IMG_BG_TEXT =
+			MNU_FOLDER_LOCATION + "ARE YOU SURE.png";
 	
 	public static final String IMG_BG_OPTION =
 			MNU_FOLDER_LOCATION +"bg_option.png";
@@ -60,6 +62,46 @@ public interface Data {
 			MNU_FOLDER_LOCATION +"btn_music_off.png";
 	public static final String IMG_BG_BLACK = 
 			MNU_FOLDER_LOCATION +"bg_black.png";
+	
+	public static final String[] MENU_MAIN_TAMBAHAN = 
+		{
+			IMG_INMENU_FOLDER_LOCATION + "TANGGA 1.png",
+			IMG_INMENU_FOLDER_LOCATION + "TANGGA 2.png",
+			IMG_INMENU_FOLDER_LOCATION + "TANGGA 3.png",
+			IMG_INMENU_FOLDER_LOCATION + "ULAR 1.png",
+			IMG_INMENU_FOLDER_LOCATION + "ULAR 2.png",
+			IMG_INMENU_FOLDER_LOCATION + "ULAR 3.png",
+		};
+	
+	public static final float[] MENU_MAIN_TAMBAHAN_DUR = 
+		{
+			1f, 1f, 1f, 
+			1f, 1f, 1f, 
+		};
+	
+	public static final float[] MENU_MAIN_TAMBAHAN_FROM_X = 
+		{
+			10, 90, 220,
+			30, 60, 200
+		};
+	
+	public static final float[] MENU_MAIN_TAMBAHAN_TO_X = 
+		{
+			10, 90, 220,
+			30, 60, 200
+		};
+	
+	public static final float[] MENU_MAIN_TAMBAHAN_FROM_Y = 
+		{
+			-100, 480, 480,
+			-100, 480, 480
+		};
+	
+	public static final float[] MENU_MAIN_TAMBAHAN_TO_Y = 
+		{
+			480, -100, -100,
+			480, -100, -100,
+		};
 	
 	public static final String BGM_INMENU = SND_INMENU_FOLDER_LOCATION + "msc_menu.ogg";
 	
@@ -134,13 +176,32 @@ public interface Data {
 			{100,	100,	100,	100,	100,	100}	// MOVE
 		};
 	
-	public static final int [] SPR_DICE_FRAME =
+	public static final int [][] SPR_DICE_FRAME =
 		{
-			0,	10
+			{
+				0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+			},
+			{
+				0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15
+			},
+			{
+				0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16
+			},
+			{
+				0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 17
+			},
+			{
+				0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 18
+			},
+			{
+				0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 19
+			},
 		};
 	public static final long[] SPR_DICE_SPEED =
 		{
-			100,	100,	100,	100,	100,	100,	100,	100,	100,	100,	100
+			100,	100,	100,	100,	100,
+			100,	100,	100,	100,	100,
+			100,	100,	100,	100,	100,
 		};
 	
 	public static final String SPR_MC[] =
@@ -167,15 +228,8 @@ public interface Data {
 			IMG_INMENU_FOLDER_LOCATION + "CHOOSE CHARACTER ROO.png"
 		};
 
-	public static final String SPR_GAMEPLAY_DICE[] =
-		{
-			SPR_INGAME_FOLDER_LOCATION + "DICE 01.png",
-			SPR_INGAME_FOLDER_LOCATION + "DICE 02.png",
-			SPR_INGAME_FOLDER_LOCATION + "DICE 03.png",
-			SPR_INGAME_FOLDER_LOCATION + "DICE 04.png",
-			SPR_INGAME_FOLDER_LOCATION + "DICE 05.png",
-			SPR_INGAME_FOLDER_LOCATION + "DICE 06.png",
-		};
+	public static final String SPR_GAMEPLAY_DICE =
+			SPR_INGAME_FOLDER_LOCATION + "dadu.png";
 	
 	public static final String GAMEPLAY_SMOKE = SPR_INGAME_FOLDER_LOCATION + "BERANTEM.png";
 	
@@ -193,10 +247,6 @@ public interface Data {
 	
 	public static final String[] GAMEPAUSE_MC_IDLE =
 		{
-//			SPR_INGAME_FOLDER_LOCATION + "KIT IDLE.png",
-//			SPR_INGAME_FOLDER_LOCATION + "PEA IDLE.png",
-//			SPR_INGAME_FOLDER_LOCATION + "DEW IDLE.png",
-//			SPR_INGAME_FOLDER_LOCATION + "ROO IDLE.png"
 			SPR_INGAME_FOLDER_LOCATION + "kit.png",
 			SPR_INGAME_FOLDER_LOCATION + "pea.png",
 			SPR_INGAME_FOLDER_LOCATION + "dew.png",
@@ -225,14 +275,8 @@ public interface Data {
 			IMG_INGAME_FOLDER_LOCATION + "PLAYER 3 WIN.png",
 			IMG_INGAME_FOLDER_LOCATION + "PLAYER 4 WIN.png",
 		};
-		
-//	public static final String[] GAMEOVER_MC_LOSE = 
-//		{
-//			SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
-//			SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
-//			SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
-//			SPR_INGAME_FOLDER_LOCATION + "DEW LOSE.png",
-//		};
+	
+	
 	
 	public static final int [][] GAMEOVER_MC_ANIM_FRAME =
 		{
@@ -262,12 +306,12 @@ public interface Data {
 	public static final int SPR_MC_COLUMN	= 4;
 	public static final int SPR_MC_ROW		= 3;
 
-	public static final int SPR_DICE_TEX_WIDTH	= 1024;
-	public static final int SPR_DICE_TEX_HEIGHT	= 128;
+	public static final int SPR_DICE_TEX_WIDTH	= 512;
+	public static final int SPR_DICE_TEX_HEIGHT	= 512;
 	public static final int SPR_DICE_WIDTH 		= 90;
 	public static final int SPR_DICE_HEIGHT 	= 90;
-	public static final int SPR_DICE_COLUMN		= 11;
-	public static final int SPR_DICE_ROW		= 1;
+	public static final int SPR_DICE_COLUMN		= 4;
+	public static final int SPR_DICE_ROW		= 5;
 	
 	public static final int MAP_TEX_WIDTH 	= 1024;
 	public static final int MAP_TEX_HEIGHT 	= 1024;
@@ -392,7 +436,7 @@ public interface Data {
 	public static final String _TEX_ART = "Artist";
 	public static final String _TEX_SE = "Sound Enginer";
 	
-	public static final String _TEX_AGS = "Agus Tri Hariyanto";
+	public static final String _TEX_AGS = "Agoes Tri Hariyanto";
 	public static final String _TEX_AYU = "Ayu";
 	public static final String _TEX_MTY = "Mutia";
 	public static final String _TEX_DWI = "Dwi Ariyanto";

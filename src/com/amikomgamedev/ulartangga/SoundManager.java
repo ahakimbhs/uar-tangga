@@ -67,8 +67,10 @@ public class SoundManager
 				"snd/ingame/terlempar.ogg"
 			},
 		};
+
+	public static boolean bgmEnable = true;
+	public static boolean sfxEnable = true;
 	
-	public static boolean isSoundOn = true;
 	public static boolean[] isPlayAgain = new boolean[SFX_TOTAL];
 
 	public static void loadSoundMenu()
@@ -119,7 +121,7 @@ public class SoundManager
 
 	public static void playMusic(int index)
 	{
-		if (!isSoundOn)
+		if (!bgmEnable)
 		{
 			return;
 		}
@@ -151,7 +153,7 @@ public class SoundManager
 
 	public static void playSfx(int index)
 	{
-		if (!isSoundOn)
+		if (!sfxEnable)
 		{
 			return;
 		}

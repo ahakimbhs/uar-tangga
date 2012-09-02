@@ -50,7 +50,7 @@ public class State_Gameplay extends 	BaseGameActivity
 	private final int STATE_GAME_PAUSE		= 3;
 	private final int STATE_GAME_OVER		= 4;
 	private final int STATE_GAME_RESTART	= 5;
-	private final int STATE_GAME_UNLOADING	= 6;
+	private final int STATE_GAME_SETTING	= 6;
 	private int State_Game_Current			= STATE_GAME_START;
 	
 	
@@ -172,6 +172,7 @@ public class State_Gameplay extends 	BaseGameActivity
 					attachInGame();
 					attachGamePause();
 					attachGameOver();
+					attachOption();
 					
 					switchState(STATE_GAME_INGAME);
 					switchCek(CEK_IDLE);
@@ -203,7 +204,7 @@ public class State_Gameplay extends 	BaseGameActivity
 					else if(timer(2.5f))
 					{
 						move = true;
-						Game.spr_Dice[randomValue-1].setVisible(false);
+						Game.spr_Dice.setVisible(false);
 						
 						playerName.setText(PLAYER_NAME[Player_Cur] + " Is Moving");
 						playerName.setPosition(
@@ -396,19 +397,19 @@ public class State_Gameplay extends 	BaseGameActivity
 										
 										mc[Player_Cur].setMove(randomValue);
 //										valueDice.setText(""+randomValue);
-										Game.spr_Dice[randomValue - 1].animate(
+										Game.spr_Dice.animate(
 												SPR_DICE_SPEED,
-												SPR_DICE_FRAME[0], SPR_DICE_FRAME[1],
-												false);
-
+												SPR_DICE_FRAME[randomValue - 1],
+												0);
+										
 										MoveModifier moveModifier = new MoveModifier(
 												1, 
-												-Game.spr_Dice[randomValue - 1].getWidth(), 
-												(Config.GAME_SCREEN_WIDTH - Game.spr_Dice[randomValue - 1].getWidth()) / 2,
-												(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice[randomValue - 1].getHeight()) / 2,
-												(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice[randomValue - 1].getHeight()) / 2);
-										Game.spr_Dice[randomValue - 1].registerEntityModifier(moveModifier);
-										Game.spr_Dice[randomValue - 1].setVisible(true);	
+												-Game.spr_Dice.getWidth(), 
+												(Config.GAME_SCREEN_WIDTH - Game.spr_Dice.getWidth()) / 2,
+												(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice.getHeight()) / 2,
+												(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice.getHeight()) / 2);
+										Game.spr_Dice.registerEntityModifier(moveModifier);
+										Game.spr_Dice.setVisible(true);	
 									}
 								}
 								else
@@ -437,17 +438,17 @@ public class State_Gameplay extends 	BaseGameActivity
 												
 												MoveModifier moveModifier = new MoveModifier(
 														1, 
-														-Game.spr_Dice[randomValue - 1].getWidth(), 
-														(Config.GAME_SCREEN_WIDTH - Game.spr_Dice[randomValue - 1].getWidth()) / 2,
-														(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice[randomValue - 1].getHeight()) / 2,
-														(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice[randomValue - 1].getHeight()) / 2);
-												Game.spr_Dice[randomValue - 1].registerEntityModifier(moveModifier);
+														-Game.spr_Dice.getWidth(), 
+														(Config.GAME_SCREEN_WIDTH - Game.spr_Dice.getWidth()) / 2,
+														(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice.getHeight()) / 2,
+														(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice.getHeight()) / 2);
+												Game.spr_Dice.registerEntityModifier(moveModifier);
 												
-												Game.spr_Dice[randomValue - 1].setVisible(true);
-												Game.spr_Dice[randomValue - 1].animate(
+												Game.spr_Dice.setVisible(true);
+												Game.spr_Dice.animate(
 														SPR_DICE_SPEED,
-														SPR_DICE_FRAME[0], SPR_DICE_FRAME[1],
-														false);
+														SPR_DICE_FRAME[randomValue - 1],
+														0);
 												
 //												SoundManager.stopSfx(SoundManager.SFX_DICE);	
 											}
@@ -599,7 +600,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				break;
 				
-			case STATE_GAME_UNLOADING:
+			case STATE_GAME_SETTING:
 				
 				break;
 		}
@@ -642,6 +643,15 @@ public class State_Gameplay extends 	BaseGameActivity
 					finish();
 				}
 				
+				if(Utils.isOnArea(
+						pTouchEvent,
+						camera,
+						Game.spr_GamePause_Bg,
+						Game.spr_GamePause_Btn[SETTING]))
+				{
+					switchState(STATE_GAME_SETTING);
+				}
+				
 				break;
 				
 			case STATE_GAME_OVER:
@@ -660,7 +670,51 @@ public class State_Gameplay extends 	BaseGameActivity
 			case STATE_GAME_RESTART:
 				
 				break;
-			case STATE_GAME_UNLOADING:
+			case STATE_GAME_SETTING:
+				
+				for (int i = 0; i < 2; i++)
+				{
+					if(Utils.isOnArea(
+							pTouchEvent,
+							camera,
+							Game.spr_Menu_Setting_Bg_Text,
+							Game.spr_Menu_Setting_Bg_Sound_Icon[i]))
+					{
+						if(i == 0)
+						{
+							if(SoundManager.sfxEnable)
+							{
+								SoundManager.sfxEnable = false;
+								Game.spr_Menu_Setting_On_Off[0][i].setVisible(false);
+								Game.spr_Menu_Setting_On_Off[1][i].setVisible(true);
+							}
+							else
+							{
+								SoundManager.sfxEnable = true;
+								Game.spr_Menu_Setting_On_Off[0][i].setVisible(true);
+								Game.spr_Menu_Setting_On_Off[1][i].setVisible(false);
+							}
+						}
+						else
+						{
+							if(SoundManager.bgmEnable)
+							{
+								SoundManager.bgmEnable = false;
+								Game.spr_Menu_Setting_On_Off[0][i].setVisible(false);
+								Game.spr_Menu_Setting_On_Off[1][i].setVisible(true);
+								SoundManager.stopMusic(SoundManager.BGM_GAMEPLAY);
+							}
+							else
+							{
+								SoundManager.bgmEnable = true;
+								Game.spr_Menu_Setting_On_Off[0][i].setVisible(true);
+								Game.spr_Menu_Setting_On_Off[1][i].setVisible(false);
+								SoundManager.playMusic(SoundManager.BGM_GAMEPLAY);
+							}
+						}
+					}
+					
+				}
 				
 				break;
 		}
@@ -720,10 +774,7 @@ public class State_Gameplay extends 	BaseGameActivity
 //					Game.curPositionPause[i].setVisible(false);
 				}
 				
-				for(int i = 0; i < 6; i++) 
-				{
-					Game.spr_Dice[i].setVisible(false);
-				}
+					Game.spr_Dice.setVisible(false);
 				
 				break;
 				
@@ -763,60 +814,11 @@ public class State_Gameplay extends 	BaseGameActivity
 
 				Game.spr_Img_Button_Pause.setVisible(false);
 				Game.spr_Img_Button_Slide_Bg.setVisible(false);
-
 				
-//				txtWin.setText(PLAYER_NAME[Player_Cur] +" Wins!");
-//				txtWin.setPosition(
-//						(Game.spr_GameOver_Bg.getWidth() - txtWin.getWidth()) / 2,
-//						Utils.getRatio(10));
-//				
-//				float[] pX = new float[4];
-//				float[] pY = new float[4];
-//				
 				int playerWin	= 0;
-//				int playerLose	= 1;
-//				
-//				if(Player_Max == 2)
-//				{
-//					pX[1] = (Game.spr_GameOver_Bg.getWidth() / 2 - Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH)) / 2;
-//					pY[1] = txtWin.getY() + txtWin.getHeight() + Utils.getRatio(10);
-//				}
-//				else
-//				{
-//					pX[1] = (Game.spr_GameOver_Bg.getWidth() / 2 - Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH) * 2) / 3;
-//					pY[1] = txtWin.getY() + txtWin.getHeight() + Utils.getRatio(10);
-//					
-//					pX[2] = pX[1] * 2 + Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH);
-//					pY[2] = pY[1];
-//				
-//					pX[3] = (Game.spr_GameOver_Bg.getWidth() / 2 - Utils.getRatio(Data.GAMEOVER_MC_LOSE_WIDTH)) / 2;
-//					pY[3] = pY[1] + Utils.getRatio(Data.GAMEOVER_MC_LOSE_HEIGHT) + Utils.getRatio(10);
-//				}
-				
-//				for(int i = 0; i < Player_Max; i++) 
-//				{
-//					if(i == Player_Cur)
-//					{
 
-						Game.spr_GameOver_Mc[Player_Cur].setVisible(true);
-						Game.spr_GameOver_Text[Player_Cur].setVisible(true);
-						
-//					}
-//					else
-//					{
-//						Game.spr_GameOver_Mc[i][MC_LOSE].setPosition(
-//								Game.spr_GameOver_Bg.getWidth() / 2 + pX[playerLose],
-//								pY[playerLose]);
-//						Game.spr_GameOver_Mc[i][MC_LOSE].animate(
-//								Data.GAMEOVER_MC_ANIM_SPEED[1],
-//								Game.GAMEOVER_MC_ANIM_FRAME[1][Game.ANI_FRAME_START],
-//								Game.GAMEOVER_MC_ANIM_FRAME[1][Game.ANI_FRAME_END],
-//								true);
-//						Game.spr_GameOver_Mc[i][MC_LOSE].setVisible(true);
-//						
-//						playerLose++;
-//					}
-//				}
+				Game.spr_GameOver_Mc[Player_Cur].setVisible(true);
+				Game.spr_GameOver_Text[Player_Cur].setVisible(true);
 				
 				playerName.setText(PLAYER_NAME[Player_Cur] + " Wins!");
 				playerName.setPosition(
@@ -828,6 +830,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				break;
 				
 			case STATE_GAME_RESTART:
+				
 				for (int i = 0; i < Player_Max; i++)
 				{
 					mc[i].reset();
@@ -844,7 +847,19 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				break;
 				
-			case STATE_GAME_UNLOADING:
+			case STATE_GAME_SETTING:
+				
+				Game.spr_Img_Option_Bg.setVisible(true);
+			
+				if(SoundManager.sfxEnable)
+					Game.spr_Menu_Setting_On_Off[0][0].setVisible(true);
+				else
+					Game.spr_Menu_Setting_On_Off[1][0].setVisible(true);
+				
+				if(SoundManager.bgmEnable)
+					Game.spr_Menu_Setting_On_Off[0][1].setVisible(true);
+				else
+					Game.spr_Menu_Setting_On_Off[1][1].setVisible(true);
 				
 				break;
 		}
@@ -998,7 +1013,13 @@ public class State_Gameplay extends 	BaseGameActivity
 			case STATE_GAME_RESTART:
 				
 				break;
-			case STATE_GAME_UNLOADING:
+			case STATE_GAME_SETTING:
+				
+				if(keyCode == KeyEvent.KEYCODE_BACK)
+				{
+					Game.spr_Img_Option_Bg.setVisible(false);
+					switchState(STATE_GAME_PAUSE);
+				}
 				
 				break;
 		}
@@ -1036,8 +1057,7 @@ public class State_Gameplay extends 	BaseGameActivity
 		hud.attachChild(Game.spr_Img_Button_Slide_Bg);
 		hud.attachChild(Game.spr_Img_Button_Pause);
 		
-		for (int i = 0; i < 6; i++)
-			hud.attachChild(Game.spr_Dice[i]);	
+		hud.attachChild(Game.spr_Dice);	
 		
 		
 		float posX = Utils.getRatioW(40);
@@ -1097,5 +1117,12 @@ public class State_Gameplay extends 	BaseGameActivity
 //		Game.spr_GameOver_Bg.attachChild(txtWin);
 
 		Game.spr_GameOver_Bg.setVisible(false);
+	}
+	
+	private void attachOption(){
+		
+		hud.attachChild(Game.spr_Img_Option_Bg);
+		Game.spr_Img_Option_Bg.setVisible(false);
+
 	}
 }
