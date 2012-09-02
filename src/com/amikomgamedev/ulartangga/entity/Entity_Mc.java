@@ -216,8 +216,8 @@ public class Entity_Mc implements Define
 		switch(curState)
 		{
 			case STATE_IDLE:
-				
-				mc_Spr.stopAnimation();
+
+				setAnim(STATE_IDLE);
 				
 				break;
 				

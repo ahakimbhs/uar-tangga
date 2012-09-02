@@ -2,8 +2,8 @@ package com.amikomgamedev.ulartangga;
 
 public interface Define 
 {
-	public static final float SPEED_MOVE 				= Utils.getRatio(70);
-	public static final float SPEED_TO_START 			= 100;
+	public static final float SPEED_MOVE 			= Utils.getRatio(70);
+	public static final float SPEED_TO_START 		= 100;
 	public static final float SPEED_SNAKE_N_LADDER 	= 100;
 
 	public static final int ROW_COUNT		= 10;
@@ -56,12 +56,18 @@ public interface Define
 	
 	public static final int[][][] SNAKE_N_LADDER =
 		{
-			{// klasik
-				{5, 11,	20,	49,	52,	64,	81},		// posisi Tangga Awal
-				{27,55,	41,	70,	96,	97,	99},		// posisi Tangga Akhir
-				{19,36,	58,	60,	74,	92,	98},		// posisi Ular Awal
-				{2,	17,	18,	42,	44,	71,	32}			// posisi Ular Ahir
+			{
+				{1, 2, 3, 4, 5, 6},
+				{99, 98, 97, 96, 95, 94}, 
+				{},
+				{}
 			},
+//			{// klasik
+//				{5, 11,	20,	49,	52,	64,	81},		// posisi Tangga Awal
+//				{27,55,	41,	70,	96,	97,	99},		// posisi Tangga Akhir
+//				{19,36,	58,	60,	74,	92,	98},		// posisi Ular Awal
+//				{2,	17,	18,	42,	44,	71,	32}			// posisi Ular Ahir
+//			},
 			{// modern
 				{9,	28,	36,	38,	69,	85},		// posisi Tangga Awal
 				{27,52,	90,	60,	88,	96},		// posisi Tangga Akhir
@@ -96,4 +102,9 @@ public interface Define
 
 	public final int MC_WIN		= 0;
 	public final int MC_LOSE	= 1;
+	
+	public final int PLAY		= 0;
+	public final int SETTING	= 1;
+	public final int HOME		= 2;
+	public final int RESTART	= 3;
 }

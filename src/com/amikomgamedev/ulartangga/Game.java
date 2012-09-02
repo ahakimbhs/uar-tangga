@@ -6,7 +6,6 @@ import org.anddev.andengine.audio.music.Music;
 import org.anddev.andengine.audio.music.MusicFactory;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.sprite.Sprite;
-import org.anddev.andengine.entity.text.ChangeableText;
 import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.opengl.font.Font;
 import org.anddev.andengine.opengl.font.FontFactory;
@@ -15,7 +14,6 @@ import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
-import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 import org.anddev.andengine.util.Debug;
@@ -135,27 +133,29 @@ public class Game implements Data,
 	public static Sprite				spr_GamePause_Bg;
 	
 	public static Text					txtPause;
-	public static ChangeableText[]		curPositionPause;
+//	public static ChangeableText[]		curPositionPause;
 	
 	private static BitmapTextureAtlas[] tex_GamePause_Mc;
 	private static TiledTextureRegion[]	reg_GamePause_Mc_Idle;
-	private static TextureRegion[]		reg_GamePause_Mc_Icon;
+//	private static TextureRegion[]		reg_GamePause_Mc_Icon;
 	public static AnimatedSprite[]		spr_GamePause_Mc_Idle;
-	public static Sprite[]				spr_GamePause_Mc_Icon;
+//	public static Sprite[]				spr_GamePause_Mc_Icon;
 	
-	private static BitmapTextureAtlas 	tex_GamePause_Btn;
-	private static TextureRegion		reg_GamePause_Btn_MainMenu,
-										reg_GamePause_Btn_Resume;
-	public static Sprite				spr_GamePause_Btn_MainMenu,
-										spr_GamePause_Btn_Resume;
+	private static BitmapTextureAtlas[] tex_GamePause_Btn = new BitmapTextureAtlas[4];
+	private static TextureRegion[]		reg_GamePause_Btn = new TextureRegion[4];
+	public static Sprite[]				spr_GamePause_Btn = new Sprite[4];
 	
 	private static BitmapTextureAtlas 	tex_GameOver_Bg;
 	private static TextureRegion		reg_GameOver_Bg;
 	public static Sprite				spr_GameOver_Bg;
 	
-	private static BitmapTextureAtlas[] 	tex_GameOver_Mc;
-	private static TiledTextureRegion[][]	reg_GameOver_Mc;
-	public static AnimatedSprite[][]		spr_GameOver_Mc;
+	private static BitmapTextureAtlas[] tex_GameOver_Text;
+	private static TextureRegion[]		reg_GameOver_Text;
+	public static Sprite[]				spr_GameOver_Text;
+	
+	private static BitmapTextureAtlas[] tex_GameOver_Mc;
+	private static TiledTextureRegion[]	reg_GameOver_Mc;
+	public static AnimatedSprite[]		spr_GameOver_Mc;
 	
 	private static BitmapTextureAtlas 	tex_GameOver_Btn;
 	private static TextureRegion		reg_GameOver_Btn_MainMenu,
@@ -269,7 +269,7 @@ public class Game implements Data,
 		
 		spr_Img_Logo.setPosition(
 				(Config.GAME_SCREEN_WIDTH	- spr_Img_Logo.getWidth()) / 2, 
-				(Config.GAME_SCREEN_HEIGHT 	- spr_Img_Logo.getHeight()) / 2);
+				(int)(Config.GAME_SCREEN_HEIGHT 	- spr_Img_Logo.getHeight()) / 2);
 	}
 	
 	public static void loadLoadingBg()
@@ -946,7 +946,7 @@ public class Game implements Data,
 	{
 		txtPause = new Text(0, 0, font[FONT_SIZE_BIG], "PAUSE");
 		txtPause.setPosition(
-				(spr_GamePause_Bg.getWidth() / 2 - txtPause.getWidth()) / 2,
+				(spr_GamePause_Bg.getWidth() - txtPause.getWidth()) / 2,
 				Utils.getRatio(10));
 	}
 	
@@ -954,13 +954,13 @@ public class Game implements Data,
 	{
 		tex_GamePause_Mc 		= new BitmapTextureAtlas[maxPlayer];
 		reg_GamePause_Mc_Idle 	= new TiledTextureRegion[maxPlayer];
-		reg_GamePause_Mc_Icon 	= new TextureRegion[maxPlayer];
-		spr_GamePause_Mc_Icon 	= new Sprite[maxPlayer];
+//		reg_GamePause_Mc_Icon 	= new TextureRegion[maxPlayer];
+//		spr_GamePause_Mc_Icon 	= new Sprite[maxPlayer];
 		spr_GamePause_Mc_Idle 	= new AnimatedSprite[maxPlayer];
-		curPositionPause 		= new ChangeableText[maxPlayer];
+//		curPositionPause 		= new ChangeableText[maxPlayer];
 		
-		float posMcX = (spr_GamePause_Bg.getWidth() / 2 - Utils.getRatio(GAMEPAUSE_MC_ICON_WIDTH) * 2) / 3;
-		float posMcY = Utils.getRatio(20);
+//		float posMcX = (spr_GamePause_Bg.getWidth() / 2 - Utils.getRatio(GAMEPAUSE_MC_ICON_WIDTH) * 2) / 3;
+//		float posMcY = Utils.getRatio(20);
 
 		for(int i = 0; i < maxPlayer; i++)
 		{
@@ -974,18 +974,18 @@ public class Game implements Data,
 					GAMEPAUSE_MC_IDLE[serverData.getCharPlayer(i)], 0, 0,
 					GAMEPAUSE_MC_IDLE_COLUMN, GAMEPAUSE_MC_IDLE_ROW);
 			
-			reg_GamePause_Mc_Icon[i] = BitmapTextureAtlasTextureRegionFactory
-					.createFromAsset(tex_GamePause_Mc[i], activity,
-					SPR_ICON_MC[serverData.getCharPlayer(i)],
-					0, 95);
+//			reg_GamePause_Mc_Icon[i] = BitmapTextureAtlasTextureRegionFactory
+//					.createFromAsset(tex_GamePause_Mc[i], activity,
+//					SPR_ICON_MC[serverData.getCharPlayer(i)],
+//					0, 95);
 			
 			loadTexture(tex_GamePause_Mc[i]);
 			
-			spr_GamePause_Mc_Icon[i] = new Sprite(
-					0, 0,
-					Utils.getRatio(GAMEPAUSE_MC_ICON_WIDTH), 
-					Utils.getRatio(GAMEPAUSE_MC_ICON_HEIGHT),
-					reg_GamePause_Mc_Icon[i]);
+//			spr_GamePause_Mc_Icon[i] = new Sprite(
+//					0, 0,
+//					Utils.getRatio(GAMEPAUSE_MC_ICON_WIDTH), 
+//					Utils.getRatio(GAMEPAUSE_MC_ICON_HEIGHT),
+//					reg_GamePause_Mc_Icon[i]);
 			
 			spr_GamePause_Mc_Idle[i] = new AnimatedSprite(
 					0, 0,
@@ -993,65 +993,73 @@ public class Game implements Data,
 					Utils.getRatio(GAMEPAUSE_MC_IDLE_HEIGHT),
 					reg_GamePause_Mc_Idle[i]);
 			
-			curPositionPause[i] = new ChangeableText(
-					0, 0, Game.font[Data.FONT_SIZE_SMALL], "0", 3);
+//			curPositionPause[i] = new ChangeableText(
+//					0, 0, Game.font[Data.FONT_SIZE_SMALL], "0", 3);
 			
-			spr_GamePause_Mc_Icon[i].setPosition(spr_GamePause_Bg.getWidth() / 2 + posMcX  - Utils.getRatioW(10), posMcY);
+//			spr_GamePause_Mc_Icon[i].setPosition(spr_GamePause_Bg.getWidth() / 2 + posMcX  - Utils.getRatioW(10), posMcY);
 			
 			spr_GamePause_Mc_Idle[i].setPosition(
 					(spr_GamePause_Bg.getWidth() / 2 - spr_GamePause_Mc_Idle[i].getWidth()) / 2,
-					txtPause.getY() + txtPause.getHeight() + Utils.getRatio(20));
+					txtPause.getY() + txtPause.getHeight() + Utils.getRatio(10));
 			
-			curPositionPause[i].setPosition(
-					Game.spr_GamePause_Mc_Icon[i].getWidth() + Utils.getRatio(8),
-					Game.spr_GamePause_Mc_Icon[i].getHeight() - curPositionPause[i].getHeight());
+//			curPositionPause[i].setPosition(
+//					Game.spr_GamePause_Mc_Icon[i].getWidth() + Utils.getRatio(8),
+//					Game.spr_GamePause_Mc_Icon[i].getHeight() - curPositionPause[i].getHeight());
 
-			if(i == 1 && maxPlayer == 3)
-				posMcX = (spr_GamePause_Bg.getWidth() / 2 - Game.spr_GamePause_Mc_Icon[i].getWidth()) / 2;
-			else if(i % 2 == 0)
-				posMcX = posMcX * 2 + spr_GamePause_Mc_Icon[i].getWidth();
-			else
-				posMcX = (spr_GamePause_Bg.getWidth() / 2 - Game.spr_GamePause_Mc_Icon[i].getWidth() * 2) / 3;
-			
-			if(i % 2 == 1)
-				posMcY+= posMcY + spr_GamePause_Mc_Icon[i].getHeight();
+//			if(i == 1 && maxPlayer == 3)
+//				posMcX = (spr_GamePause_Bg.getWidth() / 2 - Game.spr_GamePause_Mc_Icon[i].getWidth()) / 2;
+//			else if(i % 2 == 0)
+//				posMcX = posMcX * 2 + spr_GamePause_Mc_Icon[i].getWidth();
+//			else
+//				posMcX = (spr_GamePause_Bg.getWidth() / 2 - Game.spr_GamePause_Mc_Icon[i].getWidth() * 2) / 3;
+//			
+//			if(i % 2 == 1)
+//				posMcY+= posMcY + spr_GamePause_Mc_Icon[i].getHeight();
 		}
 	}
 	
 	public static void loadGamePauseButton()
 	{
-		tex_GamePause_Btn = new BitmapTextureAtlas(
-				GAMEPAUSE_BTN_TEX_WIDTH,
-				GAMEPAUSE_BTN_TEX_HEIGHT,
-				Utils.getTextureOption());
+		for (int i = 0; i < GAMEPAUSE_BTN.length; i++)
+		{
+			tex_GamePause_Btn[i] = new BitmapTextureAtlas(
+					GAMEPAUSE_BTN_TEX_WIDTH,
+					GAMEPAUSE_BTN_TEX_HEIGHT,
+					Utils.getTextureOption());
 
-		reg_GamePause_Btn_Resume = BitmapTextureAtlasTextureRegionFactory.
-				createFromAsset(tex_GamePause_Btn, activity,
-				GAMEPAUSE_BTN_RESUME, 0, 0);
-		reg_GamePause_Btn_MainMenu = BitmapTextureAtlasTextureRegionFactory.
-				createFromAsset(tex_GamePause_Btn, activity,
-				GAMEPAUSE_BTN_MAINMENU, 40, 0);
-		
-		loadTexture(tex_GamePause_Btn);
+			reg_GamePause_Btn[i] = BitmapTextureAtlasTextureRegionFactory.
+					createFromAsset(tex_GamePause_Btn[i], activity,
+					GAMEPAUSE_BTN[i], 0, 0);
+			
+			loadTexture(tex_GamePause_Btn[i]);
 
-		spr_GamePause_Btn_Resume = new Sprite(0, 0,
-				Utils.getRatio(GAMEPAUSE_BTN_RESUME_WIDTH),
-				Utils.getRatio(GAMEPAUSE_BTN_RESUME_HEIGHT),
-				reg_GamePause_Btn_Resume);
-		spr_GamePause_Btn_MainMenu = new Sprite(0, 0,
-				Utils.getRatio(GAMEPAUSE_BTN_MAINMENU_WIDTH),
-				Utils.getRatio(GAMEPAUSE_BTN_MAINMENU_HEIGHT),
-				reg_GamePause_Btn_MainMenu);
+			spr_GamePause_Btn[i] = new Sprite(0, 0,
+					Utils.getRatio(GAMEPAUSE_BTN_WIDTH),
+					Utils.getRatio(GAMEPAUSE_BTN_HEIGHT),
+					reg_GamePause_Btn[i]);
+		}
 		
-		float disX = (spr_GamePause_Bg.getWidth() / 2 - spr_GamePause_Btn_Resume.getWidth() * 2) / 3;
+		float disX = (spr_GamePause_Bg.getWidth() / 2 - spr_GamePause_Btn[0].getWidth() * 2) / 3;
+		int x;
+		int y;
 		
-		spr_GamePause_Btn_Resume.setPosition(
-				spr_GamePause_Bg.getWidth() / 2 + disX,
-				spr_GamePause_Bg.getHeight() - Utils.getRatioH(10) - spr_GamePause_Btn_Resume.getHeight());
-		
-		spr_GamePause_Btn_MainMenu.setPosition(
-				spr_GamePause_Bg.getWidth() / 2 + disX * 2 + spr_GamePause_Btn_Resume.getWidth(),
-				spr_GamePause_Btn_Resume.getY());
+		for (int i = 0; i < GAMEPAUSE_BTN.length; i++)
+		{
+			if(i % 2 == 0)
+				x = (int) (spr_GamePause_Bg.getWidth() / 2 + disX);
+			else
+				x = (int) (spr_GamePause_Bg.getWidth() / 2 + disX * 2 + spr_GamePause_Btn[0].getWidth());
+			
+			
+			if(i < 2)
+				y = (int) (txtPause.getY() + txtPause.getHeight() + Utils.getRatio(10));
+			else
+				y = (int) (txtPause.getY() + txtPause.getHeight() + Utils.getRatio(10)
+						+ disX / 2 + spr_GamePause_Btn[0].getHeight());
+			
+			spr_GamePause_Btn[i].setPosition(x, y);
+			
+		}
 	}
 	
 	public static void loadGameOverBackground()
@@ -1077,13 +1085,64 @@ public class Game implements Data,
 				(Config.GAME_SCREEN_WIDTH - spr_GameOver_Bg.getWidth()) / 2,
 				(Config.GAME_SCREEN_HEIGHT - spr_GameOver_Bg.getHeight()) / 2);
 		
+		BitmapTextureAtlas atlas = new BitmapTextureAtlas(
+				512, 64, 
+				Utils.getTextureOption());
+		
+		TextureRegion region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(atlas, activity,
+				IMG_INGAME_FOLDER_LOCATION + "CONGRATULATIONS.png", 0, 0);
+		
+		loadTexture(atlas);
+		
+		Sprite sprite = new Sprite(0, 0, region);
+		sprite.setPosition(
+				(spr_GameOver_Bg.getWidth() - sprite.getWidth()) / 2,
+				-Utils.getRatio(5) - sprite.getHeight());
+		spr_GameOver_Bg.attachChild(sprite);
+		
+	}
+	
+	public static void loadGameOverText()
+	{
+		tex_GameOver_Text = new BitmapTextureAtlas[maxPlayer];
+		reg_GameOver_Text = new TextureRegion[maxPlayer];
+		spr_GameOver_Text = new Sprite[maxPlayer];
+		
+		for(int i = 0; i < maxPlayer; i++)
+		{
+			tex_GameOver_Text[i] = new BitmapTextureAtlas(
+					GAMEOVER_TEXT_TEX_WIDTH, 
+					GAMEOVER_TEXT_TEX_HEIGHT, 
+					Utils.getTextureOption());
+			
+			reg_GameOver_Text[i] = BitmapTextureAtlasTextureRegionFactory
+					.createFromAsset(tex_GameOver_Text[i], activity, 
+					Data.GAMEOVER_TEXT[i], 0, 0);
+			
+			loadTexture(tex_GameOver_Text[i]);
+			
+			spr_GameOver_Text[i] = new Sprite(
+					0, 0, 
+					Utils.getRatio(GAMEOVER_TEXT_WIDTH), 
+					Utils.getRatio(GAMEOVER_TEXT_HEIGHT), 
+					reg_GameOver_Text[0]);
+			
+			spr_GameOver_Text[i].setPosition(
+					(int) (spr_GameOver_Bg.getWidth() / 2 + (spr_GameOver_Bg.getWidth() / 2 - spr_GameOver_Text[i].getWidth()) / 2),
+					(int) spr_GameOver_Mc[i].getY());
+			
+			spr_GameOver_Bg.attachChild(spr_GameOver_Text[i]);
+			
+			Game.spr_GameOver_Text[i].setVisible(false);
+		}
 	}
 	
 	public static void loadGameOverMC()
 	{
 		tex_GameOver_Mc 	= new BitmapTextureAtlas[maxPlayer];
-		reg_GameOver_Mc		= new TiledTextureRegion[maxPlayer][2];
-		spr_GameOver_Mc		= new AnimatedSprite[maxPlayer][2];
+		reg_GameOver_Mc		= new TiledTextureRegion[maxPlayer];
+		spr_GameOver_Mc		= new AnimatedSprite[maxPlayer];
 		
 		for(int i = 0; i < maxPlayer; i++)
 		{
@@ -1092,37 +1151,46 @@ public class Game implements Data,
 					GAMEOVER_MC_TEX_HEIGHT, 
 					Utils.getTextureOption());
 			
-			reg_GameOver_Mc[i][MC_WIN] = BitmapTextureAtlasTextureRegionFactory.
+			reg_GameOver_Mc[i]= BitmapTextureAtlasTextureRegionFactory.
 					createTiledFromAsset(tex_GameOver_Mc[i], activity,
 					GAMEOVER_MC_WIN[serverData.getCharPlayer(i)], 0, 0,
 					GAMEOVER_MC_WIN_COLUMN, GAMEOVER_MC_WIN_ROW);
 			
-			reg_GameOver_Mc[i][MC_LOSE] = BitmapTextureAtlasTextureRegionFactory.
-					createTiledFromAsset(tex_GameOver_Mc[i], activity,
-					GAMEOVER_MC_LOSE[serverData.getCharPlayer(i)],
-					0, GAMEOVER_MC_WIN_HEIGHT,
-					GAMEOVER_MC_WIN_COLUMN, GAMEOVER_MC_WIN_ROW);
+//			reg_GameOver_Mc[i][MC_LOSE] = BitmapTextureAtlasTextureRegionFactory.
+//					createTiledFromAsset(tex_GameOver_Mc[i], activity,
+//					GAMEOVER_MC_LOSE[serverData.getCharPlayer(i)],
+//					0, GAMEOVER_MC_WIN_HEIGHT,
+//					GAMEOVER_MC_WIN_COLUMN, GAMEOVER_MC_WIN_ROW);
 			
 			loadTexture(tex_GameOver_Mc[i]);
 			
-			spr_GameOver_Mc[i][MC_WIN] = new AnimatedSprite(
+			spr_GameOver_Mc[i] = new AnimatedSprite(
 					0, 0, 
 					Utils.getRatio(GAMEOVER_MC_WIN_WIDTH), 
 					Utils.getRatio(GAMEOVER_MC_WIN_HEIGHT), 
-					reg_GameOver_Mc[i][MC_WIN]);
+					reg_GameOver_Mc[i]);
 			
-			spr_GameOver_Mc[i][MC_LOSE] = new AnimatedSprite(
-					0, 0, 
-					Utils.getRatio(GAMEOVER_MC_LOSE_WIDTH), 
-					Utils.getRatio(GAMEOVER_MC_LOSE_HEIGHT), 
-					reg_GameOver_Mc[i][MC_LOSE]);
+//			spr_GameOver_Mc[i][MC_LOSE] = new AnimatedSprite(
+//					0, 0, 
+//					Utils.getRatio(GAMEOVER_MC_LOSE_WIDTH), 
+//					Utils.getRatio(GAMEOVER_MC_LOSE_HEIGHT), 
+//					reg_GameOver_Mc[i][MC_LOSE]);
 			
+			Game.spr_GameOver_Mc[i].setPosition(
+					(Game.spr_GameOver_Bg.getWidth() / 2 - Game.spr_GameOver_Mc[i].getWidth()) / 2,
+//					txtWin.getY() + txtWin.getHeight() + Utils.getRatioH(10)
+					(Game.spr_GameOver_Bg.getHeight() - Game.spr_GameOver_Mc[i].getHeight()) / 2);
+			Game.spr_GameOver_Mc[i].animate(
+					Data.GAMEOVER_MC_ANIM_SPEED[0],
+					Game.GAMEOVER_MC_ANIM_FRAME[0][Game.ANI_FRAME_START],
+					Game.GAMEOVER_MC_ANIM_FRAME[0][Game.ANI_FRAME_END],
+					true);
 
-			Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Mc[i][MC_WIN]);
-			Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Mc[i][MC_LOSE]);
+			Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Mc[i]);
+//			Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Mc[i][MC_LOSE]);
 
-			Game.spr_GameOver_Mc[i][MC_WIN].setVisible(false);
-			Game.spr_GameOver_Mc[i][MC_LOSE].setVisible(false);
+			Game.spr_GameOver_Mc[i].setVisible(false);
+//			Game.spr_GameOver_Mc[i][MC_LOSE].setVisible(false);
 		}
 	}
 	
@@ -1155,12 +1223,13 @@ public class Game implements Data,
 		float disX = (spr_GameOver_Bg.getWidth() / 2 - spr_GameOver_Btn_Restart.getWidth() * 2) / 3;
 		
 		spr_GameOver_Btn_Restart.setPosition(
-				spr_GameOver_Bg.getWidth() / 2 + disX,
-				spr_GameOver_Bg.getHeight() - Utils.getRatio(10) - spr_GameOver_Btn_Restart.getHeight());
+				(int) spr_GameOver_Bg.getWidth() / 2 + disX,
+//				spr_GameOver_Bg.getHeight() - Utils.getRatio(10) - spr_GameOver_Btn_Restart.getHeight());
+				(int) spr_GameOver_Bg.getHeight() - spr_GameOver_Mc[0].getY() - spr_GameOver_Btn_Restart.getHeight());
 		
 		spr_GameOver_Btn_MainMenu.setPosition(
-				spr_GameOver_Bg.getWidth() / 2 + disX * 2 + spr_GameOver_Btn_Restart.getWidth(),
-				spr_GameOver_Btn_Restart.getY());
+				(int) spr_GameOver_Bg.getWidth() / 2 + disX * 2 + spr_GameOver_Btn_Restart.getWidth(),
+				(int) spr_GameOver_Btn_Restart.getY());
 		
 		Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Btn_MainMenu);
 		Game.spr_GameOver_Bg.attachChild(Game.spr_GameOver_Btn_Restart);

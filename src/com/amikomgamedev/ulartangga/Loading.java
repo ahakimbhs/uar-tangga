@@ -120,9 +120,9 @@ public class Loading {
 			LOADING_SUB_TYPE_FONT,
 			LOADING_SUB_TYPE_GAME_BUTTON,
 			LOADING_SUB_TYPE_SOUND_GAMEPLAY,
+			LOADING_SUB_TYPE_GAME_PAUSE,
 			LOADING_SUB_TYPE_GAME_OVER,
 			LOADING_SUB_TYPE_GAME_OVER_MC,
-			LOADING_SUB_TYPE_GAME_PAUSE
 		};
 	
 	public static void setLoading(int loadingType)
@@ -294,10 +294,11 @@ public class Loading {
 				break;
 			case LOADING_SUB_TYPE_GAME_OVER:
 				Game.loadGameOverBackground();
+				Game.loadGameOverMC();
 				Game.loadGameOverButton();
+				Game.loadGameOverText();
 				break;
 			case LOADING_SUB_TYPE_GAME_OVER_MC:
-				Game.loadGameOverMC();
 				break;
 			case LOADING_SUB_TYPE_GAME_PAUSE:
 				Game.loadGamePauseBackground();
