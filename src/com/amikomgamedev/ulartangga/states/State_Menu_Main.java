@@ -20,12 +20,16 @@ import org.anddev.andengine.input.touch.detector.ClickDetector.IClickDetectorLis
 import org.anddev.andengine.input.touch.detector.ScrollDetector;
 import org.anddev.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.anddev.andengine.input.touch.detector.SurfaceScrollDetector;
+import org.anddev.andengine.sensor.accelerometer.AccelerometerData;
+import org.anddev.andengine.sensor.accelerometer.IAccelerometerListener;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 import org.anddev.andengine.util.Debug;
 import org.anddev.andengine.util.HorizontalAlign;
 
 import android.content.Intent;
+import android.hardware.SensorManager;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 import com.amikomgamedev.ulartangga.Config;
 import com.amikomgamedev.ulartangga.Data;
@@ -35,6 +39,7 @@ import com.amikomgamedev.ulartangga.Loading;
 import com.amikomgamedev.ulartangga.SoundManager;
 import com.amikomgamedev.ulartangga.Utils;
 import com.amikomgamedev.ulartangga.serverData;
+import com.amikomgamedev.ulartangga.multiplayer.bluetooth.BT_Send_Received;
 
 public class State_Menu_Main extends BaseGameActivity
 							 implements	IUpdateHandler,
@@ -69,8 +74,14 @@ public class State_Menu_Main extends BaseGameActivity
 	private final int STATE_MENU_OPTION_LOADING 	= 10;
 	private final int STATE_MENU_OPTION 			= 11;
 	private final int STATE_MENU_CLOSE_NOTIF		= 12;
+	public final int STATE_MENU_SELECT_MC_MULTI_SERVER	= 13;
+	public final int STATE_MENU_WAITING_CLIENT_SERVER	= 14;
+	public final int STATE_MENU_SELECT_TYPE				= 15;
 
-	private int State_Game_Current	= -1;
+	private final int DIALOG_CHOOSE_SINGLE_OR_MULTI 	= 0;
+	private final int DIALOG_CHOOSE_SERVER_OR_CLIENT 	= 1;
+
+	protected int State_Game_Current	= -1;
 	
 	private Sprite spr_Img_Btn_Play;
 	private Sprite spr_Img_Btn_Credit;
@@ -97,14 +108,21 @@ public class State_Menu_Main extends BaseGameActivity
 	private Text txt_Musik, txt_Sfx;
 	
 	private HUD hud;
-	serverData sData = serverData.getInstance();
+	protected serverData sData = serverData.getInstance();
 	
 	private float y = 0;
 	private boolean touch = false;
 	
 	float timerAsli = 0;
 	float milisecond = 0;
+	private boolean stopMoveCredits = true;
+	protected boolean isRunning = true;
+	protected boolean isServer 	= false;
+	private boolean isWaiting = false;
+	private boolean isActive = false;
 
+	public Thread menuThread;
+	
 	public Engine onLoadEngine() 
 	{
 		Game.appInit();
@@ -130,8 +148,9 @@ public class State_Menu_Main extends BaseGameActivity
 	{
 		mEngine.registerUpdateHandler(new FPSLogger());
 		mEngine.registerUpdateHandler(this);
-		
+
 		scene.setOnSceneTouchListener(this);
+		scene.setOnSceneTouchListenerBindingEnabled(true);
  
 		switchState(STATE_MENU_START);
 		
@@ -142,9 +161,6 @@ public class State_Menu_Main extends BaseGameActivity
 
 	public void onUpdate(float pSecondsElapsed) 
 	{
-//		System.out.println("timer asli = " +(timerAsli+=pSecondsElapsed));
-//		milisecond++;
-//		System.out.println("pakai milisecond++ = " + (int)(milisecond/60)+"."+ (int)(milisecond%60));
 		Second = pSecondsElapsed;
 //		long max	= Runtime.getRuntime().maxMemory();
 //		long total	= Runtime.getRuntime().totalMemory();
@@ -175,6 +191,7 @@ public class State_Menu_Main extends BaseGameActivity
 					attachInMenu();
 					attachOption();
 					attachNotif();
+					scene.attachChild(Game.spr_Img_Select_Type_Bg);
 					attachSelectMc();
 					attachSelectMap();
 					switchState(STATE_MENU_INMENU);
@@ -283,13 +300,15 @@ public class State_Menu_Main extends BaseGameActivity
 				break;
 			case STATE_MENU_CREDIT:
 				
+				if(stopMoveCredits)
+				{
 				Game.spr_Img_Logo.setScale(0.5f);
 				y-=2;
 				Debug.d("Y = "+y);
 				if(y + Game.spr_Img_Logo.getY() + Game.spr_Img_Logo.getHeight() < 0)
 				y = Config.GAME_SCREEN_HEIGHT;
 				hud.setPosition(hud.getScaleCenterX()/2, y);
-							
+				}			
 				break;
 								
 			case STATE_MENU_OPTION_LOADING:
@@ -302,7 +321,17 @@ public class State_Menu_Main extends BaseGameActivity
 				}
 				break;				
 		
-			case STATE_MENU_OPTION:
+			case STATE_MENU_SELECT_MC_MULTI_SERVER:
+				
+				if(sData.getSelectMap()!=-1 && isWaiting)
+				{
+					isWaiting = false;
+					sData.setTypePlayer(0, TYPE_MP);
+					sData.setTypePlayer(1, TYPE_PLAYER);
+					sendMessage("play,0");
+					startActivity(new Intent(State_Menu_Main.this, BT_Send_Received.class));
+					finish();
+				}
 				break;
 		}
 		
@@ -314,7 +343,6 @@ public class State_Menu_Main extends BaseGameActivity
 	public void switchState(int curState) 
 	{
 		State_Game_Current = curState;
-
 		switch(State_Game_Current)
 		{
 			case STATE_MENU_START:
@@ -368,6 +396,7 @@ public class State_Menu_Main extends BaseGameActivity
 
 				SoundManager.playMusic(SoundManager.BGM_MENU_MAIN);
 				Game.spr_Img_Select_Mc_Bg.setVisible(true);
+				visibleSelectMc();
 				
 				break;
 			case STATE_MENU_CREDIT_LOADING:
@@ -380,7 +409,7 @@ public class State_Menu_Main extends BaseGameActivity
 				
 				y = Config.GAME_SCREEN_HEIGHT;
 				hud.setPosition(hud.getScaleCenterX() / 2, y);
-			break;
+				break;
 				
 			case STATE_MENU_OPTION_LOADING:
 //				Loading.setLoading(Loading.LOADING_TYPE_OPTION);
@@ -405,8 +434,57 @@ public class State_Menu_Main extends BaseGameActivity
 				Game.spr_Img_Close_Notif_Bg.setVisible(true);
 				break;
 				
+			case STATE_MENU_SELECT_MC_MULTI_SERVER:
+				
+				SoundManager.playMusic(SoundManager.BGM_MENU_MAIN);
 
-			
+				sData.setCharPlayer(PLAYER_1, CARACTER_1);
+				sData.setCharPlayer(PLAYER_2, CARACTER_1);
+				
+				sData.setSelectMap(-1);
+				
+				Game.spr_Img_Select_Mc_Bg.setVisible(true);
+
+				Game.spr_Img_Select_Mc_Btn_Add.setVisible(false);
+				
+				for(int i = 0; i < 4; i++)
+				{
+					Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].setVisible(false);
+					
+					for (int j = 0; j < Data.SPR_MC.length; j++)
+					{
+						Game.spr_Img_Select_Mc_Icon_Mc[i][j].setVisible(false);
+						if(j < 2)
+						{
+							Game.spr_Img_Select_Mc_Btn_Type[i][j].setVisible(false);
+							if(isServer)
+								Game.spr_Img_Select_Mc_Btn_Arrow_Mc[1][j].setVisible(false);
+							else
+								Game.spr_Img_Select_Mc_Btn_Arrow_Mc[0][j].setVisible(false);
+						}
+					}
+					
+					if(i < 2)
+					{
+						Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].setVisible(true);
+						Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(true);
+					}
+				}
+				
+				break;
+				
+				case STATE_MENU_WAITING_CLIENT_SERVER:
+					
+					toast("Waiting Server...");
+					
+					break;
+					
+				case STATE_MENU_SELECT_TYPE:
+
+					Game.spr_Img_Select_Mc_Bg.setVisible(false);
+					Game.spr_Img_Select_Type_Bg.setVisible(true);
+					
+					break;
 		}
 	}
 	
@@ -440,7 +518,11 @@ public class State_Menu_Main extends BaseGameActivity
 				{
 					Game.spr_Img_Select_Map_Bg.setVisible(false);
 					Game.spr_Img_Back_Menu.setVisible(true);
-					switchState(STATE_MENU_SELECT_MC);
+
+					if(isServer)
+						switchState(STATE_MENU_SELECT_MC_MULTI_SERVER);	
+					else
+						switchState(STATE_MENU_SELECT_MC);
 				}
 				break;
 				
@@ -449,7 +531,7 @@ public class State_Menu_Main extends BaseGameActivity
 				if(keyCode == KeyEvent.KEYCODE_BACK)
 				{
 					Game.spr_Img_Select_Mc_Bg.setVisible(false);
-					switchState(STATE_MENU_INMENU);
+					switchState(STATE_MENU_SELECT_TYPE);
 				}
 				
 				break;
@@ -481,6 +563,27 @@ public class State_Menu_Main extends BaseGameActivity
 					switchState(STATE_MENU_INMENU);
 				}
 				break;
+				
+			case STATE_MENU_SELECT_MC_MULTI_SERVER:
+				
+				if(keyCode == KeyEvent.KEYCODE_BACK)
+				{
+					toast("Disconected");
+					sendMessage("disconnect,menu");
+					switchState(STATE_MENU_SELECT_TYPE);
+				}
+				
+				break;
+				
+			case STATE_MENU_SELECT_TYPE:
+				
+				if(keyCode == KeyEvent.KEYCODE_BACK)
+				{
+					Game.spr_Img_Select_Type_Bg.setVisible(false);
+					switchState(STATE_MENU_INMENU);
+				}
+				
+				break;
 		}
 		
 		
@@ -508,15 +611,28 @@ public class State_Menu_Main extends BaseGameActivity
 				if(Utils.isOnArea(pSceneTouchEvent, spr_Img_Btn_Play)
 						&& pSceneTouchEvent.isActionUp())
 				{
-					// sData bawah ni gx perlu d perhatikan
-					// konsep yg ada d pikiran q
-					// ternyata beda sama yg d inginkan game designer
-					sData.setSelectMap(MAP_MODERN);
 					
-					if(Game.spr_Img_Select_Mc_Bg == null)
-						switchState(STATE_MENU_SELECT_MC_LOADING);
-					else
-						switchState(STATE_MENU_SELECT_MC);
+//					new AlertDialog.Builder(this)
+//					.setTitle("Select Mode")
+//					.setPositiveButton("Offline", new OnClickListener() {
+//						public void onClick(final DialogInterface pDialog, final int pWhich)
+//						{
+//							sData.setSelectMap(MAP_MODERN);
+//							
+//							if(Game.spr_Img_Select_Mc_Bg == null)
+//								switchState(STATE_MENU_SELECT_MC_LOADING);
+//							else
+//								switchState(STATE_MENU_SELECT_MC);
+//						}
+//					})
+//					.setNegativeButton("Bluetooth", new OnClickListener() {
+//						public void onClick(final DialogInterface pDialog, final int pWhich) {
+//							bluetoothMode();
+//						}
+//					})
+//					.show();
+					
+					switchState(STATE_MENU_SELECT_TYPE);
 				}
 				else if(Utils.isOnArea(pSceneTouchEvent, spr_Img_Btn_Credit)
 					&& pSceneTouchEvent.isActionUp()){
@@ -540,21 +656,51 @@ public class State_Menu_Main extends BaseGameActivity
 						&& pSceneTouchEvent.isActionUp())
 				{
 					Game.spr_Img_Select_Map_Bg.setVisible(false);
-					switchState(STATE_MENU_SELECT_MC);
+					if(isServer)
+						switchState(STATE_MENU_SELECT_MC_MULTI_SERVER);	
+					else
+						switchState(STATE_MENU_SELECT_MC);
 				}
 				
 				break;
 				
 			case STATE_MENU_SELECT_MC:
 				
-			if(Utils.isOnArea(
-					pSceneTouchEvent,
-					Game.spr_Img_Select_Mc_Btn_Arrow[0])
-					&& pSceneTouchEvent.isActionUp())
-			{
-				Game.spr_Img_Select_Mc_Bg.setVisible(false);
-				switchState(STATE_MENU_INMENU);
-			}
+				if(Utils.isOnArea(
+						pSceneTouchEvent,
+						Game.spr_Img_Select_Mc_Btn_Arrow[0])
+						&& pSceneTouchEvent.isActionUp())
+				{
+					Game.spr_Img_Select_Mc_Bg.setVisible(false);
+					switchState(STATE_MENU_SELECT_TYPE);
+				}
+				break;
+			
+			case STATE_MENU_SELECT_MC_MULTI_SERVER:
+				
+				if(Utils.isOnArea(
+						pSceneTouchEvent,
+						Game.spr_Img_Select_Mc_Btn_Arrow[0])
+						&& pSceneTouchEvent.isActionUp())
+				{
+					toast("Disconected");
+					sendMessage("disconnect,menu");
+					switchState(STATE_MENU_SELECT_TYPE);
+				}
+				
+				break;
+				
+			case STATE_MENU_CREDIT:
+				
+				if(pSceneTouchEvent.isActionUp())
+				{
+					stopMoveCredits = true;
+				}
+				else
+				{
+					stopMoveCredits = false;
+					
+				}
 				
 				break;
 		}
@@ -630,9 +776,22 @@ public class State_Menu_Main extends BaseGameActivity
 								Game.spr_Img_Select_Map_Icon_Map[i])
 								&& Game.spr_Img_Select_Map_Icon_Map[i].getScaleX() == 1)
 						{
+							
 							sData.setSelectMap(i);
-							startActivity(new Intent(State_Menu_Main.this, State_Gameplay.class));
-							finish();
+							
+							if(isServer)
+							{
+								sendMessage("map,"+i);
+								toast("Waiting Client...");
+								sData.setTypePlayer(1, TYPE_MP);
+								sData.setTypePlayer(0, TYPE_PLAYER);
+							}
+							else
+							{
+								startActivity(new Intent(State_Menu_Main.this, State_Gameplay.class));
+								finish();
+								
+							}
 						}
 					}
 				}
@@ -640,6 +799,8 @@ public class State_Menu_Main extends BaseGameActivity
 				break;
 				
 			case STATE_MENU_SELECT_MC:
+				
+				
 
 				if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Select_Mc_Btn_Arrow[1]))
 				{
@@ -781,6 +942,18 @@ public class State_Menu_Main extends BaseGameActivity
 							Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(true);
 						}
 					}
+					
+					if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Select_Mc_Icon_Mc_Bg[i]))
+					{
+						Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(false);
+						
+						if(sData.getCharPlayer(i) == CARACTER_4)
+							sData.setCharPlayer(i, CARACTER_1);
+						else
+							sData.setCharPlayer(i, sData.getCharPlayer(i) + 1);
+					
+						Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(true);
+					}
 				}
 				
 				break;
@@ -839,7 +1012,99 @@ public class State_Menu_Main extends BaseGameActivity
 					switchState(STATE_MENU_INMENU);
 				}
 				break;
+				
+			case STATE_MENU_SELECT_MC_MULTI_SERVER:
+
+				if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Select_Mc_Btn_Arrow[1]))
+				{
+					sData.setMaxPlayer(max_Player);
+					
+					if(isServer)
+					{
+						sendMessage("notif,Server Choose Map");
+						
+						if(Game.spr_Img_Select_Map_Bg == null)
+							switchState(STATE_MENU_SELECT_MAP_LOADING);
+						else
+							switchState(STATE_MENU_SELECT_MAP);
+					}
+					else
+					{
+						toast("Waiting Server...");
+						isWaiting = true;
+//						switchState(STATE_MENU_WAITING_CLIENT_SERVER);
+					}
+				}
+				
+				for (int j = 0; j < 2; j++)
+				{
+					int i;
+					if(isServer)
+						i = 0;
+					else
+						i = 1;
+						
+					if(Utils.isOnArea(
+							pTouchEvent,
+							Game.spr_Img_Select_Mc_Icon_Mc_Bg[i],
+							Game.spr_Img_Select_Mc_Btn_Arrow_Mc[i][j]))
+					{
+						Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(false);
+						
+						if(j == 0)
+						{
+							if(sData.getCharPlayer(i) == CARACTER_1)
+								sData.setCharPlayer(i, CARACTER_4);
+							else
+								sData.setCharPlayer(i, sData.getCharPlayer(i) - 1);
+						}
+						else
+						{
+							if(sData.getCharPlayer(i) == CARACTER_4)
+								sData.setCharPlayer(i, CARACTER_1);
+							else
+								sData.setCharPlayer(i, sData.getCharPlayer(i) + 1);
+						}
+						sendMessage("change,"+sData.getCharPlayer(i));
+						Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(true);
+					}
+				}
+				break;
+				
+			case STATE_MENU_SELECT_TYPE:
+
+				for (int i = 0; i < 2; i++)
+				{
+					if(Utils.isOnArea(pTouchEvent, Game.spr_Img_Select_Type_Btn[i]))
+					{
+						if(i == 0)
+						{
+							switchState(STATE_MENU_SELECT_MC);
+						}
+						else
+						{
+							bluetoothMode();
+						}
+					}
+				}
+				
+				break;
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		SoundManager.stopMusic(SoundManager.BGM_MENU_MAIN);
+		super.onPause();
+	}
+	
+	@Override
+	protected void onResume() {
+		if(isActive)
+		{
+			SoundManager.playMusic(SoundManager.BGM_MENU_MAIN);
+		}
+		super.onResume();
 	}
 	
 	protected Scene getScene()
@@ -849,6 +1114,8 @@ public class State_Menu_Main extends BaseGameActivity
 	
 	private void attachInMenu()
 	{
+		isActive = true;
+		
 		
 		int border = 30;
 		
@@ -864,8 +1131,8 @@ public class State_Menu_Main extends BaseGameActivity
 				Game.reg_Img_Btn_Option);
 		spr_Img_Btn_Play = new Sprite(
 				0, 0, 
-				Utils.getRatio(140),
-				Utils.getRatio(35),
+				Utils.getRatio(70),
+				Utils.getRatio(70),
 				Game.reg_Img_Btn_Play);
 			
 		spr_Img_Btn_Option.setPosition(
@@ -953,6 +1220,10 @@ private void attachNotif(){
 	Game.spr_Img_Bg_Notif.attachChild(Game.spr_btn_no);
 	Game.spr_Img_Bg_Notif.attachChild(Game.spr_Img_Bg_Text);
 	
+	Game.spr_Img_Bg_Notif.setPosition(
+			(Config.GAME_SCREEN_WIDTH - Game.spr_Img_Bg_Notif.getWidth()) /2,
+			(Config.GAME_SCREEN_HEIGHT - Game.spr_Img_Bg_Notif.getHeight() / 2 ) /2);
+	
 	Game.spr_btn_yes.setPosition(
 			(Game.spr_Img_Bg_Notif.getWidth() / 2 - Game.spr_btn_yes.getWidth()) / 2,
 			(Game.spr_Img_Bg_Notif.getHeight() - Game.spr_btn_yes.getHeight()) / 2
@@ -971,7 +1242,7 @@ private void attachNotif(){
 	
 	private void attachCredit(){
 		
-		int MARGIN = 15;
+		float MARGIN = Utils.getRatio(20);
 		
 		scene.attachChild(Game.spr_Img_Back_Credit);
 		hud = new HUD();
@@ -1026,8 +1297,8 @@ private void attachNotif(){
 		txt_IRFAN = new  Text((Config.GAME_SCREEN_WIDTH - Game.font[4].getStringWidth(_TEX_IRF)) / 2,
 				txt_FANDI.getY()+MARGIN + 5 , Game.font[4], _TEX_IRF);
 
-	txt_CR = new Text((Config.GAME_SCREEN_WIDTH - Game.font[FONT_SIZE_SMALL].getStringWidth("copyright (c)")) / 2,
-				txt_IRFAN.getY() + txt_IRFAN.getHeight() + MARGIN  , Game.font[FONT_SIZE_SMALL], "copyright (c)\n 2012", HorizontalAlign.CENTER);
+	txt_CR = new Text((Config.GAME_SCREEN_WIDTH - Game.font[3].getStringWidth("copyright (c)")) / 2,
+				txt_IRFAN.getY() + txt_IRFAN.getHeight() + MARGIN  , Game.font[3], "copyright (c)\n 2012", HorizontalAlign.CENTER);
 		
 		
 		txt_AGUS.setColor(1,0, 0);
@@ -1039,6 +1310,15 @@ private void attachNotif(){
 		txt_AMIRUL.setColor(1, 0, 0);
 		txt_FANDI.setColor(1, 0, 0);
 		txt_IRFAN.setColor(1, 0, 0);
+		
+		txt_PM.setColor(0, 0, 0);
+		txt_PRD.setColor(0, 0, 0);
+		txt_PROG.setColor(0, 0, 0);
+		txt_GD.setColor(0, 0, 0);
+		txt_ART.setColor(0, 0, 0);
+		txt_SE.setColor(0, 0, 0);
+		
+		txt_CR.setColor(0, 0, 0);
 		
 		hud.attachChild(txt_PM);
 		hud.attachChild(txt_PRD);
@@ -1082,5 +1362,141 @@ private void attachNotif(){
 		}
 		
 		return false;
+	}
+	
+	public void bluetoothMode() {
+
+	}
+	
+	private void visibleSelectMc()
+	{
+		sData.setCharPlayer(PLAYER_1, CARACTER_1);
+		sData.setCharPlayer(PLAYER_2, CARACTER_2);
+		
+		sData.setTypePlayer(PLAYER_1, TYPE_PLAYER);
+		sData.setTypePlayer(PLAYER_2, TYPE_AI);
+		
+		Game.spr_Img_Select_Mc_Bg.setVisible(true);
+		Game.spr_Img_Select_Mc_Btn_Add.setVisible(true);
+		
+		for(int i = 0; i < 4; i++)
+		{
+			Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].setVisible(false);
+			
+			for (int j = 0; j < Data.SPR_MC.length; j++)
+			{
+				Game.spr_Img_Select_Mc_Icon_Mc[i][j].setVisible(false);
+				if(j < 2)
+				{
+					Game.spr_Img_Select_Mc_Btn_Type[i][j].setVisible(false);
+					Game.spr_Img_Select_Mc_Btn_Arrow_Mc[1][j].setVisible(true);
+				}
+			}
+		}
+		
+		for(int i = 0; i < max_Player; i++)
+		{
+			Game.spr_Img_Select_Mc_Icon_Mc_Bg[i].setVisible(true);
+			Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(true);
+			Game.spr_Img_Select_Mc_Btn_Type[i][sData.getTypePlayer(i)].setVisible(true);
+		}
+	}
+
+	public void sendMessage(String str) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String receiveMessage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	protected void startReceiverThread()
+	{
+		isRunning = true;
+		menuThread = new Thread()
+		{
+			public void run()
+			{
+				while (true)
+				{
+					if(isRunning)
+					{
+						String[] msgArray = new String[1];
+						msgArray = receiveMessage().split(",", 2);
+	
+						handleReceivedMessage(msgArray);
+						
+					}
+					else break;
+				}
+			}
+		};
+		menuThread.start();
+	}
+	
+	private void handleReceivedMessage(String[] msgArray) {
+		if(msgArray[0].contains("change"))
+		{
+			int i;
+			
+			if(isServer)
+			{
+				i = 1;
+				sData.setCharPlayer(1, (int) Float.parseFloat(msgArray[1]));
+			}
+			else
+			{
+				i = 0;
+				sData.setCharPlayer(0, (int) Float.parseFloat(msgArray[1]));
+			}
+			
+			for (int j = 0; j < 4; j++) {
+				Game.spr_Img_Select_Mc_Icon_Mc[i][j].setVisible(false);	
+			}
+			Game.spr_Img_Select_Mc_Icon_Mc[i][(int) Float.parseFloat(msgArray[1])].setVisible(true);
+		}
+		if(msgArray[0].contains("map"))
+		{
+			String map = msgArray[1];
+			sData.setSelectMap((int) Float.parseFloat(map));
+		}
+		if(msgArray[0].contains("play"))
+		{
+//			menuThread.stop();
+			Utils.TRACE("INTEN GAMEPLAY MP");
+			startActivity(new Intent(State_Menu_Main.this, BT_Send_Received.class));
+			finish();
+		}
+		
+		if(msgArray[0].contains("restart"))
+		{
+			State_Gameplay.autoSwitch = true;
+			State_Gameplay.autoSwitchState = 5;
+		}
+		if(msgArray[0].contains("move"))
+		{
+			
+			State_Gameplay.randomValue = (int) Float.parseFloat(msgArray[1]);
+			State_Gameplay.moveMP = true;
+		}
+		if(msgArray[0].contains("disconnect"))
+		{
+			if(msgArray[1].contains("menu"))
+			{
+				switchState(STATE_MENU_SELECT_TYPE);
+			}
+			else
+			{
+				State_Gameplay.State_Game_Current = 7;
+			}
+//			BT_Server_Client.stopBTThread();
+		}
+	}
+	
+	protected void toast(final String pMessage)
+	{
+		Toast.makeText(this, pMessage, Toast.LENGTH_LONG).show();
 	}
 }

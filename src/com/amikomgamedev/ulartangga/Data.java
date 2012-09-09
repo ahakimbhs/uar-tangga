@@ -26,7 +26,7 @@ public interface Data {
 	public static final String MNU_FOLDER_LOCATION = "gfx/mnu/";
 	
 	public static final String IMG_MENU_BACK = 
-			MNU_FOLDER_LOCATION + "background.png";
+			MNU_FOLDER_LOCATION + "BACKGROUND MENU.png";
 	public static final String IMG_BG_CREDIT = 
 			MNU_FOLDER_LOCATION + "bg_credit.png";
 	public static final String IMG_MENU_BTN_CREDIT =
@@ -75,33 +75,45 @@ public interface Data {
 	
 	public static final float[] MENU_MAIN_TAMBAHAN_DUR = 
 		{
-			1f, 1f, 1f, 
-			1f, 1f, 1f, 
+			2f, 2.5f, 4.5f, 
+			2f, 1.5f, 1.5f, 
 		};
 	
 	public static final float[] MENU_MAIN_TAMBAHAN_FROM_X = 
 		{
-			10, 90, 220,
-			30, 60, 200
+			10, 130, 210,
+			40, 85, 260
 		};
 	
 	public static final float[] MENU_MAIN_TAMBAHAN_TO_X = 
 		{
-			10, 90, 220,
-			30, 60, 200
+			10, 130, 210,
+			40, 85, 260
 		};
 	
 	public static final float[] MENU_MAIN_TAMBAHAN_FROM_Y = 
 		{
-			-100, 480, 480,
-			-100, 480, 480
+			480, -84, 480,
+			-128, 480, 480
 		};
 	
 	public static final float[] MENU_MAIN_TAMBAHAN_TO_Y = 
 		{
-			480, -100, -100,
-			480, -100, -100,
+			-100, 480, -174,
+			480, -90, -54,
 		};
+	
+	public static final int[] MENU_MAIN_TAMBAHAN_WIDTH = 
+		{
+		16, 26, 42, 
+		28, 16, 28, 
+		};	
+	
+	public static final int[] MENU_MAIN_TAMBAHAN_HEIGHT = 
+		{
+		100, 84, 174, 
+		128, 90, 54, 
+		};	
 	
 	public static final String BGM_INMENU = SND_INMENU_FOLDER_LOCATION + "msc_menu.ogg";
 	
@@ -117,14 +129,14 @@ public interface Data {
 			IMG_LOGO_LOCATION + "agd_logo.png";
 	
 	public static final String IMG_LOADING =
-			IMG_LOGO_LOCATION + "loading.jpg";
+			IMG_LOGO_LOCATION + "loading.png";
 
 	public static final String MENU_SELECT_MAP_BG			= MNU_FOLDER_LOCATION + "background.png";
 	public static final String MENU_SELECT_MAP_BG_SELECT	= IMG_INMENU_FOLDER_LOCATION + "bg.png";
 	public static final String MENU_SELECT_MAP_BTN_BACK		= IMG_INMENU_FOLDER_LOCATION + "btnArrow.png";
 
 	public static final String MENU_SELECT_MC_BG		= MNU_FOLDER_LOCATION + "background.png";
-	public static final String MENU_SELECT_MC_ICON_BG	= IMG_INMENU_FOLDER_LOCATION + "Select_Mc_Bg_Icon_Mc.jpg";
+	public static final String MENU_SELECT_MC_ICON_BG	= IMG_INMENU_FOLDER_LOCATION + "bg.png";
 	public static final String MENU_SELECT_MC_BTN_ADD	= IMG_INMENU_FOLDER_LOCATION + "ADD PLAYER.png";
 	public static final String MENU_SELECT_MC_BTN_DELETE= IMG_INMENU_FOLDER_LOCATION + "btnHapus.png";
 	public static final String MENU_SELECT_MC_BTN_ARROW	= IMG_INMENU_FOLDER_LOCATION + "btnArrow.png";
@@ -153,7 +165,7 @@ public interface Data {
 	public static final String[] IMG_INGAME_BUTTON_DICE = 
 			{
 				IMG_INGAME_FOLDER_LOCATION + "slide bg.jpg",
-				IMG_INGAME_FOLDER_LOCATION + "slide.jpg",
+				IMG_INGAME_FOLDER_LOCATION + "SLIDE.png",
 			};
 	public static final String IMG_INGAME_BUTTON_SLOT_MACHINE = IMG_INGAME_FOLDER_LOCATION + "slot_machine.png";
 	public static final String IMG_INGAME_BUTTON_PAUSE = IMG_INGAME_FOLDER_LOCATION + "pause.png";
@@ -295,8 +307,8 @@ public interface Data {
 	public static final int MC_WIDTH 	= 60;
 	public static final int MC_HEIGHT 	= 60;
 
-	public static final int MC_ICON_TEX_WIDTH 	= 32;
-	public static final int MC_ICON_TEX_HEIGHT 	= 32;
+	public static final int MC_ICON_TEX_WIDTH 	= 64;
+	public static final int MC_ICON_TEX_HEIGHT 	= 64;
 	public static final int MC_ICON_WIDTH 	= 32;
 	public static final int MC_ICON_HEIGHT 	= 32;
 
@@ -358,7 +370,7 @@ public interface Data {
 	public static final int MENU_SELECT_MC_BTN_ARROW_WIDTH		= 70;
 	public static final int MENU_SELECT_MC_BTN_ARROW_HEIGHT		= 30;
 	public static final int MENU_SELECT_MC_BTN_ARROW_MC_WIDTH	= 30;
-	public static final int MENU_SELECT_MC_BTN_ARROW_MC_HEIGHT	= 30;
+	public static final int MENU_SELECT_MC_BTN_ARROW_MC_HEIGHT	= 50;
 	
 	public static final int GAMEPLAY_SMOKE_TEX_WIDTH 	= 1024;
 	public static final int GAMEPLAY_SMOKE_TEX_HEIGHT 	= 256;

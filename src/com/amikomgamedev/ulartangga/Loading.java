@@ -288,6 +288,7 @@ public class Loading {
 				Game.loadSelectMcBtnType();
 				Game.loadSelectMcBtnAdd();
 				Game.loadSelectMcBtnArrow();
+				Game.loadSelectType();
 				break;
 			case LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER:
 				break;

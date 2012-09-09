@@ -29,18 +29,20 @@ public class SoundManager
 	public static final int SFX_BERANTEM		= 3;
 	public static final int SFX_JALAN			= 4;
 	public static final int SFX_TERLEMPAR		= 5;
+	public static final int SFX_SHAKE			= 6;
 	
-	public static final int SFX_TOTAL = 6;
+	public static final int SFX_TOTAL = 7;
 
 	public static final String[][] SFX_LOCATION =
 		{
 			{
 				"snd/ingame/classic/tangga.mp3",
 				"snd/ingame/classic/ular.wav",
-				"snd/ingame/classic/dadu.ogg",
+				"snd/ingame/classic/dice.mp3",
 				"snd/ingame/Berantem sfx.ogg",
 				"snd/ingame/sound jalan.ogg",
-				"snd/ingame/terlempar.ogg"
+				"snd/ingame/terlempar.ogg",
+				"snd/ingame/shake.mp3"
 			},
 			{
 				"snd/ingame/modern/lift.mp3",
@@ -48,7 +50,8 @@ public class SoundManager
 				"snd/ingame/modern/dadu.ogg",
 				"snd/ingame/Berantem sfx.ogg",
 				"snd/ingame/sound jalan.ogg",
-				"snd/ingame/terlempar.ogg"
+				"snd/ingame/terlempar.ogg",
+				"snd/ingame/shake.mp3"
 			},
 			{
 				"snd/ingame/galaxy/roket2.ogg",
@@ -56,7 +59,8 @@ public class SoundManager
 				"snd/ingame/galaxy/dadu.ogg",
 				"snd/ingame/Berantem sfx.ogg",
 				"snd/ingame/sound jalan.ogg",
-				"snd/ingame/terlempar.ogg"
+				"snd/ingame/terlempar.ogg",
+				"snd/ingame/shake.mp3"
 			},
 			{
 				"snd/ingame/collosal/tangga.mp3",
@@ -64,7 +68,8 @@ public class SoundManager
 				"snd/ingame/collosal/dadu.mp3",
 				"snd/ingame/Berantem sfx.ogg",
 				"snd/ingame/sound jalan.ogg",
-				"snd/ingame/terlempar.ogg"
+				"snd/ingame/terlempar.ogg",
+				"snd/ingame/shake.mp3"
 			},
 		};
 

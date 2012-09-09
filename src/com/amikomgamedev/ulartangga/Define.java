@@ -32,6 +32,7 @@ public interface Define
 	
 	public static final int TYPE_PLAYER	= 0;
 	public static final int TYPE_AI		= 1;
+	public static final int TYPE_MP		= 2;
 
 	public static final int MAP_KLASIK	= 0;
 	public static final int MAP_MODERN 	= 1;
@@ -69,21 +70,21 @@ public interface Define
 				{2,	17,	18,	42,	44,	71,	32}			// posisi Ular Ahir
 			},
 			{// modern
-				{9,	28,	36,	38,	69,	85},		// posisi Tangga Awal
-				{27,52,	90,	60,	88,	96},		// posisi Tangga Akhir
+				{9,	28,	36,	38,	69,	85, 58},		// posisi Tangga Awal
+				{27,52,	90,	60,	88,	96, 78},		// posisi Tangga Akhir
 				{16,41,	70,	65,	86,	84, 99},		// posisi Ular Awal
 				{5,	20,	10,	55,	66, 24, 19}			// posisi Ular Ahir
 			},
 			{// galaksi
 				{2, 7,	13,	26,	42,	50,	74},		// posisi Tangga Awal
-				{45,34,	32,	66,	78,	98,	96},		// posisi Tangga Akhir
+				{45,34,	32,	66,	78,	90,	96},		// posisi Tangga Akhir
 				{25,41,	61,	75,	88,	92,	99},		// posisi Ular Awal
 				{5,	22,	39,	31,	53,	89,	65}			// posisi Ular Ahir
 			},
 			{// kolosal
 				{4, 8,	26,	38,	50,	53,	56},		// posisi Tangga Awal
 				{44,27,	52,	81,	90,	72,	96},		// posisi Tangga Akhir
-				{35,60,	69,	74,	85,	92,	94},		// posisi Ular Awal
+				{35,60,	69,	74,	86,	92,	94},		// posisi Ular Awal
 				{6,	19,	12,	47,	42,	58,	88}			// posisi Ular Ahir
 			}
 		};

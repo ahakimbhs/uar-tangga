@@ -15,6 +15,7 @@ import android.content.Intent;
 
 import com.amikomgamedev.ulartangga.Config;
 import com.amikomgamedev.ulartangga.Game;
+import com.amikomgamedev.ulartangga.multiplayer.bluetooth.BT_Server_Client;
 
 public class State_Logo extends BaseGameActivity
 {
@@ -50,7 +51,8 @@ public class State_Logo extends BaseGameActivity
 			
 			public void onTimePassed(TimerHandler pTimerHandler)
 			{
-				startActivity(new Intent(State_Logo.this, State_Menu_Main.class));
+				startActivity(new Intent(State_Logo.this, BT_Server_Client.class));
+//				startActivity(new Intent(State_Logo.this, State_Menu_Main.class));
 				finish();	
 			}
 		}));

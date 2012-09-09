@@ -31,15 +31,15 @@ public class Utils implements Define
 	}
 
 	// ratio posisi untuk hud
-	public static int getRatioW(float def)
+	public static float getRatioW(float def)
 	{
-		return (int) ((def/Define.GAME_RATIO_SCREEN_WIDTH) 
+		return ((def/Define.GAME_RATIO_SCREEN_WIDTH) 
 				* Config.GAME_SCREEN_WIDTH);
 	}
 	// ratio posisi untuk hud
-	public static int getRatioH(float def)
+	public static float getRatioH(float def)
 	{
-		return (int) ((def/Define.GAME_RATIO_SCREEN_HEIGHT) 
+		return ((def/Define.GAME_RATIO_SCREEN_HEIGHT) 
 				* Config.GAME_SCREEN_HEIGHT);
 	}
 
@@ -131,7 +131,7 @@ public class Utils implements Define
 	{
 		if(Config.DEBUG)
 		{
-//			System.out.println(arg);
+			System.out.println(arg);
 		}
 	}
 	
@@ -145,18 +145,18 @@ public class Utils implements Define
 	}
 	
 	// ratio posisi untuk scene n ukuran aset
-	public static int getRatio(float nil)
+	public static float getRatio(float nil)
 	{
-		int nil_Ratio = 0;
+		float nil_Ratio = 0;
 		
 		switch(Config.RATIO_USE)
 		{
 			case Config.RATIO_WIDTH:
-				nil_Ratio = (int) (nil / GAME_RATIO_SCREEN_WIDTH 
+				nil_Ratio = (nil / GAME_RATIO_SCREEN_WIDTH 
 						* Config.GAME_SCREEN_WIDTH);
 				break;
 			case Config.RATIO_HEIGHT:
-				nil_Ratio = (int) (nil / GAME_RATIO_SCREEN_HEIGHT 
+				nil_Ratio = (nil / GAME_RATIO_SCREEN_HEIGHT 
 						* Config.GAME_SCREEN_HEIGHT);
 				break;
 		}
