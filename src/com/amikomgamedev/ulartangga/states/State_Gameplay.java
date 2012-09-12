@@ -86,6 +86,7 @@ public class State_Gameplay extends 	BaseGameActivity
 	private SurfaceScrollDetector	mScrollDetector	= new SurfaceScrollDetector(this);
 	private ClickDetector			clickDetector	= new ClickDetector(this);
 	private Entity_Camera cam;
+	protected SoundManager			soundManager = new SoundManager();
 
 	private static ChangeableText playerName;
 	public static ChangeableText[] curPosition;
@@ -109,7 +110,7 @@ public class State_Gameplay extends 	BaseGameActivity
 	public static boolean autoSwitch = false;
 	public static int autoSwitchState = -1;
 
-	private boolean isShakeEnable 	= false;
+	public static boolean isShakeEnable 	= true;
 	private boolean isShake 		= false;
 	private boolean isActive = false;
 	
@@ -133,6 +134,8 @@ public class State_Gameplay extends 	BaseGameActivity
 
 		Game.setMap(Map);
 		Game.setMaxPlayer(Player_Max);
+		
+		soundManager.loadSoundGameplay();
 	}
 	
 	public Scene onLoadScene()
@@ -213,7 +216,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				{
 					if(move)
 					{
-						SoundManager.playSfx(SoundManager.SFX_JALAN);
+						soundManager.playSfx(soundManager.SFX_JALAN);
 						
 						mc[Player_Cur].onUpdate();
 						
@@ -250,7 +253,7 @@ public class State_Gameplay extends 	BaseGameActivity
 							
 							if(mc[Player_Cur].Posisi_Mc_Current != SNAKE_N_LADDER[Map][CELL_SNAKE_START][cek])
 							{
-								SoundManager.stopSfx(SoundManager.SFX_TURUN);
+								soundManager.stopSfx(soundManager.SFX_TURUN);
 								switchCek(CEK_IDLE);
 							}
 							
@@ -268,7 +271,7 @@ public class State_Gameplay extends 	BaseGameActivity
 
 							if(mc[Player_Cur].Posisi_Mc_Current != SNAKE_N_LADDER[Map][CELL_LADDER_START][cek])
 							{
-								SoundManager.stopSfx(SoundManager.SFX_NAIK);
+								soundManager.stopSfx(soundManager.SFX_NAIK);
 								switchCek(CEK_IDLE);
 							}
 							break;
@@ -295,8 +298,8 @@ public class State_Gameplay extends 	BaseGameActivity
 							else if(timer(1))
 							{
 								
-								SoundManager.stopSfx(SoundManager.SFX_BERANTEM);
-								SoundManager.playSfx(SoundManager.SFX_TERLEMPAR);
+								soundManager.stopSfx(soundManager.SFX_BERANTEM);
+								soundManager.playSfx(soundManager.SFX_TERLEMPAR);
 								throwStart = true;
 							}
 
@@ -315,13 +318,14 @@ public class State_Gameplay extends 	BaseGameActivity
 							
 							mc[Player_Cur].stop();
 							move = false;
-							SoundManager.stopSfx(SoundManager.SFX_JALAN);
+							soundManager.stopSfx(soundManager.SFX_JALAN);
 							
 //							valueDice.setText(""+Utils.getRandomValuie());
 							if(!autoMoveNextPlayer || Game.spr_Smoke.isVisible())
 							{
 								
 								Game.spr_Img_Button_Slide_Bg.setVisible(false);
+								Game.spr_img_Button_Shake.setVisible(false);
 								diceEnable = false;
 								autoMove = false;
 							}
@@ -333,7 +337,10 @@ public class State_Gameplay extends 	BaseGameActivity
 											 Define.GAME_MAP_CELL_WIDTH);
 								else
 								{
-									Game.spr_Img_Button_Slide_Bg.setVisible(true);
+									if(!isShakeEnable)
+										Game.spr_Img_Button_Slide_Bg.setVisible(true);
+									else
+										Game.spr_img_Button_Shake.setVisible(true);
 									diceEnable = true;
 								}
 							}
@@ -392,7 +399,7 @@ public class State_Gameplay extends 	BaseGameActivity
 								Player_Cur = previousPlayer();
 							}
 							
-							if(Game.spr_Img_Button_Slide_Bg.isVisible() && !Game.spr_Smoke.isVisible())
+							if((Game.spr_Img_Button_Slide_Bg.isVisible() || Game.spr_img_Button_Shake.isVisible()) && !Game.spr_Smoke.isVisible())
 							{
 								
 								if(sData.getTypePlayer(nextPlayer()) == TYPE_AI)
@@ -417,21 +424,27 @@ public class State_Gameplay extends 	BaseGameActivity
 									else if(Game.spr_Img_Button_Slide.getX() + Game.spr_Img_Button_Slide.getWidth() 
 											>= Game.spr_Img_Button_Slide_Bg.getWidth() - Game.spr_Img_Button_Slide.getY())
 									{
+										Game.spr_img_Button_Shake.setVisible(false);
 										if(diceEnable)
 										{
 											dice();
 										}
 									}
+									else
+									{
+										Game.spr_img_Button_Shake.setVisible(false);
+									}
 								}
 								else
 								{
 									Game.spr_Img_Button_Slide_Bg.setVisible(false);
+									Game.spr_img_Button_Shake.setVisible(false);
 									
 									if(moveMP)
 									{
 										moveMP = false;
 										
-										SoundManager.playSfx(SoundManager.SFX_DICE);
+										soundManager.playSfx(soundManager.SFX_DICE);
 										switchPlayer();
 										mc[Player_Cur].setMove(randomValue);
 
@@ -646,7 +659,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				break;
 			case STATE_GAME_SETTING:
 				
-				for (int i = 0; i < 2; i++)
+				for (int i = 0; i < 3; i++)
 				{
 					if(Utils.isOnArea(
 							pTouchEvent,
@@ -656,34 +669,49 @@ public class State_Gameplay extends 	BaseGameActivity
 					{
 						if(i == 0)
 						{
-							if(SoundManager.sfxEnable)
+							if(soundManager.sfxEnable)
 							{
-								SoundManager.sfxEnable = false;
-								Game.spr_Menu_Setting_On_Off[0][i].setVisible(false);
-								Game.spr_Menu_Setting_On_Off[1][i].setVisible(true);
+								soundManager.sfxEnable = false;
+								Game.txt_Menu_Setting[i][0].setVisible(false);
+								Game.txt_Menu_Setting[i][1].setVisible(true);
 							}
 							else
 							{
-								SoundManager.sfxEnable = true;
-								Game.spr_Menu_Setting_On_Off[0][i].setVisible(true);
-								Game.spr_Menu_Setting_On_Off[1][i].setVisible(false);
+								soundManager.sfxEnable = true;
+								Game.txt_Menu_Setting[i][0].setVisible(true);
+								Game.txt_Menu_Setting[i][1].setVisible(false);
+							}
+						}
+						else if(i == 1)
+						{
+							if(soundManager.bgmEnable)
+							{
+								soundManager.bgmEnable = false;
+								Game.txt_Menu_Setting[i][0].setVisible(false);
+								Game.txt_Menu_Setting[i][1].setVisible(true);
+								soundManager.stopMusic(soundManager.BGM_GAMEPLAY);
+							}
+							else
+							{
+								soundManager.bgmEnable = true;
+								Game.txt_Menu_Setting[i][0].setVisible(true);
+								Game.txt_Menu_Setting[i][1].setVisible(false);
+								soundManager.playMusic(soundManager.BGM_GAMEPLAY);
 							}
 						}
 						else
 						{
-							if(SoundManager.bgmEnable)
+							if(State_Gameplay.isShakeEnable)
 							{
-								SoundManager.bgmEnable = false;
-								Game.spr_Menu_Setting_On_Off[0][i].setVisible(false);
-								Game.spr_Menu_Setting_On_Off[1][i].setVisible(true);
-								SoundManager.stopMusic(SoundManager.BGM_GAMEPLAY);
+								State_Gameplay.isShakeEnable = false;
+								Game.txt_Menu_Setting[i][0].setVisible(false);
+								Game.txt_Menu_Setting[i][1].setVisible(true);
 							}
 							else
 							{
-								SoundManager.bgmEnable = true;
-								Game.spr_Menu_Setting_On_Off[0][i].setVisible(true);
-								Game.spr_Menu_Setting_On_Off[1][i].setVisible(false);
-								SoundManager.playMusic(SoundManager.BGM_GAMEPLAY);
+								State_Gameplay.isShakeEnable = true;
+								Game.txt_Menu_Setting[i][0].setVisible(true);
+								Game.txt_Menu_Setting[i][1].setVisible(false);
 							}
 						}
 					}
@@ -713,16 +741,21 @@ public class State_Gameplay extends 	BaseGameActivity
 	
 	@Override
 	protected void onPause() {
-		SoundManager.stopMusic(SoundManager.BGM_GAMEPLAY);
-		switchState(STATE_GAME_PAUSE);
+		if(soundManager.bgm[soundManager.BGM_GAMEPLAY] != null)
+		{
+			soundManager.stopMusic(soundManager.BGM_GAMEPLAY);
+		}
+		if (State_Game_Current == STATE_GAME_INGAME) {
+			switchState(STATE_GAME_PAUSE);			
+		}
 		super.onPause();
 	}
 	
 	@Override
 	protected void onResume() {
-		if(isActive)
+		if(soundManager.bgm[soundManager.BGM_GAMEPLAY] != null)
 		{
-			SoundManager.playMusic(SoundManager.BGM_GAMEPLAY);
+			soundManager.playMusic(soundManager.BGM_GAMEPLAY);
 		}
 		super.onResume();
 	}
@@ -748,7 +781,7 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 			case STATE_GAME_INGAME:
 				
-				SoundManager.playAgainAllSfx();
+				soundManager.playAgainAllSfx();
 				
 				autoMoveNextPlayer = true;
 				
@@ -770,10 +803,11 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 			case STATE_GAME_PAUSE:
 				
-				SoundManager.pauseAllSfx();
+				soundManager.pauseAllSfx();
 				
 				Game.spr_Img_Button_Pause.setVisible(false);
 				Game.spr_Img_Button_Slide_Bg.setVisible(false);
+				Game.spr_img_Button_Shake.setVisible(false);
 				
 				if(isMultiPlayer)
 					Game.spr_GamePause_Btn[RESTART].setVisible(false);
@@ -809,6 +843,7 @@ public class State_Gameplay extends 	BaseGameActivity
 
 				Game.spr_Img_Button_Pause.setVisible(false);
 				Game.spr_Img_Button_Slide_Bg.setVisible(false);
+				Game.spr_img_Button_Shake.setVisible(false);
 				
 				int playerWin	= 0;
 
@@ -847,15 +882,20 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				Game.spr_Img_Option_Bg.setVisible(true);
 			
-				if(SoundManager.sfxEnable)
-					Game.spr_Menu_Setting_On_Off[0][0].setVisible(true);
+				if(soundManager.sfxEnable)
+					Game.txt_Menu_Setting[0][0].setVisible(true);
 				else
-					Game.spr_Menu_Setting_On_Off[1][0].setVisible(true);
+					Game.txt_Menu_Setting[0][1].setVisible(true);
 				
-				if(SoundManager.bgmEnable)
-					Game.spr_Menu_Setting_On_Off[0][1].setVisible(true);
+				if(soundManager.bgmEnable)
+					Game.txt_Menu_Setting[1][0].setVisible(true);
 				else
-					Game.spr_Menu_Setting_On_Off[1][1].setVisible(true);
+					Game.txt_Menu_Setting[1][1].setVisible(true);
+				
+				if(State_Gameplay.isShakeEnable)
+					Game.txt_Menu_Setting[2][0].setVisible(true);
+				else
+					Game.txt_Menu_Setting[2][1].setVisible(true);
 				
 				break;
 		}
@@ -869,7 +909,7 @@ public class State_Gameplay extends 	BaseGameActivity
 		{
 			case CEK_SNAKE:
 
-				SoundManager.playSfx(SoundManager.SFX_TURUN);
+				soundManager.playSfx(soundManager.SFX_TURUN);
 				
 				playerName.setText(PLAYER_NAME[Player_Cur] + " Get Snake");
 				playerName.setPosition(
@@ -878,12 +918,13 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				moveAgain_3 = false;
 				Game.spr_Img_Button_Slide_Bg.setVisible(false);
+				Game.spr_img_Button_Shake.setVisible(false);
 				
 				break;
 				
 			case CEK_LADDER:
 
-				SoundManager.playSfx(SoundManager.SFX_NAIK);
+				soundManager.playSfx(soundManager.SFX_NAIK);
 				
 				playerName.setText(PLAYER_NAME[Player_Cur] + " Get Ladder");
 				playerName.setPosition(
@@ -892,17 +933,19 @@ public class State_Gameplay extends 	BaseGameActivity
 				
 				moveAgain_2 = false;
 				Game.spr_Img_Button_Slide_Bg.setVisible(false);
+				Game.spr_img_Button_Shake.setVisible(false);
 				
 				break;
 				
 			case CEK_COLLISION:
 				
-				SoundManager.playSfx(SoundManager.SFX_BERANTEM);
+				soundManager.playSfx(soundManager.SFX_BERANTEM);
 				
 				
 				
 				moveAgain_1 = false;
 				Game.spr_Img_Button_Slide_Bg.setVisible(false);
+				Game.spr_img_Button_Shake.setVisible(false);
 				
 				Game.spr_Smoke.setPosition(
 						mc[Player_Cur].getAnimatedSprite().getX() - 
@@ -1034,7 +1077,7 @@ public class State_Gameplay extends 	BaseGameActivity
 	{
 		isActive = true;
 		
-		SoundManager.playMusic(SoundManager.BGM_GAMEPLAY);
+		soundManager.playMusic(soundManager.BGM_GAMEPLAY);
 		
 		scene.detachChildren();
 		scene.attachChild(Game.spr_Img_Map);
@@ -1059,6 +1102,7 @@ public class State_Gameplay extends 	BaseGameActivity
 		hud.attachChild(Game.spr_Img_Informasi_Footer);
 		hud.attachChild(Game.spr_Img_Informasi_Header);
 		hud.attachChild(Game.spr_Img_Button_Slide_Bg);
+		hud.attachChild(Game.spr_img_Button_Shake);
 		hud.attachChild(Game.spr_Img_Button_Pause);
 		
 		hud.attachChild(Game.spr_Dice);	
@@ -1150,9 +1194,10 @@ public class State_Gameplay extends 	BaseGameActivity
 	{
 		diceEnable = false;
 		
-		SoundManager.playSfx(SoundManager.SFX_DICE);
+		soundManager.playSfx(soundManager.SFX_DICE);
 		
 		Game.spr_Img_Button_Slide_Bg.setVisible(false);
+		Game.spr_img_Button_Shake.setVisible(false);
 		
 		switchPlayer();
 		
@@ -1201,7 +1246,7 @@ public class State_Gameplay extends 	BaseGameActivity
 					&& sData.getTypePlayer(nextPlayer()) == TYPE_PLAYER)
 			{
 				isDice++;
-				SoundManager.playSfx(SoundManager.SFX_SHAKE);
+				soundManager.playSfx(soundManager.SFX_SHAKE);
 			}
 		}
 		else if(isDice >= 2 && mAccellCur > 9.6 && mAccellCur < 9.7)

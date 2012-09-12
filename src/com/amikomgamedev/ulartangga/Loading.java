@@ -47,6 +47,7 @@ public class Loading {
 	private static int Loading_Cur_Progress;
 	
 	private static int map;
+	private SoundManager soundManager;
 	
 	private static final int LOADING_TYPE_APP_OPEN_LIST_ITEM[] =
 		{
@@ -76,7 +77,9 @@ public class Loading {
 			LOADING_SUB_TYPE_SELECT_MC_BACKGROUND,
 			LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER,
 			LOADING_SUB_TYPE_FONT,
-			LOADING_SUB_TYPE_SOUND_MENU
+			LOADING_SUB_TYPE_SOUND_MENU,
+			LOADING_SUB_TYPE_CREDIT_BACKGROUND,
+			LOADING_SUB_TYPE_FONT
 		};
 	private static final int LOADING_TYPE_SELECT_MAP_LIST_ITEM[] =
 		{
@@ -125,6 +128,10 @@ public class Loading {
 			LOADING_SUB_TYPE_GAME_OVER_MC,
 			LOADING_SUB_TYPE_OPTION_BACKGROUND
 		};
+	
+	public Loading(SoundManager pSoundManager) {
+		soundManager = pSoundManager;
+	}
 	
 	public static void setLoading(int loadingType)
 	{
@@ -228,9 +235,9 @@ public class Loading {
 				break;
 			case LOADING_SUB_TYPE_MAIN_MENU_INTERFACE:
 				Game.loadTitle();
+				Game.loadMenuSetting();
 				Game.loadBackgroundMenu();
 				Game.loadDadu();
-				Game.loadMenuSetting();
 				Game.load_Close_Notif();
 				break;
 			case LOADING_SUB_TYPE_MAIN_MENU_BUTTON:
@@ -262,7 +269,7 @@ public class Loading {
 				Game.loadGameButton();
 				break;
 			case LOADING_SUB_TYPE_SOUND_GAMEPLAY:
-				SoundManager.loadSoundGameplay();
+//				soundManager.loadSoundGameplay();
 				break;
 			case LOADING_SUB_TYPE_HUD:
 				break;
@@ -293,7 +300,7 @@ public class Loading {
 			case LOADING_SUB_TYPE_SELECT_MC_ICON_CARARACTER:
 				break;
 			case LOADING_SUB_TYPE_SOUND_MENU:
-				SoundManager.loadSoundMenu();
+//				soundManager.loadSoundMenu();
 				break;
 			case LOADING_SUB_TYPE_GAME_OVER:
 				Game.loadGameOverBackground();

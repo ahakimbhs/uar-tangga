@@ -7,6 +7,8 @@ public class Config
 	public static final int GAME_RES_HD = 2;
 	public static final int GAME_RES_USE = GAME_RES_HD;
 
+	public static final String VERSI = "Ular Tangga versi HD 1.1.6";
+	
 	public static int GAME_SCREEN_WIDTH;
 	public static int GAME_SCREEN_HEIGHT;
 	

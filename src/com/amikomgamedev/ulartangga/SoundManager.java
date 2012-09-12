@@ -7,14 +7,14 @@ import org.anddev.andengine.audio.music.MusicFactory;
 
 public class SoundManager
 {
-	public static Music[] bgm = new Music[2];
-	public static Music[] sfx;
+	public Music[] bgm = new Music[2];
+	public Music[] sfx;
 
-	public static final int BGM_MENU_MAIN	= 0;
-	public static final int BGM_GAMEPLAY 	= 1;
-	public static final int BGM_TOTAL 		= 2;
+	public final int BGM_MENU_MAIN	= 0;
+	public final int BGM_GAMEPLAY 	= 1;
+	public final int BGM_TOTAL 		= 2;
 
-	public static final String[] BGM_LOCATION =
+	public final String[] BGM_LOCATION =
 		{
 			"snd/inmenu/msc_menu.ogg", 
 			"snd/ingame/classic theme UT.ogg",
@@ -23,17 +23,17 @@ public class SoundManager
 			"snd/ingame/collosal theme UT.ogg",
 		};
 
-	public static final int SFX_NAIK			= 0;
-	public static final int SFX_TURUN			= 1;
-	public static final int SFX_DICE			= 2;
-	public static final int SFX_BERANTEM		= 3;
-	public static final int SFX_JALAN			= 4;
-	public static final int SFX_TERLEMPAR		= 5;
-	public static final int SFX_SHAKE			= 6;
+	public final int SFX_NAIK			= 0;
+	public final int SFX_TURUN			= 1;
+	public final int SFX_DICE			= 2;
+	public final int SFX_BERANTEM		= 3;
+	public final int SFX_JALAN			= 4;
+	public final int SFX_TERLEMPAR		= 5;
+	public final int SFX_SHAKE			= 6;
 	
-	public static final int SFX_TOTAL = 7;
+	public final int SFX_TOTAL = 7;
 
-	public static final String[][] SFX_LOCATION =
+	public final String[][] SFX_LOCATION =
 		{
 			{
 				"snd/ingame/classic/tangga.mp3",
@@ -73,12 +73,12 @@ public class SoundManager
 			},
 		};
 
-	public static boolean bgmEnable = true;
-	public static boolean sfxEnable = true;
+	public boolean bgmEnable = true;
+	public boolean sfxEnable = true;
 	
-	public static boolean[] isPlayAgain = new boolean[SFX_TOTAL];
+	public boolean[] isPlayAgain = new boolean[SFX_TOTAL];
 
-	public static void loadSoundMenu()
+	public void loadSoundMenu()
 	{
 		try
 		{
@@ -94,7 +94,7 @@ public class SoundManager
 	}
 	
 	
-	public static void loadSoundGameplay()
+	public void loadSoundGameplay()
 	{
 		try
 		{
@@ -124,7 +124,7 @@ public class SoundManager
 
 	}
 
-	public static void playMusic(int index)
+	public void playMusic(int index)
 	{
 		if (!bgmEnable)
 		{
@@ -134,7 +134,7 @@ public class SoundManager
 		bgm[index].play();
 	}
 
-	public static void stopMusic(int index)
+	public void stopMusic(int index)
 	{
 		if (bgm[index].isPlaying())
 		{
@@ -144,7 +144,7 @@ public class SoundManager
 
 	}
 
-	public static void stopAllMusic()
+	public void stopAllMusic()
 	{
 		for (int i = 0; i < BGM_TOTAL; i++)
 		{
@@ -156,7 +156,7 @@ public class SoundManager
 		}
 	}
 
-	public static void playSfx(int index)
+	public void playSfx(int index)
 	{
 		if (!sfxEnable)
 		{
@@ -166,7 +166,7 @@ public class SoundManager
 		sfx[index].play();
 	}
 	
-	public static void stopSfx(int index)
+	public void stopSfx(int index)
 	{
 		if (sfx[index].isPlaying())
 		{
@@ -177,7 +177,7 @@ public class SoundManager
 	
 
 	
-	public static void pauseAllSfx()
+	public void pauseAllSfx()
 	{
 		for (int i = 0; i < SFX_TOTAL; i++)
 		{
@@ -191,7 +191,7 @@ public class SoundManager
 		}
 	}
 	
-	public static void playAgainAllSfx()
+	public void playAgainAllSfx()
 	{
 		for (int i = 0; i < SFX_TOTAL; i++)
 		{

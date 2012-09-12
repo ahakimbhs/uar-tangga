@@ -61,7 +61,7 @@ public class State_Gameplay_MP_BT extends State_Gameplay
 		{
 			randomValue = Integer.parseInt(msgArray[1]);
 				
-			SoundManager.playSfx(SoundManager.SFX_DICE);
+			soundManager.playSfx(soundManager.SFX_DICE);
 			switchPlayer();
 			mc[Player_Cur].setMove(randomValue);
 

@@ -71,10 +71,12 @@ public class Game implements Data,
 	private static BitmapTextureAtlas 	tex_Img_Button_Slide;
 	public static TextureRegion 		reg_Img_Button_Slide_Bg,
 										reg_Img_Button_Slide,
-										reg_Img_Button_Pause;
+										reg_Img_Button_Pause,
+										reg_Img_Button_Shake;
 	public static Sprite 				spr_Img_Button_Slide_Bg,
 										spr_Img_Button_Slide,
-										spr_Img_Button_Pause;
+										spr_Img_Button_Pause,
+										spr_img_Button_Shake;
 	
 	private static BitmapTextureAtlas 	tex_Img_Informasi;
 	public static TextureRegion 		reg_Img_Informasi_Footer,
@@ -183,7 +185,7 @@ public class Game implements Data,
 	
 	private static BitmapTextureAtlas tex_Img_Title;
 	public static TextureRegion reg_Img_Title_Menu;
-	public static Sprite spr_Img_Title_Menu;
+	public static Sprite[] spr_Img_Title_Menu = new Sprite[2];
 	
 	private static BitmapTextureAtlas tex_Img_Hud_Menu;
 	public static TextureRegion reg_Img_Btn_Credit,
@@ -226,11 +228,12 @@ public class Game implements Data,
 //						spr_btn_music_off;
 	
 	public static Sprite spr_Menu_Setting_Bg_Text;
-	public static Sprite[] spr_Menu_Setting_Bg_Sound_Icon = new Sprite[2];
+	public static Sprite[] spr_Menu_Setting_Bg_Sound_Icon = new Sprite[3];
 	
 	public static BitmapTextureAtlas[] 	tex_Menu_Setting_On_Off = new BitmapTextureAtlas[2];
 	public static TextureRegion[] 		reg_Menu_Setting_On_Off = new TextureRegion[2];
 	public static Sprite[][]			spr_Menu_Setting_On_Off = new Sprite[2][2];
+	public static Text[][]				txt_Menu_Setting = new Text[3][2];
 	
 	public static float dicePosX;
 	public static float dicePosY;
@@ -468,7 +471,7 @@ public class Game implements Data,
 	public static void loadGameButton()
 	{
 		tex_Img_Button_Slide = new BitmapTextureAtlas(
-				512, 256, 
+				512, 512, 
 				Utils.getTextureOption());
 		reg_Img_Button_Slide_Bg = BitmapTextureAtlasTextureRegionFactory.
 				createFromAsset(tex_Img_Button_Slide, activity, 
@@ -479,6 +482,9 @@ public class Game implements Data,
 		reg_Img_Button_Pause = BitmapTextureAtlasTextureRegionFactory.
 				createFromAsset(tex_Img_Button_Slide, activity, 
 				IMG_INGAME_BUTTON_PAUSE, 300, 0);
+		reg_Img_Button_Shake = BitmapTextureAtlasTextureRegionFactory.
+				createFromAsset(tex_Img_Button_Slide, activity, 
+				IMG_INGAME_FOLDER_LOCATION + "Shake to dice.jpg", 0, 200);
 		
 		loadTexture(tex_Img_Button_Slide);
 		
@@ -496,6 +502,11 @@ public class Game implements Data,
 				Utils.getRatio(30), 
 				Game.reg_Img_Button_Pause);
 		
+		spr_img_Button_Shake = new Sprite(0, 0,
+				Utils.getRatio(270),
+				Utils.getRatio(75),
+				Game.reg_Img_Button_Shake);
+		
 		spr_Img_Button_Slide_Bg.setPosition(
 				(Config.GAME_SCREEN_WIDTH - spr_Img_Button_Slide_Bg.getWidth()) / 2,
 				(Config.GAME_SCREEN_HEIGHT - spr_Img_Button_Slide_Bg.getHeight()) / 2);
@@ -508,9 +519,17 @@ public class Game implements Data,
 				Config.GAME_SCREEN_WIDTH - spr_Img_Button_Pause.getWidth() - Utils.getRatioW(10),
 				Config.GAME_SCREEN_HEIGHT - spr_Img_Button_Pause.getHeight() - (spr_Img_Informasi_Footer.getHeight() - spr_Img_Button_Pause.getHeight()) / 2);
 		
+		spr_img_Button_Shake.setPosition(
+				(Config.GAME_SCREEN_WIDTH - spr_img_Button_Shake.getWidth()) / 2,
+				(Config.GAME_SCREEN_HEIGHT - spr_img_Button_Shake.getHeight()) / 2);
+
 		spr_Img_Button_Slide_Bg.attachChild(spr_Img_Button_Slide);
 		spr_Img_Button_Slide_Bg.setAlpha(0.7f);
+//		spr_Img_Button_Slide_Bg.setVisible(false);
 		spr_Img_Button_Slide.setAlpha(0.7f);
+		
+		spr_img_Button_Shake.setAlpha(0.7f);
+//		spr_img_Button_Shake.setVisible(false);
 	}
 	
 	public static void loadGameInformasi()
@@ -671,7 +690,7 @@ public class Game implements Data,
 	public static void loadSelectMcBg()
 	{
 		tex_Img_Select_Mc_Bg = new BitmapTextureAtlas(
-				1024, 1024,
+				512, 512,
 				Utils.getTextureOption());
 		reg_Img_Select_Mc_Bg = BitmapTextureAtlasTextureRegionFactory.
 				createFromAsset(tex_Img_Select_Mc_Bg, activity, Data.MENU_SELECT_MC_BG, 0, 0);
@@ -1302,75 +1321,75 @@ public class Game implements Data,
 	//arief
  	public static void loadBackgroundMenu ()
 	{
-		tex_Img_Back_Menu = new BitmapTextureAtlas(
-				512, 512, 
-				Utils.getTextureOption());
-		reg_Img_Back_Menu = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(tex_Img_Back_Menu, activity, IMG_MENU_BACK, 0, 0);
-		loadTexture(tex_Img_Back_Menu);
+//		tex_Img_Back_Menu = new BitmapTextureAtlas(
+//				512, 512, 
+//				Utils.getTextureOption());
+//		reg_Img_Back_Menu = BitmapTextureAtlasTextureRegionFactory
+//				.createFromAsset(tex_Img_Back_Menu, activity, IMG_MENU_BACK, 0, 0);
+//		loadTexture(tex_Img_Back_Menu);
 		spr_Img_Back_Menu = new Sprite(
 				0, 0, 
 				Config.GAME_SCREEN_WIDTH,
 				Config.GAME_SCREEN_HEIGHT,
-				reg_Img_Back_Menu);
+				reg_Img_Option_Bg);
 		
-		BitmapTextureAtlas[] 	atlas = new BitmapTextureAtlas[MENU_MAIN_TAMBAHAN.length];
-		TextureRegion[]			regions = new TextureRegion[MENU_MAIN_TAMBAHAN.length];
-		final Sprite[]				sprites = new Sprite[MENU_MAIN_TAMBAHAN.length];
-		
-		for (int i = 0; i < MENU_MAIN_TAMBAHAN.length; i++)
-		{
-			atlas[i] = new BitmapTextureAtlas(
-					32, 128, Utils.getTextureOption());
-			
-			regions[i] = BitmapTextureAtlasTextureRegionFactory
-					.createFromAsset(atlas[i], activity,
-					MENU_MAIN_TAMBAHAN[i], 0, 0);
-			
-			loadTexture(atlas[i]);
-			
-			sprites[i] = new Sprite(0, 0,
-					Utils.getRatio(MENU_MAIN_TAMBAHAN_WIDTH[i]),
-					Utils.getRatio(MENU_MAIN_TAMBAHAN_HEIGHT[i]),
-					regions[i]);
-			
-			sprites[i].registerEntityModifier(
-					new LoopEntityModifier(
-					new MoveModifier(MENU_MAIN_TAMBAHAN_DUR[i],
-							Utils.getRatioW(MENU_MAIN_TAMBAHAN_FROM_X[i]),
-							Utils.getRatioW(MENU_MAIN_TAMBAHAN_TO_X[i]),
-							Utils.getRatioH(MENU_MAIN_TAMBAHAN_FROM_Y[i]),
-							Utils.getRatioH(MENU_MAIN_TAMBAHAN_TO_Y[i]))));
-			
-			spr_Img_Back_Menu.attachChild(sprites[i]);
-		}
-		
-		spr_Img_Back_Menu.registerUpdateHandler(new IUpdateHandler() {
-
-			int time = 0;
-			public void reset() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			public void onUpdate(float pSecondsElapsed) {
-				
-				if(time ==10)
-				{
-					for (int j = 3; j < 6; j++) {
-						sprites[j].setFlippedHorizontal(true);						
-					}
-				}
-				if(time == 20)
-				{
-					for (int j = 3; j < 6; j++) {
-						sprites[j].setFlippedHorizontal(false);						
-					}
-					time = 0;
-				}
-				time++;
-			}
-		});
+//		BitmapTextureAtlas[] 	atlas = new BitmapTextureAtlas[MENU_MAIN_TAMBAHAN.length];
+//		TextureRegion[]			regions = new TextureRegion[MENU_MAIN_TAMBAHAN.length];
+//		final Sprite[]				sprites = new Sprite[MENU_MAIN_TAMBAHAN.length];
+//		
+//		for (int i = 0; i < MENU_MAIN_TAMBAHAN.length; i++)
+//		{
+//			atlas[i] = new BitmapTextureAtlas(
+//					32, 128, Utils.getTextureOption());
+//			
+//			regions[i] = BitmapTextureAtlasTextureRegionFactory
+//					.createFromAsset(atlas[i], activity,
+//					MENU_MAIN_TAMBAHAN[i], 0, 0);
+//			
+//			loadTexture(atlas[i]);
+//			
+//			sprites[i] = new Sprite(0, 0,
+//					Utils.getRatio(MENU_MAIN_TAMBAHAN_WIDTH[i]),
+//					Utils.getRatio(MENU_MAIN_TAMBAHAN_HEIGHT[i]),
+//					regions[i]);
+//			
+//			sprites[i].registerEntityModifier(
+//					new LoopEntityModifier(
+//					new MoveModifier(MENU_MAIN_TAMBAHAN_DUR[i],
+//							Utils.getRatioW(MENU_MAIN_TAMBAHAN_FROM_X[i]),
+//							Utils.getRatioW(MENU_MAIN_TAMBAHAN_TO_X[i]),
+//							Utils.getRatioH(MENU_MAIN_TAMBAHAN_FROM_Y[i]),
+//							Utils.getRatioH(MENU_MAIN_TAMBAHAN_TO_Y[i]))));
+//			
+//			spr_Img_Back_Menu.attachChild(sprites[i]);
+//		}
+//		
+//		spr_Img_Back_Menu.registerUpdateHandler(new IUpdateHandler() {
+//
+//			int time = 0;
+//			public void reset() {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			
+//			public void onUpdate(float pSecondsElapsed) {
+//				
+//				if(time ==10)
+//				{
+//					for (int j = 3; j < 6; j++) {
+//						sprites[j].setFlippedHorizontal(true);						
+//					}
+//				}
+//				if(time == 20)
+//				{
+//					for (int j = 3; j < 6; j++) {
+//						sprites[j].setFlippedHorizontal(false);						
+//					}
+//					time = 0;
+//				}
+//				time++;
+//			}
+//		});
 	}
 	
 	public static void loadTitle()
@@ -1383,15 +1402,20 @@ public class Game implements Data,
 		loadTexture(tex_Img_Title);
 		float y = 50;
 		float x = (Config.GAME_SCREEN_WIDTH - reg_Img_Title_Menu.getWidth()) / 2;
-		spr_Img_Title_Menu = new Sprite( 
-				0, 0, 
-				Utils.getRatio(195), 
-				Utils.getRatio(95), 
-				reg_Img_Title_Menu);
 		
-		spr_Img_Title_Menu.setPosition(
-				(Config.GAME_SCREEN_WIDTH - spr_Img_Title_Menu.getWidth()) / 2, 
-				Utils.getRatioH(50));
+		for (int i = 0; i < 2; i++)
+		{
+			spr_Img_Title_Menu[i] = new Sprite( 
+					0, 0, 
+					Utils.getRatio(195), 
+					Utils.getRatio(95), 
+					reg_Img_Title_Menu);
+			
+			spr_Img_Title_Menu[i].setPosition(
+					(Config.GAME_SCREEN_WIDTH - spr_Img_Title_Menu[i].getWidth()) / 2, 
+					Utils.getRatioH(50));
+			
+		}
 		
 	}
 	
@@ -1580,29 +1604,22 @@ public class Game implements Data,
 				Utils.getRatio(325),
 				reg_Menu_Setting_Bg_Text);
 		
-		spr_Menu_Setting_Bg_Sound_Icon[0] = new Sprite(
-				0, 0, 
-				Utils.getRatio(225),
-				Utils.getRatio(90),
-				reg_Menu_Setting_Bg_Sound_Icon);
-		spr_Menu_Setting_Bg_Sound_Icon[1] = new Sprite(
-				0, 0, 
-				Utils.getRatio(225),
-				Utils.getRatio(90),
-				reg_Menu_Setting_Bg_Sound_Icon);
+		Sprite[] spr_Menu_Setting_Bg_Sound_Text = new Sprite[3];
 		
-		Sprite[] spr_Menu_Setting_Bg_Sound_Text = new Sprite[2];
+		for (int i = 0; i < 3; i++)
+		{
+			spr_Menu_Setting_Bg_Sound_Icon[i] = new Sprite(
+					0, 0, 
+					Utils.getRatio(225),
+					Utils.getRatio(45),
+					reg_Menu_Setting_Bg_Sound_Icon);
 
-		spr_Menu_Setting_Bg_Sound_Text[0] = new Sprite(
-				0, 0, 
-				Utils.getRatio(225),
-				Utils.getRatio(35),
-				reg_Menu_Setting_Bg_Sound_Text);
-		spr_Menu_Setting_Bg_Sound_Text[1] = new Sprite(
-				0, 0, 
-				Utils.getRatio(225),
-				Utils.getRatio(35),
-				reg_Menu_Setting_Bg_Sound_Text);
+			spr_Menu_Setting_Bg_Sound_Text[i] = new Sprite(
+					0, 0, 
+					Utils.getRatio(225),
+					Utils.getRatio(30),
+					reg_Menu_Setting_Bg_Sound_Text);
+		}
 
 		loadTexture(tex_Menu_Setting_Text_Atas);
 		loadTexture(tex_Menu_Setting_Bg_Text);
@@ -1622,101 +1639,85 @@ public class Game implements Data,
 				(spr_Menu_Setting_Bg_Text.getWidth() - spr_Menu_Setting_Bg_Sound_Icon[0].getWidth()) / 2,
 				spr_Menu_Setting_Bg_Sound_Text[0].getY() + spr_Menu_Setting_Bg_Sound_Text[0].getHeight() + Utils.getRatio(5));
 		
+		spr_Menu_Setting_Bg_Sound_Text[1].setPosition(
+				(spr_Menu_Setting_Bg_Text.getWidth() - spr_Menu_Setting_Bg_Sound_Text[0].getWidth()) / 2,
+				spr_Menu_Setting_Bg_Sound_Icon[0].getY() + spr_Menu_Setting_Bg_Sound_Icon[0].getHeight() + Utils.getRatio(23));
+		
 		spr_Menu_Setting_Bg_Sound_Icon[1].setPosition(
+				(spr_Menu_Setting_Bg_Text.getWidth() - spr_Menu_Setting_Bg_Sound_Icon[0].getWidth()) / 2,
+				spr_Menu_Setting_Bg_Sound_Text[1].getY() + spr_Menu_Setting_Bg_Sound_Text[1].getHeight() + Utils.getRatio(5));
+		
+		spr_Menu_Setting_Bg_Sound_Icon[2].setPosition(
 				(spr_Menu_Setting_Bg_Text.getWidth() - spr_Menu_Setting_Bg_Sound_Icon[0].getWidth()) / 2,
 				spr_Menu_Setting_Bg_Text.getHeight() - Utils.getRatio(20) - spr_Menu_Setting_Bg_Sound_Icon[1].getHeight());
 
-		spr_Menu_Setting_Bg_Sound_Text[1].setPosition(
+		spr_Menu_Setting_Bg_Sound_Text[2].setPosition(
 				(spr_Menu_Setting_Bg_Text.getWidth() - spr_Menu_Setting_Bg_Sound_Text[0].getWidth()) / 2,
-				spr_Menu_Setting_Bg_Sound_Icon[1].getY() - Utils.getRatio(5) - spr_Menu_Setting_Bg_Sound_Text[1].getHeight());
+				spr_Menu_Setting_Bg_Sound_Icon[2].getY() - Utils.getRatio(5) - spr_Menu_Setting_Bg_Sound_Text[2].getHeight());
 		
 		spr_Img_Option_Bg.attachChild(spr_Menu_Setting_Text_Atas);
 		spr_Img_Option_Bg.attachChild(spr_Menu_Setting_Bg_Text);
-		spr_Menu_Setting_Bg_Text.attachChild(spr_Menu_Setting_Bg_Sound_Icon[0]);
-		spr_Menu_Setting_Bg_Text.attachChild(spr_Menu_Setting_Bg_Sound_Icon[1]);
-		spr_Menu_Setting_Bg_Text.attachChild(spr_Menu_Setting_Bg_Sound_Text[0]);
-		spr_Menu_Setting_Bg_Text.attachChild(spr_Menu_Setting_Bg_Sound_Text[1]);
+		
+		for (int i = 0; i < 3; i++)
+		{
+			spr_Menu_Setting_Bg_Text.attachChild(spr_Menu_Setting_Bg_Sound_Icon[i]);
+			spr_Menu_Setting_Bg_Text.attachChild(spr_Menu_Setting_Bg_Sound_Text[i]);			
+		}
 		
 		
 		
 		
-		
-		BitmapTextureAtlas[] 	tex_Menu_Setting_Text = new BitmapTextureAtlas[2];
-		TextureRegion[] 		reg_Menu_Setting_Text = new TextureRegion[2];
-		Sprite[]				spr_Menu_Setting_Text = new Sprite[2];
+		Text[]	txt_Menu_Settings_Name = new Text[3];
 		
 		String[] SETTING_TEXT = 
 			{
-				MNU_FOLDER_LOCATION + "SFX.png",
-				MNU_FOLDER_LOCATION + "MUSIC.png"
+				"SFX",
+				"MUSIC",
+				"DICE"
 			};
-
-		float[] SETTING_TEXT_WIDTH = {50, 95};
-		float[] SETTING_TEXT_HEIGHT = {25, 25};
 		
-		for (int i = 0; i < 2; i++)
-		{
-			tex_Menu_Setting_Text[i] = new BitmapTextureAtlas(
-					128, 32, Utils.getTextureOption());
-		
-			reg_Menu_Setting_Text[i] = BitmapTextureAtlasTextureRegionFactory
-					.createFromAsset(tex_Menu_Setting_Text[i], activity,
-					SETTING_TEXT[i], 0, 0);
-			
-			loadTexture(tex_Menu_Setting_Text[i]);
-			
-			spr_Menu_Setting_Text[i] = new Sprite(
-					0, 0,
-					Utils.getRatio(SETTING_TEXT_WIDTH[i]),
-					Utils.getRatio(SETTING_TEXT_HEIGHT[i]),
-					reg_Menu_Setting_Text[i]);
-			
-			spr_Menu_Setting_Text[i].setPosition(
-					(spr_Menu_Setting_Bg_Sound_Text[i].getWidth() - spr_Menu_Setting_Text[i].getWidth()) / 2,
-					(spr_Menu_Setting_Bg_Sound_Text[i].getHeight() - spr_Menu_Setting_Text[i].getHeight()) / 2);
-			
-			spr_Menu_Setting_Bg_Sound_Text[i].attachChild(spr_Menu_Setting_Text[i]);
+		for (int i = 0; i < 3; i++)
+		{			
+			txt_Menu_Settings_Name[i] = new Text(0, 0, font[FONT_SIZE_MEDIUM], SETTING_TEXT[i]);
+			txt_Menu_Settings_Name[i].setPosition(
+					(spr_Menu_Setting_Bg_Sound_Text[i].getWidth() - txt_Menu_Settings_Name[i].getWidth()) / 2,
+					(spr_Menu_Setting_Bg_Sound_Text[i].getHeight() - txt_Menu_Settings_Name[i].getHeight()) / 2);
+			spr_Menu_Setting_Bg_Sound_Text[i].attachChild(txt_Menu_Settings_Name[i]);
 		}
 		
 		
 		
 		
 		
-		String[] SETTING_ON_OFF = 
+		String[][] SETTING_ON_OFF = 
 			{
-				MNU_FOLDER_LOCATION + "ON.png",
-				MNU_FOLDER_LOCATION + "OFF.png"
+				{
+					"ON",
+					"OFF"
+				},
+				{
+					"SHAKE",
+					"SLIDE"
+				}
 			};
-
-		float[] SETTING_ON_OFF_WIDTH = {37, 51};
-		float[] SETTING_ON_OFF_HEIGHT = {25, 25};
 		
-		for (int i = 0; i < 2; i++)
-		{
-			tex_Menu_Setting_On_Off[i] = new BitmapTextureAtlas(
-					64, 64, Utils.getTextureOption());
-		
-			reg_Menu_Setting_On_Off[i] = BitmapTextureAtlasTextureRegionFactory
-					.createFromAsset(tex_Menu_Setting_On_Off[i], activity,
-					SETTING_ON_OFF[i], 0, 0);
-			
-			loadTexture(tex_Menu_Setting_On_Off[i]);
-			
+		for (int i = 0; i < 3; i++)
+		{			
 			for (int j = 0; j < 2; j++)
 			{
-				spr_Menu_Setting_On_Off[i][j] = new Sprite(
-						0, 0,
-						Utils.getRatio(SETTING_ON_OFF_WIDTH[i]),
-						Utils.getRatio(SETTING_ON_OFF_HEIGHT[i]),
-						reg_Menu_Setting_On_Off[i]);
+				if(i == 2)
+					txt_Menu_Setting[i][j] = new Text(0, 0, font[FONT_SIZE_MEDIUM], SETTING_ON_OFF[1][j]);
+				else
+					txt_Menu_Setting[i][j] = new Text(0, 0, font[FONT_SIZE_MEDIUM], SETTING_ON_OFF[0][j]);
+					
 				
-				spr_Menu_Setting_On_Off[i][j].setPosition(
-						(spr_Menu_Setting_Bg_Sound_Icon[j].getWidth() - spr_Menu_Setting_On_Off[i][j].getWidth()) / 2,
-						(spr_Menu_Setting_Bg_Sound_Icon[j].getHeight() - spr_Menu_Setting_On_Off[i][j].getHeight()) / 2);
+				txt_Menu_Setting[i][j].setPosition(
+						(spr_Menu_Setting_Bg_Sound_Icon[j].getWidth() - txt_Menu_Setting[i][j].getWidth()) / 2,
+						(spr_Menu_Setting_Bg_Sound_Icon[j].getHeight() - txt_Menu_Setting[i][j].getHeight()) / 2);
 				
-				spr_Menu_Setting_Bg_Sound_Icon[j].attachChild(spr_Menu_Setting_On_Off[i][j]);
+				spr_Menu_Setting_Bg_Sound_Icon[i].attachChild(txt_Menu_Setting[i][j]);
 				
-				spr_Menu_Setting_On_Off[i][j].setVisible(false);
+				txt_Menu_Setting[i][j].setVisible(false);
 			}
 			
 			
