@@ -271,11 +271,13 @@ public class Entity_Camera implements Define
 		if(visX && visY)
 		{
 			Game.spr_Img_Button_Slide_Bg.setVisible(true);
+			Game.spr_img_Button_Shake.setVisible(true);
 			State_Gameplay.diceEnable = true;
 		}
 		else
 		{
 			Game.spr_Img_Button_Slide_Bg.setVisible(false);
+			Game.spr_img_Button_Shake.setVisible(false);
 			State_Gameplay.diceEnable = false;
 		}
 	}

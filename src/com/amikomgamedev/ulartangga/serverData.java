@@ -7,7 +7,7 @@ public class serverData
 	private static serverData instance = null;
 	
 	private static int maxPlayer	= -1;
-	private static int selectMap 	= -1;
+	private static int selectMap 	= 0;
 	private static int[] charPlayer 	= 
 			{
 				-1,

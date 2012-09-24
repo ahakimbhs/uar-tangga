@@ -32,6 +32,7 @@ import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.Toast;
 
+import com.amikomgamedev.ulartangga.Chart_Boost;
 import com.amikomgamedev.ulartangga.Config;
 import com.amikomgamedev.ulartangga.Data;
 import com.amikomgamedev.ulartangga.Define;
@@ -132,6 +133,8 @@ public class State_Menu_Main extends BaseGameActivity
 	private AdRequest adRequest;
 	private String ID = "a1504c944115cfb";
 	
+	private Chart_Boost	m_Chart_Boost;
+	
 	private LayoutParams adViewLayoutParams;
 	
 	public Engine onLoadEngine() 
@@ -150,6 +153,8 @@ public class State_Menu_Main extends BaseGameActivity
 
 	public void onLoadResources() 
 	{
+//		m_Chart_Boost = new Chart_Boost(this);
+//		m_Chart_Boost.createChartBoost();
 		createAds();
 		
 		Game.setContext(this);
@@ -378,7 +383,8 @@ public class State_Menu_Main extends BaseGameActivity
 			case STATE_MENU_INMENU :
 
 //				adViewLayoutParams.gravity = Gravity.BOTTOM;
-//				adView.setVisibility(adView.VISIBLE);
+				adView.setVisibility(adView.INVISIBLE);
+//				m_Chart_Boost.showChartBoost();
 				
 				soundManager.playMusic(soundManager.BGM_MENU_MAIN);
 				Game.spr_Img_Logo.setVisible(false);
@@ -856,10 +862,10 @@ public class State_Menu_Main extends BaseGameActivity
 			        adView.setVisibility(AdView.INVISIBLE);
 					
 					sData.setMaxPlayer(max_Player);
-					
-					if(Game.spr_Img_Select_Map_Bg == null)
-						switchState(STATE_MENU_SELECT_MAP_LOADING);
-					else
+//					
+//					if(Game.spr_Img_Select_Map_Bg == null)
+//						switchState(STATE_MENU_SELECT_MAP_LOADING);
+//					else
 						switchState(STATE_MENU_SELECT_MAP);
 				}
 				
@@ -1198,13 +1204,6 @@ public class State_Menu_Main extends BaseGameActivity
         
         adViewLayoutParams.topMargin = (int) (getWindowManager().getDefaultDisplay().getHeight() -  Utils.getRatioH(125));
 
-//        Utils.TRACE("WIDTH 	= " +getWindowManager().getDefaultDisplay().getWidth());
-        
-//        Utils.TRACE("HEIGHT ADS " +display.heightPixels);
-//        Utils.TRACE("WIDTH ADS " +display.widthPixels);
-//        Utils.TRACE("X ADS " +mRenderSurfaceView.getX());
-//        Utils.TRACE("Y ADS " +mRenderSurfaceView.getY());
-        
         setContentView(frameLayout);
 	}
 	

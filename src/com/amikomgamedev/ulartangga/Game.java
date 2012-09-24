@@ -266,9 +266,9 @@ public class Game implements Data,
 		activity = (BaseGameActivity)context;
 	}
 
-	public static void setMap(int map)
+	public static void setMap(int p_Map)
 	{
-		Game.map = map;
+		map = p_Map;
 	}
 	
 	public static void setMaxPlayer(int maxPlayer)
@@ -342,10 +342,8 @@ public class Game implements Data,
 		}
 	}
 	
-	public static void loadGameMap(int pMap)
-	{
-		map = pMap;
-		
+	public static void loadGameMap()
+	{		
 		tex_Img_Map = new BitmapTextureAtlas(
 				MAP_TEX_WIDTH,
 				MAP_TEX_HEIGHT,

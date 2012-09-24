@@ -56,30 +56,30 @@ public class State_Gameplay_MP_BT extends State_Gameplay
 
 	private void handleReceivedMessage(String[] msgArray)
 	{
-		Utils.TRACE("Game");
-		if(msgArray[0].contains("move"))
-		{
-			randomValue = Integer.parseInt(msgArray[1]);
-				
-			soundManager.playSfx(soundManager.SFX_DICE);
-			switchPlayer();
-			mc[Player_Cur].setMove(randomValue);
-
-			MoveModifier moveModifier = new MoveModifier(
-					1, 
-					-Game.spr_Dice.getWidth(), 
-					(Config.GAME_SCREEN_WIDTH - Game.spr_Dice.getWidth()) / 2,
-					(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice.getHeight()) / 2,
-					(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice.getHeight()) / 2);
-			Game.spr_Dice.registerEntityModifier(moveModifier);
-			
-			Game.spr_Dice.setVisible(true);
-			Game.spr_Dice.setVisible(true);
-			Game.spr_Dice.animate(
-					SPR_DICE_SPEED,
-					SPR_DICE_FRAME[randomValue - 1],
-					0);
-
-		}
+//		Utils.TRACE("Game");
+//		if(msgArray[0].contains("move"))
+//		{
+//			randomValue = Integer.parseInt(msgArray[1]);
+//				
+//			soundManager.playSfx(soundManager.SFX_DICE);
+//			switchPlayer();
+//			mc[Player_Cur].setMove(randomValue);
+//
+//			MoveModifier moveModifier = new MoveModifier(
+//					1, 
+//					-Game.spr_Dice.getWidth(), 
+//					(Config.GAME_SCREEN_WIDTH - Game.spr_Dice.getWidth()) / 2,
+//					(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice.getHeight()) / 2,
+//					(Config.GAME_SCREEN_HEIGHT - Game.spr_Dice.getHeight()) / 2);
+//			Game.spr_Dice.registerEntityModifier(moveModifier);
+//			
+//			Game.spr_Dice.setVisible(true);
+//			Game.spr_Dice.setVisible(true);
+//			Game.spr_Dice.animate(
+//					SPR_DICE_SPEED,
+//					SPR_DICE_FRAME[randomValue - 1],
+//					0);
+//
+//		}
 	}
 }

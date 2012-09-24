@@ -81,7 +81,7 @@ public class State_Gameplay extends 	BaseGameActivity
 	
 	public static Camera camera;
 	public static Scene scene;
-	public static Entity_Mc[] mc;
+	protected Entity_Mc[] mc;
 	
 	private SurfaceScrollDetector	mScrollDetector	= new SurfaceScrollDetector(this);
 	private ClickDetector			clickDetector	= new ClickDetector(this);
@@ -98,7 +98,7 @@ public class State_Gameplay extends 	BaseGameActivity
 	private boolean moveAgain_2 = true;
 	private boolean moveAgain_3 = true;
 	private boolean move = true;
-	private boolean autoMoveNextPlayer = true;
+	public static boolean autoMoveNextPlayer = true;
 	private boolean autoMove = true;
 	private boolean throwStart = true;
 	protected boolean isMultiPlayer = false;
@@ -319,6 +319,8 @@ public class State_Gameplay extends 	BaseGameActivity
 							mc[Player_Cur].stop();
 							move = false;
 							soundManager.stopSfx(soundManager.SFX_JALAN);
+							
+//							Utils.TRACE("autoMove = " +autoMove);
 							
 //							valueDice.setText(""+Utils.getRandomValuie());
 							if(!autoMoveNextPlayer || Game.spr_Smoke.isVisible())
@@ -775,7 +777,7 @@ public class State_Gameplay extends 	BaseGameActivity
 			case STATE_GAME_LOADING:
 				
 				scene.attachChild(Game.spr_Img_Loading);				
-				Loading.setLoading(Loading.LOADING_TYPE_GAMEPLAY, Map);
+				Loading.setLoading(Loading.LOADING_TYPE_GAMEPLAY);
 				
 				break;
 				
@@ -1238,19 +1240,29 @@ public class State_Gameplay extends 	BaseGameActivity
 		mAccellLast = mAccellCur;
 		mAccellCur = (float) Math.sqrt(x*x + y*y + z*z);
 
+		
 //		Utils.TRACE("DICE = " +mAccellCur);
 		if(mAccellCur > 20 && isShakeEnable)
 		{
-			if(!mc[Player_Cur].isMoving() 
-					&& Cek_Current == CEK_IDLE
-					&& sData.getTypePlayer(nextPlayer()) == TYPE_PLAYER)
+			if(mc != null)
 			{
-				isDice++;
-				soundManager.playSfx(soundManager.SFX_SHAKE);
+				if(mc[Player_Cur] != null)
+					if(!mc[Player_Cur].isMoving() 
+							&& Cek_Current == CEK_IDLE
+							&& sData.getTypePlayer(nextPlayer()) == TYPE_PLAYER)
+					{
+
+						autoMoveNextPlayer = false;
+						isDice++;
+						if(isDice >= 2)
+							soundManager.playSfx(soundManager.SFX_SHAKE);
+					}
 			}
 		}
 		else if(isDice >= 2 && mAccellCur > 9.6 && mAccellCur < 9.7)
 		{
+
+			autoMoveNextPlayer = true;
 			isDice = 0;
 			isShake = true;
 		}		

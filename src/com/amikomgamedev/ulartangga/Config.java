@@ -5,7 +5,7 @@ public class Config
 	public static final int GAME_RES_MINI = 0;
 	public static final int GAME_RES_MID = 1;
 	public static final int GAME_RES_HD = 2;
-	public static final int GAME_RES_USE = GAME_RES_HD;
+	public static final int GAME_RES_USE = GAME_RES_MID;
 
 	public static final String VERSI = "Ular Tangga versi HD 1.1.6";
 	

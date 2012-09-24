@@ -46,7 +46,6 @@ public class Loading {
 	private static int Loading_Max_Progress;
 	private static int Loading_Cur_Progress;
 	
-	private static int map;
 	private SoundManager soundManager;
 	
 	private static final int LOADING_TYPE_APP_OPEN_LIST_ITEM[] =
@@ -173,12 +172,6 @@ public class Loading {
 		}
 	}
 	
-	public static void setLoading(int loadingType, int pMap)
-	{
-		map = pMap;
-		setLoading(loadingType);
-	}
-	
 	public static boolean isLoading()
 	{
 		return (Loading_Max_Progress > Loading_Cur_Progress)
@@ -254,7 +247,7 @@ public class Loading {
 				Game.loadSmoke();
 				break;
 			case LOADING_SUB_TYPE_MAP_BACKGROUND:
-				Game.loadGameMap(map);
+				Game.loadGameMap();
 				break;
 			case LOADING_SUB_TYPE_CREDIT_BACKGROUND:
 				Game.load_BG_Credit();
