@@ -7,7 +7,6 @@ import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
-import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
@@ -33,7 +32,6 @@ import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.Toast;
 
-import com.amikomgamedev.ulartangga.Chart_Boost;
 import com.amikomgamedev.ulartangga.Config;
 import com.amikomgamedev.ulartangga.Data;
 import com.amikomgamedev.ulartangga.Define;
@@ -134,7 +132,7 @@ public class State_Menu_Main extends BaseGameActivity
 	private AdRequest adRequest;
 	private String ID = "a1504c944115cfb";
 	
-	private Chart_Boost	m_Chart_Boost;
+//	private Chart_Boost	m_Chart_Boost;
 	
 	private LayoutParams adViewLayoutParams;
 	
