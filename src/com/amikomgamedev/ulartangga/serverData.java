@@ -13,11 +13,23 @@ public class serverData
 				-1,
 				-1,
 				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
 				-1
 			};
 	
 	private static int[] typePlayer 	= 
 			{
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
 				-1,
 				-1,
 				-1,

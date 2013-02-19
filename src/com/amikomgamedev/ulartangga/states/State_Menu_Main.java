@@ -6,6 +6,7 @@ import org.anddev.andengine.engine.camera.hud.HUD;
 import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
+import org.anddev.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
@@ -145,7 +146,7 @@ public class State_Menu_Main extends BaseGameActivity
 		
 		mEngine = new Engine(
 			new EngineOptions(true, ScreenOrientation.PORTRAIT,
-			new RatioResolutionPolicy(Config.GAME_SCREEN_WIDTH, Config.GAME_SCREEN_HEIGHT),
+					new FillResolutionPolicy(),
 			camera).setNeedsMusic(true).setNeedsSound(true));
 		
 		return mEngine;
@@ -426,7 +427,8 @@ public class State_Menu_Main extends BaseGameActivity
 //			    adView.loadAd(adRequest);
 //				adViewLayoutParams.gravity = Gravity.NO_GRAVITY;
 //		        adViewLayoutParams.topMargin = (int) (getWindowManager().getDefaultDisplay().getHeight() -  Utils.getRatioH(125));
-			
+
+				
 		        adView.setVisibility(AdView.VISIBLE);
 		        
 				soundManager.playMusic(soundManager.BGM_MENU_MAIN);
@@ -536,7 +538,6 @@ public class State_Menu_Main extends BaseGameActivity
 		}
 	}
 	
-	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) 
 	{
 		switch (State_Game_Current) 
@@ -997,11 +998,11 @@ public class State_Menu_Main extends BaseGameActivity
 							
 							if(j == 0)
 								if(sData.getCharPlayer(i) == CARACTER_1)
-									sData.setCharPlayer(i, CARACTER_4);
+									sData.setCharPlayer(i, SELECT_MC_ICON.length - 1);
 								else
 									sData.setCharPlayer(i, sData.getCharPlayer(i) - 1);
 							else
-								if(sData.getCharPlayer(i) == CARACTER_4)
+								if(sData.getCharPlayer(i) == SELECT_MC_ICON.length - 1)
 									sData.setCharPlayer(i, CARACTER_1);
 								else
 									sData.setCharPlayer(i, sData.getCharPlayer(i) + 1);
@@ -1014,7 +1015,7 @@ public class State_Menu_Main extends BaseGameActivity
 					{
 						Game.spr_Img_Select_Mc_Icon_Mc[i][sData.getCharPlayer(i)].setVisible(false);
 						
-						if(sData.getCharPlayer(i) == CARACTER_4)
+						if(sData.getCharPlayer(i) == SELECT_MC_ICON.length - 1)
 							sData.setCharPlayer(i, CARACTER_1);
 						else
 							sData.setCharPlayer(i, sData.getCharPlayer(i) + 1);
@@ -1208,7 +1209,7 @@ public class State_Menu_Main extends BaseGameActivity
 	}
 	
 	
-	@Override
+	
 	protected void onPause() {
 		if(soundManager.bgm[soundManager.BGM_MENU_MAIN] != null)
 		{
@@ -1217,7 +1218,7 @@ public class State_Menu_Main extends BaseGameActivity
 		super.onPause();
 	}
 	
-	@Override
+	
 	protected void onResume() {
 		if(soundManager.bgm[soundManager.BGM_MENU_MAIN] != null)
 		{
@@ -1226,7 +1227,7 @@ public class State_Menu_Main extends BaseGameActivity
 		super.onResume();
 	}
 	
-	@Override
+	
 	protected void onDestroy() {
 		super.onDestroy();
 		

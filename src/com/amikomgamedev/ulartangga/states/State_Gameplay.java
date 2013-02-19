@@ -6,6 +6,7 @@ import org.anddev.andengine.engine.camera.hud.HUD;
 import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
+import org.anddev.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.modifier.MoveByModifier;
 import org.anddev.andengine.entity.modifier.MoveModifier;
@@ -120,7 +121,7 @@ public class State_Gameplay extends 	BaseGameActivity
 		camera = new Camera(0, 0, Config.GAME_SCREEN_WIDTH, Config.GAME_SCREEN_HEIGHT);
 		mEngine = new Engine(
 			new EngineOptions(true, ScreenOrientation.PORTRAIT,
-			new RatioResolutionPolicy(Config.GAME_SCREEN_WIDTH, Config.GAME_SCREEN_HEIGHT),
+					new FillResolutionPolicy(),
 			camera).setNeedsMusic(true).setNeedsSound(true));
 		return mEngine;
 	}
@@ -741,7 +742,7 @@ public class State_Gameplay extends 	BaseGameActivity
 		}
 	}
 	
-	@Override
+	
 	protected void onPause() {
 		if(soundManager.bgm[soundManager.BGM_GAMEPLAY] != null)
 		{
@@ -753,7 +754,7 @@ public class State_Gameplay extends 	BaseGameActivity
 		super.onPause();
 	}
 	
-	@Override
+	
 	protected void onResume() {
 		if(soundManager.bgm[soundManager.BGM_GAMEPLAY] != null)
 		{
@@ -1018,7 +1019,6 @@ public class State_Gameplay extends 	BaseGameActivity
 		return false;
 	}
 	
-	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) 
 	{
 		switch (State_Game_Current)

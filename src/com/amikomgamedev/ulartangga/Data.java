@@ -221,7 +221,8 @@ public interface Data {
 			SPR_INGAME_FOLDER_LOCATION + "kit.png",
 			SPR_INGAME_FOLDER_LOCATION + "pea.png",
 			SPR_INGAME_FOLDER_LOCATION + "dew.png",
-			SPR_INGAME_FOLDER_LOCATION + "roo.png"
+			SPR_INGAME_FOLDER_LOCATION + "roo.png",
+			SPR_INGAME_FOLDER_LOCATION + "jalan.png",
 		};
 	
 	public static final String SPR_ICON_MC[] =
@@ -229,7 +230,8 @@ public interface Data {
 			IMG_INGAME_FOLDER_LOCATION + "ICON KIT.png",
 			IMG_INGAME_FOLDER_LOCATION + "ICON PEA.png",
 			IMG_INGAME_FOLDER_LOCATION + "ICON DEW.png",
-			IMG_INGAME_FOLDER_LOCATION + "ICON ROO.png"	
+			IMG_INGAME_FOLDER_LOCATION + "ICON ROO.png",
+			IMG_INGAME_FOLDER_LOCATION + "icona.png",
 		};
 	
 	public static final String SELECT_MC_ICON[] =
@@ -237,7 +239,17 @@ public interface Data {
 			IMG_INMENU_FOLDER_LOCATION + "CHOOSE CHARACTER KIT.png",
 			IMG_INMENU_FOLDER_LOCATION + "CHOOSE CHARACTER PEA.png",
 			IMG_INMENU_FOLDER_LOCATION + "CHOOSE CHARACTER DEW.png",
-			IMG_INMENU_FOLDER_LOCATION + "CHOOSE CHARACTER ROO.png"
+			IMG_INMENU_FOLDER_LOCATION + "CHOOSE CHARACTER ROO.png",
+			IMG_INMENU_FOLDER_LOCATION + "karekter.png",
+		};
+	
+	public static final String[] GAMEOVER_MC_WIN = 
+		{
+			SPR_INGAME_FOLDER_LOCATION + "KIT WON.png",
+			SPR_INGAME_FOLDER_LOCATION + "PEA WON.png",
+			SPR_INGAME_FOLDER_LOCATION + "DEW WON.png",
+			SPR_INGAME_FOLDER_LOCATION + "ROO WON.png",
+			SPR_INGAME_FOLDER_LOCATION + "menang.png",
 		};
 
 	public static final String SPR_GAMEPLAY_DICE =
@@ -257,13 +269,13 @@ public interface Data {
 			IMG_INGAME_FOLDER_LOCATION + "RESTART BUTTON.png",
 		};
 	
-	public static final String[] GAMEPAUSE_MC_IDLE =
-		{
-			SPR_INGAME_FOLDER_LOCATION + "kit.png",
-			SPR_INGAME_FOLDER_LOCATION + "pea.png",
-			SPR_INGAME_FOLDER_LOCATION + "dew.png",
-			SPR_INGAME_FOLDER_LOCATION + "roo.png"
-		};
+//	public static final String[] GAMEPAUSE_MC_IDLE =
+//		{
+//			SPR_INGAME_FOLDER_LOCATION + "kit.png",
+//			SPR_INGAME_FOLDER_LOCATION + "pea.png",
+//			SPR_INGAME_FOLDER_LOCATION + "dew.png",
+//			SPR_INGAME_FOLDER_LOCATION + "roo.png"
+//		};
 	
 	public static final int[]	GAMEPAUSE_MC_IDLE_ANIM_FRAME = {6, 8};
 	public static final long[]	GAMEPAUSE_MC_IDLE_ANIM_SPEED = {250, 250, 250};
@@ -271,14 +283,6 @@ public interface Data {
 	public static final String GAMEOVER_BG				= IMG_INGAME_FOLDER_LOCATION + "PAUSE BACKGROUND.png";
 	public static final String GAMEOVER_BTN_MAINMENU	= IMG_INGAME_FOLDER_LOCATION + "HOME BUTTON.png";
 	public static final String GAMEOVER_BTN_RESTART		= IMG_INGAME_FOLDER_LOCATION + "RESTART BUTTON.png";
-	
-	public static final String[] GAMEOVER_MC_WIN = 
-		{
-			SPR_INGAME_FOLDER_LOCATION + "KIT WON.png",
-			SPR_INGAME_FOLDER_LOCATION + "PEA WON.png",
-			SPR_INGAME_FOLDER_LOCATION + "DEW WON.png",
-			SPR_INGAME_FOLDER_LOCATION + "ROO WON.png"
-		};
 	
 	public static final String[] GAMEOVER_TEXT = 
 		{

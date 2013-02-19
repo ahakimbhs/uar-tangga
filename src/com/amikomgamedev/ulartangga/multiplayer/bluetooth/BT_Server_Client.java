@@ -41,7 +41,7 @@ public class BT_Server_Client 	extends State_Menu_Main
 	private static AcceptThread mAcceptThread;
 	private static ConnectThread mConnectThread;
 
-	@Override
+	
 	public void bluetoothMode() {
 		// TODO Auto-generated method stub
 		super.bluetoothMode();
@@ -92,7 +92,7 @@ public class BT_Server_Client 	extends State_Menu_Main
 	}
 
 
-	@Override
+	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		if(resultCode == Activity.RESULT_OK && data != null)
@@ -107,7 +107,7 @@ public class BT_Server_Client 	extends State_Menu_Main
 		}
 	}
 	
-	@Override
+	
 	protected void onDestroy() {
 //		stopBTThread();
 		
@@ -152,7 +152,7 @@ public class BT_Server_Client 	extends State_Menu_Main
 		 
 	}
 	
-	@Override
+	
 	public String receiveMessage()
 	{
 		String receivedMessage;
@@ -169,7 +169,7 @@ public class BT_Server_Client 	extends State_Menu_Main
 		
 	}
 	
-	@Override
+	
 	public void sendMessage(String str) {
 
 		mPrintWriterOUT.println(str);

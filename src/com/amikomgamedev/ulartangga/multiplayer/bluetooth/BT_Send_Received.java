@@ -23,7 +23,7 @@ public class BT_Send_Received extends State_Gameplay_MP_BT
 	
 	private static BluetoothSocket mSocket;
 	
-	@Override
+	
 	public Scene onLoadScene() {
 		initBT();
 		return super.onLoadScene();
@@ -47,7 +47,7 @@ public class BT_Send_Received extends State_Gameplay_MP_BT
 		 
 	}
 	
-	@Override
+	
 	public String receiveMessage()
 	{		
 		String receivedMessage;
@@ -64,7 +64,7 @@ public class BT_Send_Received extends State_Gameplay_MP_BT
 		
 	}
 	
-	@Override
+	
 	public void sendMessage(String str) {
 		mPrintWriterOUT.println(str);
 		mPrintWriterOUT.flush();

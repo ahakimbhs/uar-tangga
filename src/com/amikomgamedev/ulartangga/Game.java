@@ -1052,7 +1052,7 @@ public class Game implements Data,
 			
 			reg_GamePause_Mc_Idle[i] = BitmapTextureAtlasTextureRegionFactory
 					.createTiledFromAsset(tex_GamePause_Mc[i], activity,
-					GAMEPAUSE_MC_IDLE[serverData.getCharPlayer(i)], 0, 0,
+							SPR_MC[serverData.getCharPlayer(i)], 0, 0,
 					GAMEPAUSE_MC_IDLE_COLUMN, GAMEPAUSE_MC_IDLE_ROW);
 			
 //			reg_GamePause_Mc_Icon[i] = BitmapTextureAtlasTextureRegionFactory
